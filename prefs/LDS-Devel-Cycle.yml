@@ -3,4 +3,4 @@ comment: "Fixes coderef bug"
 match:
   distribution: "^LDS/Devel-Cycle-1\.07\.tar\.gz$"
 patches:
-  - "/home/rurban/.cpan/dc-coderef.patch"
+  - "../../dc-coderef.patch"

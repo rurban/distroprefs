@@ -1,6 +1,6 @@
 ---
-comment: "some 5.14 fixes"
+comment: "from Niko Tyni, debian"
 match:
   distribution: "^GSAR/Alias-2.32\.tar\.gz$"
 patches:
-  - "/home/rurban/.cpan/Alias-2.32.patch"
+  - "../../Alias-dce94627191e7bde462f7dbb221dec63d4b13520.patch"

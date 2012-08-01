@@ -3,4 +3,4 @@ comment: "HAVE_LIBRSYNC_H"
 match:
   distribution: "^MLEHMANN/File-Rdiff-0\.02\.tar\.gz$"
 patches:
-  - "/home/rurban/.cpan/File-Rdiff-0.02.patch"
+  - "../../File-Rdiff-0.02.patch"

@@ -3,4 +3,4 @@ comment: "Fixes coderef bug"
 match:
   distribution: "^JJORE/B-Generate-1\.10\.tar\.gz$"
 patches:
-  - "/home/rurban/.cpan/B-Generate-1.10.patch"
+  - "../../B-Generate-1.10.patch"

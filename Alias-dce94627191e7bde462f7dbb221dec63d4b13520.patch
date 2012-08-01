@@ -1,0 +1,70 @@
+From dce94627191e7bde462f7dbb221dec63d4b13520 Mon Sep 17 00:00:00 2001
+From: Niko Tyni <ntyni@debian.org>
+Date: Sun, 10 Jul 2011 13:50:58 +0300
+Subject: [PATCH] Don't use GvCV() as an lvalue, that broke with Perl 5.13.10
+
+As seen in [rt.cpan.org #64987], GvCV() can't be assigned to anymore so
+use the new GvCV_set() macro when available or implement it the old way
+if it isn't.
+
+Also, set up a SAVEDESTRUCTOR function to restore the old CV value
+because we can't store it in the GV anymore. This part was adapted
+from Scope-Upper-0.14 by Vincent Pit.
+---
+ Alias.xs |   33 +++++++++++++++++++++++++++++++--
+ 1 files changed, 31 insertions(+), 2 deletions(-)
+
+diff --git a/Alias.xs b/Alias.xs
+index 9272b47..a7dcf20 100644
+--- a/Alias.xs
++++ b/Alias.xs
+@@ -15,6 +15,35 @@ extern "C" {
+ #define PERL_SUBVERSION       SUBVERSION
+ #endif
+ 
++#ifndef GvCV_set
++#define GvCV_set(gv,cv) GvCV((gv)) = (cv)
++#endif
++
++/* Since perl 5.13.10, GvCV() is only a rvalue so we no longer can store a
++ * pointer to the gvcv member of the gv.
++ *
++ * Adapted from a similar fix in Scope-Upper-0.14 by Vincent Pit.
++ */
++
++typedef struct {
++	GV *gv;
++	CV *old_cv;
++} saved_cv;
++
++static void restore_gvcv(saved_cv *s) {
++	GvCV_set(s->gv, s->old_cv);
++	Safefree(s);
++}
++
++static void save_gvcv(GV *gv) {
++	saved_cv *s;
++	Newx(s, 1, saved_cv);
++ 	s->gv     = gv;
++ 	s->old_cv = GvCV(gv);
++
++	SAVEDESTRUCTOR(restore_gvcv, s);
++}
++
+ #if PERL_REVISION == 5 && (PERL_VERSION < 4 || (PERL_VERSION == 4 && PERL_SUBVERSION <= 75 ))
+ 
+ #define PL_stack_sp	stack_sp
+@@ -205,8 +234,8 @@ alias_attr(hashref)
+ 			save_gp(gv,TRUE);   /* hide previous entry in symtab */
+ 			break;
+ 		    case SVt_PVCV:
+-			SAVESPTR(GvCV(gv));
+-			GvCV(gv) = Null(CV*);
++			save_gvcv(gv);
++			GvCV_set(gv,Null(CV*));
+ 			break;
+ 		    default:
+ 			save_scalar(gv);
+-- 
+1.7.5.4
+
