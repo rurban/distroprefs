@@ -1,0 +1,35 @@
+diffbk Devel-CheckLib-0.92
+
+[cpan #67301] gcc is not only gcc, it can be ccache gcc, gcc-4 or similar.
+
+diff -u Devel-CheckLib-0.92/t/lib/Helper.pm~ Devel-CheckLib-0.92/t/lib/Helper.pm
+--- Devel-CheckLib-0.92/t/lib/Helper.pm~	2010-11-24 17:13:23.000000000 +0100
++++ Devel-CheckLib-0.92/t/lib/Helper.pm	2011-04-07 14:29:14.563642800 +0200
+@@ -13,7 +13,7 @@
+ use vars qw/@EXPORT @ISA/;
+ @ISA = qw/Exporter/;
+ @EXPORT = qw(
+-    create_testlib 
++    create_testlib
+     find_compiler
+     find_binary
+ );
+@@ -42,13 +42,15 @@
+     my $code_fh = IO::File->new("${libname}.c", ">");
+     print {$code_fh} "int libversion() { return 42; }\nint foo() { return 0; }\n";
+     $code_fh->close;
+-    
++
+     my $cc = $Config{cc};
+-    my $rv = 
++    my $gccv = $Config{gccversion};
++    my $rv =
+         $cc eq 'gcc'    ? _gcc_lib( $libname )  :
+         $cc eq 'cc'     ? _gcc_lib( $libname )  :
+         $cc eq 'cl'     ? _cl_lib( $libname )   :
+-                          undef         ;     
++        $gccv           ? _gcc_lib( $libname )  :
++                          undef         ;
+ 
+     chdir $orig_wd;
+     return $rv ? canonpath($tempdir) : undef;

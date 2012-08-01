@@ -1,0 +1,16 @@
+2007-09-20 13:51:57  <rurban@x-ray.at>
+	* cygwin linker requires -shared
+
+diff -ub  Search-Xapian-1.0.2.0/Makefile.PL.orig
+--- Search-Xapian-1.0.2.0/Makefile.PL.orig	2007-07-05 17:04:51.000000000 +0200
++++ Search-Xapian-1.0.2.0/Makefile.PL	2007-09-20 13:50:30.195304800 +0200
+@@ -3,6 +3,9 @@
+ 
+ my $CC = $ENV{"CXX"} || 'g++';
+ my $LD = '$(CC)';
++if ($^O eq 'cygwin' and $CC eq 'g++') {
++  $LD = 'g++ -shared';
++}
+ 
+ my $xapian_config = $ENV{XAPIAN_CONFIG} || 'xapian-config';
+ 

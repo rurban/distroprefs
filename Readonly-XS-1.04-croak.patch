@@ -1,0 +1,14 @@
+diffbk XS.pm
+
+diff -u XS.pm~ ./XS.pm
+--- XS.pm~	2005-12-06 07:04:00.000000000 +0100
++++ ./XS.pm	2008-07-09 07:48:31.203125000 +0200
+@@ -33,7 +33,7 @@
+     if ($MAGIC_COOKIE ne "Do NOT use or require Readonly::XS unless you're me.")
+     {
+         require Carp;
+-        Carp::croak "Readonly::XS is not a standalone module. You should not use it directly.";
++        Carp::croak("Readonly::XS is not a standalone module. You should not use it directly.");
+     }
+ }
+ 

@@ -1,0 +1,33 @@
+--- Test-Inline-2.201/t/06_multifile.t.orig	2007-01-16 01:34:46.000000000 +0000
++++ Test-Inline-2.201/t/06_multifile.t	2007-06-24 15:14:46.875000000 +0000
+@@ -58,7 +58,7 @@
+ t/test_one.t
+ t/test_three.t
+ END_MANIFEST
+-if ( $^O eq 'MSWin32' or $^O eq 'cygwin' ) {
++if ( $^O eq 'MSWin32' ) {
+ 	$manifest_content =~ s/\//\\/g;
+ }
+ is( $Inline->manifest, $manifest_content, 'manifest contains expected content' );
+--- Test-Inline-2.201/t/07_add_directory.t.orig	2007-01-16 01:34:46.000000000 +0000
++++ Test-Inline-2.201/t/07_add_directory.t	2007-06-24 15:14:51.953125000 +0000
+@@ -51,7 +51,7 @@
+ t/test_one.t
+ t/test_three.t
+ END_MANIFEST
+-if ( $^O eq 'MSWin32' or $^O eq 'cygwin' ) {
++if ( $^O eq 'MSWin32' ) {
+ 	$manifest_content =~ s/\//\\/g;
+ }
+ is( $Inline->manifest, $manifest_content, 'manifest contains expected content' );
+--- Test-Inline-2.201/t/08_add_all.t.orig	2007-01-16 01:34:46.000000000 +0000
++++ Test-Inline-2.201/t/08_add_all.t	2007-06-24 15:14:42.859375000 +0000
+@@ -57,7 +57,7 @@
+ t/test_one.t
+ t/test_three.t
+ END_MANIFEST
+-if ( $^O eq 'MSWin32' or $^O eq 'cygwin' ) {
++if ( $^O eq 'MSWin32' ) {
+ 	$manifest_content =~ s/\//\\/g;
+ }
+ is( $Inline->manifest, $manifest_content, 'manifest contains expected content' );

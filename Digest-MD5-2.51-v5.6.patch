@@ -1,0 +1,71 @@
+diff -bu Digest-MD5-2.51/MD5.xs~ Digest-MD5-2.51/MD5.xs
+--- Digest-MD5-2.51/MD5.xs~	2010-09-27 11:27:03.000000000 -0500
++++ Digest-MD5-2.51/MD5.xs	2011-10-01 16:30:55.000000000 -0500
+@@ -43,6 +43,14 @@
+ }
+ #endif
+ 
++#if PERL_VERSION < 8
++#define NEED_newRV_noinc
++#define NEED_sv_2pvbyte
++#define NEED_sv_magicext
++/* #define NEED_PERL_MAGIC_ext */
++#include "ppport.h"
++#endif
++
+ /* Perl does not guarantee that U32 is exactly 32 bits.  Some system
+  * has no integral type with exactly 32 bits.  For instance, A Cray has
+  * short, int and long all at 64 bits so we need to apply this macro
+@@ -480,7 +488,12 @@
+ #ifdef USE_ITHREADS
+     mg =
+ #endif
++#if PERL_VERSION < 8
++	sv_magic_portable(sv, NULL, PERL_MAGIC_ext, (const char *)context, 0);
++    SvMAGIC(sv)->mg_virtual = &vtbl_md5;
++#else
+ 	sv_magicext(sv, NULL, PERL_MAGIC_ext, &vtbl_md5, (const char *)context, 0);
++#endif
+ 
+ #ifdef USE_ITHREADS
+     mg->mg_flags |= MGf_DUP;
+diff -bu Digest-MD5-2.51/Makefile.PL~ Digest-MD5-2.51/Makefile.PL
+--- Digest-MD5-2.51/Makefile.PL~	2010-09-27 11:24:14.000000000 -0500
++++ Digest-MD5-2.51/Makefile.PL	2011-10-01 16:37:51.000000000 -0500
+@@ -23,10 +23,11 @@
+     'ABSTRACT'     => 'Perl interface to the MD-5 algorithm',
+     'AUTHOR'       => 'Gisle Aas <gisle@activestate.com>',
+     'LICENSE'      => 'perl',
+-    'MIN_PERL_VERSION' => 5.008,
++    # 'MIN_PERL_VERSION' => 5.008,
+     'PREREQ_PM'    => { 'File::Spec' => 0,
+ 			'Digest::base' => '1.00',
+ 			'XSLoader' => 0,
++			'Devel::PPPort' => 0,
+ 		      },
+     'META_MERGE'   => {
+         resources  => {
+@@ -37,7 +38,10 @@
+     @extra,
+ );
+ 
+-
++if ($] < 5.008) {
++  require Devel::PPPort;
++  Devel::PPPort::WriteFile();
++}
+ 
+ sub free_u32_alignment
+ {
+diff -bu Digest-MD5-2.51/t/files.t~ Digest-MD5-2.51/t/files.t
+--- Digest-MD5-2.51/t/files.t~	2010-09-27 11:27:03.000000000 -0500
++++ Digest-MD5-2.51/t/files.t	2011-10-01 16:35:00.000000000 -0500
+@@ -21,7 +21,7 @@
+     # This is the output of: 'md5sum README MD5.xs rfc1321.txt'
+     $EXPECT = <<EOT;
+ c8d3f8457a2d6983253d771ffddb9f4c  README
+-14b929c388c5a9bd8eca3d37160e1b8a  MD5.xs
++d6c967d14ba07fe0e83b2c3ac1b99627  MD5.xs
+ 754b9db19f79dbc4992f7166eb0f37ce  rfc1321.txt
+ EOT
+ }

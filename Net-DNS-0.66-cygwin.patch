@@ -1,0 +1,75 @@
+Cygwin behaves like unix and even has a -lresolv
+
+diff -u  ./Makefile.PL.orig
+--- ./Makefile.PL.orig	2010-08-23 16:24:36.818945600 +0200
++++ ./Makefile.PL	2010-08-23 16:28:57.457006800 +0200
+@@ -90,16 +90,15 @@
+ 
+ 
+ 
+-if ($^O eq 'MSWin32' || $^O eq 'cygwin') {
++if ($^O eq 'MSWin32') {
+     unless(    eval {require WIN32::API; }	   ){
+ 	warn <<AMEN; 
+ I can not find WIN32::API version 0.55 or higher.
+-
+ I will add WIN32::API to the list of prerequisites.
+ AMEN
+ 
+ 
+-if ( $^O eq "MSWin32" ){ 
++if ( $^O eq "MSWin32" ){
+     warn <<AMEN2;
+ Note that, WIN32::API is included in recent versions
+ of ActivePerl (5.10 since build 1003) and recent
+@@ -108,11 +107,6 @@
+ tested with other versions. In case of failure please
+ consider upgrading.
+ AMEN2
+-}else{
+-    warn <<AMEN3;
+-When using cygwin missing dependencies can be installed using CPAN.
+-AMEN3
+-
+ }
+ 
+ 
+@@ -158,17 +152,10 @@
+ 	}
+ }
+ 
+-
+-
+-
+-
+-
+-
+-
+ if ($use_xs) {
+ 	# turn the XS bits on.
+         print "Activating XS Magic...\n" if DEBUG; 
+-	$Makefile{'LIBS'} = '-lresolv' if($^O =~ /solaris|sunos/i);
++	$Makefile{'LIBS'} = '-lresolv' if($^O =~ /solaris|sunos|cygwin/i);
+ 	$Makefile{'OBJECT'} = '$(O_FILES)';
+ 	delete $Makefile{'XS'};
+ 	delete $Makefile{'C'};
+diff -u  ./lib/Net/DNS/Resolver.pm.orig
+--- ./lib/Net/DNS/Resolver.pm.orig	2010-08-23 16:24:37.328996600 +0200
++++ ./lib/Net/DNS/Resolver.pm	2010-08-23 16:52:24.986184800 +0200
+@@ -8,16 +8,13 @@
+ 
+ $VERSION = (qw$LastChangedRevision: 830 $)[1];
+ 
+ 	if ($^O eq 'MSWin32') {
+ 		require Net::DNS::Resolver::Win32;
+ 		@ISA = qw(Net::DNS::Resolver::Win32);
+- 	} elsif ($^O eq 'cygwin') {
+-		require Net::DNS::Resolver::Win32;
+-		@ISA = qw(Net::DNS::Resolver::Win32);
+ 	} else {
+ 		require Net::DNS::Resolver::UNIX;
+ 		@ISA = qw(Net::DNS::Resolver::UNIX);
+ 	}
+ 
+ __PACKAGE__->init();
+ 

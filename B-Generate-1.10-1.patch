@@ -1,0 +1,229 @@
+2007-09-09  Reini Urban <rurban@x-ray.at>
+	* Fixed the xs compiler errors for 5.9, test fails
+        * Modification of B::OP::seq will lead to 
+	    "Cannot modify B::OP::seq! Use B::OP::opt, B::OP::latefree, B::OP::latefreed or B::OP::attached"
+	* new bool functions B::OP::opt, B::OP::latefree, B::OP::latefreed, B::OP::attached
+ 	* B::PMOP::pmnext unsupported since 5.9
+	* B::PMOP::pmpermflags unsupported since 5.9
+	* B::COP::arybase unsupported since 5.9
+	  
+
+diff -ub  B-Generate-1.10/lib/B/Generate.xs.orig
+--- B-Generate-1.10/lib/B/Generate.xs.orig	2007-07-10 14:28:47.000000000 +0000
++++ B-Generate-1.10/lib/B/Generate.xs	2007-09-09 13:13:12.218750000 +0000
+@@ -10,7 +10,17 @@
+ #undef PL_op_desc
+ #define PL_op_name (get_op_names())
+ #define PL_opargs (get_opargs())
+-#define PL_op_desc (get_op_descs())
++#define PL_op_desc ((char *)get_op_descs())
++#endif
++
++#ifndef PERL_VERSION
++#    include <patchlevel.h>
++#    if !(defined(PERL_VERSION) || (SUBVERSION > 0 && defined(PATCHLEVEL)))
++#        include <could_not_find_Perl_patchlevel.h>
++#    endif
++#    define PERL_REVISION	5
++#    define PERL_VERSION	PATCHLEVEL
++#    define PERL_SUBVERSION	SUBVERSION
+ #endif
+ 
+ static char *svclassnames[] = {
+@@ -246,16 +256,16 @@
+     HE *ent;
+     SV *value;
+     if (!PL_custom_op_names)
+-        return 0;
++        return NULL;
+     
+     /* This is sort of a hv_fetch, backwards */
+     (void)hv_iterinit(PL_custom_op_names);
+     while ((ent = hv_iternext(PL_custom_op_names))) {
+         if (strEQ(SvPV_nolen(hv_iterval(PL_custom_op_names,ent)),name))
+-            return (void*)SvIV(hv_iterkeysv(ent));
++            return INT2PTR(void*,SvIV(hv_iterkeysv(ent)));
+     }
+ 
+-    return 0;
++    return NULL;
+ }
+ #endif
+ 
+@@ -458,7 +468,7 @@
+     OUTPUT:
+         RETVAL
+ 
+-#define OP_desc(o)      PL_op_desc[o->op_type]
++#define OP_desc(o)      (char* const)PL_op_desc[o->op_type]
+ 
+ MODULE = B::Generate    PACKAGE = B::OP         PREFIX = OP_
+ 
+@@ -495,7 +505,7 @@
+         B::OP           o
+     CODE:
+         if (items > 1)
+-            o->op_ppaddr = (void*)SvIV(ST(1));
++            o->op_ppaddr = INT2PTR(void*,SvIV(ST(1)));
+         RETVAL = PTR2IV((void*)(o->op_ppaddr));
+     OUTPUT:
+     RETVAL
+@@ -574,12 +584,62 @@
+ OP_seq(o, ...)
+         B::OP           o
+     CODE:
++#if (PERL_VERSION > 8)
++        if (items > 1)
++	    croak("Cannot modify op_seq! Split into bits: op_opt,op_latefree,op_latefreed,op_attached");
++	RETVAL = o->op_opt || (o->op_latefree >> 1) || (o->op_latefreed >> 2) || (o->op_attached >> 3);
++#else
+         if (items > 1)
+             o->op_seq = (U16)SvIV(ST(1));
+         RETVAL = o->op_seq;
++#endif
++    OUTPUT:
++        RETVAL
++
++#if (PERL_VERSION > 8)
++
++bool
++OP_opt(o, ...)
++        B::OP           o
++    CODE:
++        if (items > 1)
++            o->op_opt = (bool)SvIV(ST(1));
++        RETVAL = o->op_opt;
++    OUTPUT:
++        RETVAL
++
++bool
++OP_latefree(o, ...)
++        B::OP           o
++    CODE:
++        if (items > 1)
++            o->op_latefree = (bool)SvIV(ST(1));
++        RETVAL = o->op_latefree;
++    OUTPUT:
++        RETVAL
++
++bool
++OP_latefreed(o, ...)
++        B::OP           o
++    CODE:
++        if (items > 1)
++            o->op_latefreed = (bool)SvIV(ST(1));
++        RETVAL = o->op_latefreed;
++    OUTPUT:
++        RETVAL
++
++bool
++OP_attached(o, ...)
++        B::OP           o
++    CODE:
++        if (items > 1)
++            o->op_attached = (bool)SvIV(ST(1));
++        RETVAL = o->op_attached;
+     OUTPUT:
+         RETVAL
+ 
++#endif
++
+ U8
+ OP_flags(o, ...)
+         B::OP           o
+@@ -1024,7 +1084,11 @@
+         OP *            root = NO_INIT
+     CODE:
+         ST(0) = sv_newmortal();
++#if (PERL_VERSION > 8)
++        root = o->op_pmreplrootu.op_pmreplroot;
++#else
+         root = o->op_pmreplroot;
++#endif
+         /* OP_PUSHRE stores an SV* instead of an OP* in op_pmreplroot */
+         if (o->op_type == OP_PUSHRE) {
+             sv_setiv(newSVrv(ST(0), root ?
+@@ -1039,9 +1103,15 @@
+ PMOP_pmreplstart(o, ...)
+         B::PMOP         o
+     CODE:
++#if (PERL_VERSION > 8)
++        if (items > 1)
++            o->op_pmstashstartu.op_pmreplstart = SVtoO(ST(1));
++        RETVAL = o->op_pmstashstartu.op_pmreplstart;
++#else
+         if (items > 1)
+             o->op_pmreplstart = SVtoO(ST(1));
+         RETVAL = o->op_pmreplstart;
++#endif
+     OUTPUT:
+         RETVAL
+ 
+@@ -1049,19 +1119,31 @@
+ PMOP_pmnext(o, ...)
+         B::PMOP         o
+     CODE:
++#if (PERL_VERSION > 8)
++	croak("B::PMOP::pmnext unsupported since 5.9");
++#else
+         if (items > 1)
+             o->op_pmnext = (PMOP*)SVtoO(ST(1));
+         RETVAL = o->op_pmnext;
++#endif
+     OUTPUT:
+         RETVAL
+ 
+-U16
++U32
+ PMOP_pmflags(o)
+         B::PMOP         o
+ 
+-U16
++U32
+ PMOP_pmpermflags(o)
+         B::PMOP         o
++    CODE:
++#if (PERL_VERSION > 8)
++	croak("B::PMOP::pmpermflags unsupported since 5.9");
++#else
++        RETVAL = o->op_pmpermflags;
++#endif
++    OUTPUT:
++        RETVAL
+ 
+ void
+ PMOP_precomp(o)
+@@ -1219,7 +1301,11 @@
+ #define COP_cop_seq(o)  o->cop_seq
+ #define COP_arybase(o)  o->cop_arybase
+ #define COP_line(o)     CopLINE(o)
+-#define COP_warnings(o) o->cop_warnings
++#if (PERL_VERSION > 8)
++#	define COP_warnings(o) (SV*)(STRLEN *)o->cop_warnings
++#else
++#	define COP_warnings(o) o->cop_warnings
++#endif
+ 
+ MODULE = B::Generate    PACKAGE = B::COP                PREFIX = COP_
+ 
+@@ -1247,6 +1333,10 @@
+ I32
+ COP_arybase(o)
+         B::COP  o
++    CODE:
++#if (PERL_VERSION > 8)
++    croak("B::COP::arybase unsupported since 5.9");
++#endif
+ 
+ U16
+ COP_line(o)
+@@ -1373,6 +1463,6 @@
+     specialsv_list[1] = &PL_sv_undef;
+     specialsv_list[2] = &PL_sv_yes;
+     specialsv_list[3] = &PL_sv_no;
+-    specialsv_list[4] = pWARN_ALL;
+-    specialsv_list[5] = pWARN_NONE;
+-    specialsv_list[6] = pWARN_STD;
++    specialsv_list[4] = (SV*)pWARN_ALL;
++    specialsv_list[5] = (SV*)pWARN_NONE;
++    specialsv_list[6] = (SV*)pWARN_STD;

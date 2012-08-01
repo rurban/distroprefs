@@ -1,0 +1,72 @@
+difforig Mac-SystemDirectory-0.06
+
+diff -u  Mac-SystemDirectory-0.06/Makefile.PL.orig
+--- Mac-SystemDirectory-0.06/Makefile.PL.orig	2011-02-02 03:39:05.000000000 -0600
++++ Mac-SystemDirectory-0.06/Makefile.PL	2011-12-28 11:11:46.000000000 -0600
+@@ -1,18 +1,55 @@
+-use inc::Module::Install;
++use strict;
++use warnings;
++
++use ExtUtils::MakeMaker 6.17; # perl-5.6.2
+ use Config;
++require 5.006;
+ 
+ ($^O eq 'darwin')
+   || die("OS unsupported\n");
+ 
+-all_from        'lib/Mac/SystemDirectory.pm';
+-perl_version    '5.006';
+-repository      'http://svn.ali.as/cpan/trunk/Mac-SystemDirectory/';
+-bugtracker      'http://rt.cpan.org/Public/Dist/Display.html?Name=Mac-SystemDirectory';
+-test_requires   'Test::More' => '0.86';
+-makemaker_args  LDDLFLAGS => $Config{lddlflags} . ' -lobjc -framework CoreFoundation -framework Foundation';
+-makemaker_args  DEFINE => '-ObjC -DHAS_BOOL';
+-
+-requires_external_cc;
++WriteMakefile
++  (
++   "NAME" => "Mac::SystemDirectory",
++   "VERSION_FROM" => "lib/Mac/SystemDirectory.pm",
++   "AUTHOR" => "Reini Urban <rurban\@cpanel.net>",
++   "LICENSE" => "perl",
++   "PREREQ_PM" =>  {
++		    'Test::More'   => "0.86",
++		   },
++   "DEFINE" => '-DHAS_BOOL',
++   "LDDLFLAGS" => $Config{lddlflags} . ' -lobjc -framework CoreFoundation -framework Foundation',
++   "SIGN" => 1,
++   ($ExtUtils::MakeMaker::VERSION gt '6.46' ?
++    ('META_MERGE'  =>
++     { 
++      resources =>
++      {
++	license     => 'http://dev.perl.org/licenses/',
++	bugtracker  => 'RT',
++	repository  => 'http://svn.ali.as/cpan/trunk/Mac-SystemDirectory/',
++      }}) : ()),
++  );
+ 
+-WriteAll;
++package MY;
+ 
++sub xs_c {
++  my $s = shift->SUPER::xs_c(@_);
++  $s .= "\n\t\$(MV) \$*.c \$*.m";
++  return $s;
++}
++sub c_o {
++  my $s = shift->SUPER::c_o(@_);
++  $s =~ s/\*\.c/\*.m/g;
++  return $s;
++}
++sub xs_o {
++  my $s = shift->SUPER::xs_o(@_);
++  $s =~ s/\*\.c/\*.m/g;
++  return $s;
++}
++sub special_targets { 
++  my $s = shift->SUPER::special_targets(@_);
++  $s =~ s/\.xs \.c/.xs .m .c/;
++  return $s;
++}

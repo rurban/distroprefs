@@ -1,0 +1,14 @@
+diffbk /usr/lib/perl5/site_perl/5.10/Pod/S5.pm
+
+diff -u /usr/lib/perl5/site_perl/5.10/Pod/S5.pm~ /usr/lib/perl5/site_perl/5.10/Pod/S5.pm
+--- /usr/lib/perl5/site_perl/5.10/Pod/S5.pm~	2010-02-01 17:04:07.859375000 +0100
++++ /usr/lib/perl5/site_perl/5.10/Pod/S5.pm	2010-02-05 13:23:49.890625000 +0100
+@@ -519,7 +519,7 @@
+ 						     substitutions => $substitutions,
+ 						     format_table => \%highlite
+ 						     );
+-	$s5 .= "<tt>".$hl->highlightText($text)."</tt>";
++	$s5 .= "<code>".$hl->highlightText($text)."</code>";
+       };
+       if ($@) {
+ 	warn qq(WARNING: Could not render text input for syntax $lang: $@, using TEXT mode.\n);

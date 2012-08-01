@@ -1,0 +1,17 @@
+difforig 
+
+diff -u  ./lib/Net/DNS/Resolver.pm.orig
+--- ./lib/Net/DNS/Resolver.pm.orig	2009-01-26 18:31:42.000000000 +0100
++++ ./lib/Net/DNS/Resolver.pm	2010-09-01 01:26:43.830500000 +0200
+@@ -12,10 +12,7 @@
+ 	if ($^O eq 'MSWin32') {
+ 		require Net::DNS::Resolver::Win32;
+ 		@ISA = qw(Net::DNS::Resolver::Win32);
+-	} elsif ($^O eq 'cygwin') {
+-		require Net::DNS::Resolver::Cygwin;
+-		@ISA = qw(Net::DNS::Resolver::Cygwin);
+-	} else {   
++	} else {
+ 		require Net::DNS::Resolver::UNIX;
+ 		@ISA = qw(Net::DNS::Resolver::UNIX);
+ 	}

@@ -1,0 +1,309 @@
+difforig Makefile.PL lib/B/TypeCheck.pm
+
+2008-03-03  Reini Urban <rurban@x-ray.at>
+
+diff -ub Makefile.PL.orig Makefile.PL
+--- Makefile.PL.orig	2005-08-20 01:13:10.000000000 +0000
++++ Makefile.PL	2008-03-03 00:37:28.531250000 +0000
+@@ -2,15 +2,56 @@
+ use warnings;
+ use ExtUtils::MakeMaker;
+ 
++my $h2ph_pre = File::Spec->catdir("lib","_h2ph_pre.ph");
++my $opnames_ph = File::Spec->catdir("lib","opnames.ph");
++my $h2ph_blib = File::Spec->catdir("blib","lib","_h2ph_pre.ph");
++my $opnames_blib = File::Spec->catdir("blib","lib","opnames.ph");
++
+ WriteMakefile(
+     NAME                => 'Devel::TypeCheck',
+     AUTHOR              => 'Gary Jackson <bargle@umiacs.umd.edu>',
+     VERSION_FROM        => 'lib/Devel/TypeCheck.pm',
+     ABSTRACT_FROM       => 'lib/Devel/TypeCheck.pm',
+-    PL_FILES            => {},
++    #PM		        => { $h2ph_pre => '$(INST_LIB)/_h2ph_pre.ph',
++    #			     $opnames_ph => '$(INST_LIB)/opnames.ph'
++    #			   },
+     PREREQ_PM => {
+         'Test::More' => 0,
+     },
+     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+-    clean               => { FILES => 'Devel-TypeCheck-*' },
++    clean               => { FILES => 'Devel-TypeCheck-* lib/*.ph' },
+ );
++
++package MY;
++
++sub depend {
++  use Config;
++  use Cwd;
++  my $lib = File::Spec->catdir(getcwd(),"lib");
++  my $CORE = File::Spec->catdir($Config{archlibexp},"CORE");
++  my $stupid = File::Spec->catdir($lib,$Config{archlibexp},"CORE","opnames.ph");
++  my $opnames_dep = File::Spec->catdir($CORE,"opnames.h");
++  my $h2ph = File::Spec->catdir($Config{installbin}, "h2ph");
++  my $h2ph_pre = File::Spec->catdir("lib", "_h2ph_pre.ph");
++  "
++$h2ph_pre : $opnames_ph
++
++$opnames_ph : $opnames_dep Makefile
++	\$(RM) $h2ph_pre
++	\$(FULLPERL) $h2ph -d lib $opnames_dep
++	\$(MV) $stupid lib
++	\$(RM_RF) $stupid
++
++$h2ph_blib : $h2ph_pre
++	\$(CP) \$< \$@
++
++$opnames_blib : $opnames_ph
++	\$(CP) \$< \$@
++"
++}
++
++sub postamble {
++"
++config :: $h2ph_blib $opnames_blib
++";
++}
+diff -ub lib/B/TypeCheck.pm.orig lib/B/TypeCheck.pm
+--- lib/B/TypeCheck.pm.orig	2006-04-10 21:14:04.000000000 +0000
++++ lib/B/TypeCheck.pm	2008-03-03 00:50:51.703125000 +0000
+@@ -105,7 +105,7 @@
+ 	}
+ 
+     }
+-    
++
+ 	if (!($mainRoot || $all || $setModule || $setCvname)) {
+ 	    warn "Defaulting to -main\n";
+ 	    $mainRoot = TRUE;
+@@ -251,11 +251,11 @@
+ 
+     # If the operator has kids, the type of the NULL op is the type of the last kid
+     # Otherwise, this operator is untyped
+-    
++
+     my $result;
+     my @returns;
+     my @results;
+-    
++
+     if ($op->flags & B::OPf_KIDS()) {
+ 	for (my $kid = $op->first(); $$kid; $kid = $kid->sibling()) {
+ 	    # Type the kid
+@@ -265,14 +265,14 @@
+ 		push(@results, $s);
+ 		$result = $s;
+ 	    }
+-    
++
+ 	    # Set up unify of return values from down in the tree
+ 	    if (defined($r)) {
+ 		push(@returns, $r);
+ 	    }
+ 	}
+     }
+-    
++
+     if ($context == LIST()) {
+ 	$result = smash(\@results, $env);
+     }
+@@ -289,23 +289,23 @@
+ 
+     # If the operator has kids, the type of the NULL op is the type of the last kid
+     # Otherwise, this operator is untyped
+-    
++
+     my @results;
+     my @returns;
+-    
++
+     if ($op->flags & B::OPf_KIDS()) {
+ 	for (my $kid = $op->first(); $$kid; $kid = $kid->sibling()) {
+ 	    # Type the kid
+ 	    my ($s, $r) = typeOp($kid, $pad2type, $env, $cv, $context);
+-	    
++
+ 	    # Overwrite the result
+ 	    push(@results, $s) if (defined($s));
+-	    
++
+ 	    # Set up unify of return values from down in the tree
+ 	    push(@returns, $r) if (defined($r));
+ 	}
+     }
+-    
++
+     my $result;
+     if ($context == LIST()) {
+ 	$result = smash(\@results, $env);
+@@ -326,11 +326,11 @@
+ 
+     # If the operator has kids, the type of the NULL op is the type of the last kid
+     # Otherwise, this operator is untyped
+-    
++
+     my $result;
+     my @returns;
+     my @results;
+-    
++
+     if ($op->flags & B::OPf_KIDS()) {
+ 	my $start = $op->first();
+ 	while ($skip != 0) {
+@@ -346,14 +346,14 @@
+ 		push(@results, $s);
+ 		$result = $s;
+ 	    }
+-    
++
+ 	    # Set up unify of return values from down in the tree
+ 	    if (defined($r)) {
+ 		push(@returns, $r);
+ 	    }
+ 	}
+     }
+-    
++
+     if ($context == LIST()) {
+ 	$result = smash(\@results, $env);
+     }
+@@ -376,7 +376,7 @@
+ 
+ sub typeProto {
+     my ($op, $pad2type, $env, $cv, @proto) = @_;
+-    
++
+     my $index = 0;
+     my @rets;
+     if ($op->flags & B::OPf_KIDS()) {
+@@ -409,7 +409,7 @@
+ 
+ sub typeProtoOp {
+     my ($op, $pad2type, $env, $cv, @proto) = @_;
+-    
++
+     my $index = 0;
+     my @rets;
+     if ($op->flags & B::OPf_KIDS()) {
+@@ -804,7 +804,7 @@
+ 	    if (defined($realResult)) {
+ 		$realReturn = $realResult;
+ 	    }
+-	}	    
++	}
+ 
+     } elsif ($t == OP_LEAVE()) {
+ 	
+@@ -894,7 +894,7 @@
+ 	
+ 	($realResult, $realReturn) = ($fnType->derefReturn, myUnify($env, @rets));
+ 	
+-    } elsif ($t == OP_ENTEREVAL() || 
++    } elsif ($t == OP_ENTEREVAL() ||
+ 	     $t == OP_DOFILE()) {
+ 	
+ 	# Make sure we're passing it a PV
+@@ -923,7 +923,7 @@
+ 	    myUnify($env, $pad, $t->derefHomogeneous);
+ 	} else {
+ 	    my ($t0, $r0) = typeOp($op->first()->sibling()->sibling(), $pad2type, $env, $cv, SCALAR());
+-	    
++	
+ 	    # project the scalar for the reference
+ 
+ 	    $t0 = $t0->derefKappa();
+@@ -988,7 +988,7 @@
+ 
+     } elsif ($t == OP_RAND()) {
+ 	# Operand is optional
+-       
++
+ 	my $class = B::class($op);
+ 
+ 	if ($class eq "UNOP") {
+@@ -1169,7 +1169,7 @@
+ 	} elsif ($const eq "CODE") {
+ 	    ($realResult, $realReturn) = ($env->genRho($ft->derefZeta), $r);
+ 	} elsif ($const eq "GLOB") {
+-	    # YYY I'm pretty sure a gelem(glob0) -> glob0 
++	    # YYY I'm pretty sure a gelem(glob0) -> glob0
+ 	    ($realResult, $realReturn) = ($env->genRho($ft), $r);
+ 	} else {
+ 	    die("Unknown *foo{THING} syntax on $const");
+@@ -1404,7 +1404,7 @@
+ 	}
+ 
+ 	($realResult, $realReturn) = ($ary->derefIndex($elt, $env), undef);
+-    
++
+     } elsif ($t == OP_AELEM()) {
+ 	my ($ft, $fr) = typeOp($op->first(), $pad2type, $env, $cv, SCALAR());
+ 	my ($lt, $lr) = typeOp($op->last, $pad2type, $env, $cv, SCALAR());
+@@ -1478,11 +1478,11 @@
+ 
+ 	# Resulting type is a generic KAPPA
+ 	($realResult, $realReturn) = ($t, undef);
+-       
++
+     } elsif ($t == OP_SASSIGN()) {
+ 	
+ 	if (B::class($op) ne "UNOP") {
+-	    
++	
+ 	    # At this point the type check is flow insensitive, and we're
+ 	    # not doing any subtyping.  Thus, all we have to do is unify
+ 	    # both sides with each other.
+@@ -1529,7 +1529,7 @@
+     } elsif ($t == OP_SPLIT()) {
+ 
+ 	# First is always the pushre pmop, second is the string, and
+-	# third is the count.  
++	# third is the count.
+ 	if ($context == SCALAR() &&
+ 	    !defined($op->first()->pmreplroot())) {
+ 	    warn("split in a scalar context is deprecated");
+@@ -1607,7 +1607,7 @@
+ 		push(@rets, $r) if ($r);
+ 		$cur = $op->last;
+ 	    }
+-	    
++	
+ 	    ($t, $r) = typeOp($cur, $pad2type, $env, $cv, SCALAR());
+ 	}
+ 
+@@ -1624,7 +1624,7 @@
+ 
+     } elsif ($t == OP_NEXTSTATE() ||
+ 	     $t == OP_DBSTATE() ||
+-	     $t == OP_SETSTATE()) {
++	     ($] < 5.011 && $t == OP_SETSTATE())) {
+ 
+ 	# Has no effect on typing
+ 
+@@ -2192,7 +2192,7 @@
+     } elsif ($t == OP_REVERSE()) {
+ 
+ 	my ($t, $r) = typeOpChildren($op, $pad2type, $env, $cv, LIST());
+-	my $list;  
++	my $list;
+ 
+ 	if ($context == SCALAR()) {
+ 	    $list = $env->genOmicron($PV);
+@@ -2590,7 +2590,7 @@
+ 	    if (defined($s)) {
+ 		push(@results, $s);
+ 	    }
+-    
++
+ 	    # Set up unify of return values from down in the tree
+ 	    if (defined($r)) {
+ 		push(@returns, $r);
+@@ -2800,7 +2800,7 @@
+ @<<<<<<<<<<<<<<<<<< @*
+ $i,                 $t
+ .
+-    
++
+     for $i (sort($glob2type->symbols)) {
+         $t = myPrint($glob2type->get($i, $env), $env);
+         write STDOUT;

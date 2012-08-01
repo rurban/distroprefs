@@ -1,0 +1,14 @@
+diffbk Compress-Bzip2-2.09-ah0mmu
+
+diff -u Compress-Bzip2-2.09-ah0mmu/t/041-error.t~ Compress-Bzip2-2.09-ah0mmu/t/041-error.t
+--- Compress-Bzip2-2.09-ah0mmu/t/041-error.t~	2005-08-09 19:31:22.000000000 +0200
++++ Compress-Bzip2-2.09-ah0mmu/t/041-error.t	2009-04-14 08:51:26.515625000 +0200
+@@ -53,7 +53,7 @@
+ chmod( 0000, "$PREFIX-protected.bz2" ) or die;
+ 
+ SKIP: {
+-  skip "because running as root", 2 if $> == 0;
++  skip "because running as root", 2 if $> == 0 or $^O =~ /cygwin|MSWin32/;
+ 
+   $d = Compress::Bzip2->new( -verbosity => $debugf ? 4 : 0, -blockSize100k => 1 );
+   $res = $d->bzopen( "$PREFIX-protected.bz2", "w" );

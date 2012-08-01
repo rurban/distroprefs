@@ -1,0 +1,22 @@
+[CPAN #74251] defined(@array) is deprecated under Perl 5.15.7
+
+--- Module-Find-0.10/Find.old	2010-02-26 10:40:55.000000000 -0500
++++ Module-Find-0.10/Find.pm	2012-01-22 19:16:47.000000000 -0500
+@@ -7,7 +7,7 @@
+ use File::Spec;
+ use File::Find;
+ 
+-our $VERSION = '0.10';
++our $VERSION = '0.10_01';
+ 
+ our $basedir = undef;
+ our @results = ();
+@@ -179,7 +179,7 @@
+     my $dir = File::Spec->catdir(split(/::/, $category));
+ 
+     my @dirs;
+-    if (defined @Module::Find::ModuleDirs) {
++    if (@Module::Find::ModuleDirs) {
+         @dirs = map { File::Spec->catdir($_, $dir) }
+             @Module::Find::ModuleDirs;
+     } else {

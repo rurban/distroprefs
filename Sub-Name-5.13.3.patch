@@ -1,0 +1,30 @@
+Sub::Name broken in blead since 5.13.3
+https://rt.cpan.org/Public/Bug/Display.html?id=59558
+
+diff -u  ./Name.xs.orig
+--- ./Name.xs.orig	2008-07-18 15:23:41.000000000 +0200
++++ ./Name.xs	2010-07-20 20:11:54.540875000 +0200
+@@ -41,7 +41,12 @@
+ 	else if (!SvOK(sub))
+ 		croak(PL_no_usym, "a subroutine");
+ 	else if (PL_op->op_private & HINT_STRICT_REFS)
++#if PERL_VERSION < 13
+ 		croak(PL_no_symref, SvPV_nolen(sub), "a subroutine");
++#else
++		croak("Can't use string (\"%.32s\") as %s ref while \"strict refs\" in use", 
++		      SvPV_nolen(sub), "a subroutine");
++#endif
+ 	else if ((gv = gv_fetchpv(SvPV_nolen(sub), FALSE, SVt_PVCV)))
+ 		cv = GvCVu(gv);
+ 	if (!cv)
+@@ -87,5 +92,9 @@
+ 		mg->mg_flags |= MGf_REFCOUNTED;
+ 		mg->mg_obj = (SV *) gv;
+ 	}
+-	CvGV(cv) = gv;
++#ifndef CvGV_set
++        CvGV(cv) = gv;
++#else
++        CvGV_set(cv,gv);
++#endif
+ 	PUSHs(sub);

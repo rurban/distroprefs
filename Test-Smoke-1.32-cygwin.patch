@@ -1,0 +1,26 @@
+difforig Test-Smoke-1.32-sfs_HO
+
+2008-05-03  Reini Urban <rurban@x-ray.at>
+
+diff -ub  Test-Smoke-1.32-sfs_HO/lib/Test/Smoke/SysInfo.pm.orig
+--- Test-Smoke-1.32-sfs_HO/lib/Test/Smoke/SysInfo.pm.orig	2008-05-03 00:26:09.000000000 +0000
++++ Test-Smoke-1.32-sfs_HO/lib/Test/Smoke/SysInfo.pm	2008-05-03 14:58:29.906250000 +0000
+@@ -61,14 +61,15 @@
+ 
+         $chk_os =~ /hp-?ux/i     && return bless HPUX(),    $class;
+ 
+-        $chk_os =~ /linux/i      && return bless Linux(),   $class;
++        $chk_os =~ /linux|cygwin/i
++	  			 && return bless Linux(),   $class;
+ 
+         $chk_os =~ /irix/i       && return bless IRIX(),    $class;
+ 
+-        $chk_os =~ /solaris|sunos|osf/i 
++        $chk_os =~ /solaris|sunos|osf/i
+                                  && return bless Solaris(), $class;
+ 
+-        $chk_os =~ /cygwin|mswin32|windows/i
++        $chk_os =~ /mswin32|windows/i
+                                  && return bless Windows(), $class;
+ 
+         $chk_os =~ /VMS/         && return bless VMS(),     $class;

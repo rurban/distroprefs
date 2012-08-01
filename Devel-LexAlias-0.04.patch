@@ -1,0 +1,12 @@
+[CPAN #74862] Fixed assertion in DEBUGGING perls
+diff -bu Devel-LexAlias-0.04/LexAlias.xs~ Devel-LexAlias-0.04/LexAlias.xs
+--- Devel-LexAlias-0.04/LexAlias.xs~	2012-02-10 15:22:41.855499430 -0600
++++ Devel-LexAlias-0.04/LexAlias.xs	2012-02-10 15:31:03.806741489 -0600
+@@ -33,6 +33,7 @@
+                     SV* old_sv = (SV*) av_fetch(padv, i, 0);
+                     av_store(padv, i, new_sv);
+                     SvREFCNT_inc(new_sv);
++		    SvPADMY_on(new_sv);
+                 }
+             }
+         }

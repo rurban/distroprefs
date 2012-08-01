@@ -1,0 +1,36 @@
+difforig Devel-Size-0.77
+
+diff -u  Devel-Size-0.77/CHANGES.orig
+--- Devel-Size-0.77/CHANGES.orig	2012-02-09 17:35:47.988927215 -0600
++++ Devel-Size-0.77/CHANGES	2012-02-09 17:36:45.224378224 -0600
+@@ -1,5 +1,8 @@
+ Revision history for Perl extension Devel::Size.
+ 
++0.78 2012-02-09 16:27:55 rurban
++ * 5.15.6 CV shares now 4 IV and a pointer with GvGP [CPAN #73998] (? rurban thinks so)
++
+ 0.77 2011-05-16 nicholas
+  [no changes]
+ 
+diff -u  Devel-Size-0.77/t/globs.t.orig
+--- Devel-Size-0.77/t/globs.t.orig	2012-02-09 17:35:21.901177419 -0600
++++ Devel-Size-0.77/t/globs.t	2012-02-09 17:23:57.803732742 -0600
+@@ -129,9 +129,15 @@
+ 	cmp_ok($gv_now_total_size, '>', $gv_was_total_size,
+ 	       "GV total size grew for $type");
+     } else {
+-	is($cv_now_size, $cv_was_size + $new_thing_size,
+-	   "CV grew by expected amount for $type")
+-	    	    unless $Config{useithreads};
++        unless ($Config{useithreads}) {
++            diag "$cv_now_size, $cv_was_size, $new_thing_size" if $type eq 'SCALAR';
++	    if ($type eq 'SCALAR' and $] > 5.015006) {
++	      $cv_now_size -= $Config{ptrsize}*5 ;
++	      $cv_now_size -= 4 if $Config{ptrsize} == 4 and $Config{ivsize} == 8;
++	    }
++	    is($cv_now_size, $cv_was_size + $new_thing_size,
++	       "CV grew by expected amount for $type")
++        }
+ 	is($io_now_size, $io_was_size + $new_thing_size,
+ 	   "IO total_size grew by expected amount for $type");
+ 	is($gv_now_size, $gv_was_size + $new_thing_size,

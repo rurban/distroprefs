@@ -1,0 +1,47 @@
+difforig Text-Diff-0.35
+
+2007-10-07  Reini Urban <rurban@x-ray.at>
+
+diff -ub  Text-Diff-0.35/lib/Text/Diff.pm.orig
+--- Text-Diff-0.35/lib/Text/Diff.pm.orig	2002-08-27 17:53:13.000000000 +0000
++++ Text-Diff-0.35/lib/Text/Diff.pm	2007-10-07 11:27:03.843750000 +0000
+@@ -1,6 +1,6 @@
+ package Text::Diff;
+ 
+-$VERSION = 0.35;
++$VERSION = "0.35_01";
+ 
+ =head1 NAME
+ 
+diff -ub  Text-Diff-0.35/t/general.t.orig
+--- Text-Diff-0.35/t/general.t.orig	2001-12-16 12:42:15.000000000 +0000
++++ Text-Diff-0.35/t/general.t	2007-10-07 11:23:49.859375000 +0000
+@@ -126,8 +126,8 @@
+         warn "# diff options: $diff_opts\n" ;
+         warn "# my options: $Diff_opts\n" ;
+         ## Merge the outputs using A::D
+-        my @E = split /^/g, $expect ;
+-        my @G = split /^/g, $output ;
++        my @E = split /^/, $expect ;
++        my @G = split /^/, $output ;
+         my $w = length "Expected" ;
+         for ( @E, @G ) {
+             s/\n/\\n/g ;
+diff -ub  Text-Diff-0.35/t/outputs.t.orig
+--- Text-Diff-0.35/t/outputs.t.orig	2002-08-27 17:52:50.000000000 +0000
++++ Text-Diff-0.35/t/outputs.t	2007-10-07 11:22:33.609375000 +0000
+@@ -30,11 +30,11 @@
+ 
+ sub {
+     require IO::File ;
+-    my $fh = IO::File->new( ">output.t.foo" ) ;
++    my $fh = IO::File->new( ">output.t.foo2" ) ;
+     _d $fh ;
+     $fh = undef ;
+-    ok slurp "output.t.foo", $expected ;
+-    unlink "output.t.foo" or warn $! ;
++    ok slurp "output.t.foo2", $expected ;
++    unlink "output.t.foo2" or warn $! ;
+ },
+ 
+ sub { ok 0 < index( diff( \"\n", \"", { STYLE => "Table" } ), "\\n" ) },

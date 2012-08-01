@@ -1,0 +1,18 @@
+difforig Proc-ProcessTable-0.45
+
+diff -u  Proc-ProcessTable-0.45/os/cygwin.c.orig
+--- Proc-ProcessTable-0.45/os/cygwin.c.orig	2006-06-29 06:05:54.000000000 +0200
++++ Proc-ProcessTable-0.45/os/cygwin.c	2011-04-04 17:42:51.891750000 +0200
+@@ -208,8 +208,11 @@
+ 	pstate = "ttyin";
+       else if (p->process_state & PID_TTYOU)
+ 	pstate = "ttyout";
+-
++#ifdef PID_ORPHANED
+       if (p->process_state & (PID_ORPHANED | PID_EXITED))
++#else
++      if (p->process_state & PID_EXITED)
++#endif
+         strcpy (pname, "<defunct>");
+       else if (p->ppid)
+ 	{

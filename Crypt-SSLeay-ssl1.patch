@@ -1,0 +1,38 @@
+diff -bu Crypt-SSLeay/SSLeay.xs~ Crypt-SSLeay/SSLeay.xs
+--- Crypt-SSLeay/SSLeay.xs~	2011-10-26 16:06:12.676126071 -0500
++++ Crypt-SSLeay/SSLeay.xs	2011-10-26 16:22:27.306989509 -0500
+@@ -31,14 +31,12 @@
+ 
+ 
+ /* moved this out to Makefile.PL so user can 
+- * see value being used printed during build
+- * #if SSLEAY_VERSION_NUMBER >= 0x0900
+- * #define CRYPT_SSL_CLIENT_METHOD SSLv3_client_method()
+- * #else
+- * #define CRYPT_SSL_CLIENT_METHOD SSLv2_client_method()
+- * #endif
+- */
+-
++ * see value being used printed during build */
++#if SSLEAY_VERSION_NUMBER >= 0x0900
++#define CRYPT_SSL_CLIENT_METHOD SSLv3_client_method()
++#else
++#define CRYPT_SSL_CLIENT_METHOD SSLv2_client_method()
++#endif
+ 
+ static void InfoCallback(const SSL *s,int where,int ret)
+     {
+@@ -128,10 +126,13 @@
+         else if(ssl_version == 3) {
+             ctx = SSL_CTX_new(SSLv3_client_method());
+         }
++	/* openssl-1.0.x does not support that anymore */
++#if SSLEAY_VERSION_NUMBER < 10000000
+         else {
+             /* v2 is the default */
+             ctx = SSL_CTX_new(SSLv2_client_method());
+         }                
++#endif  
+         SSL_CTX_set_options(ctx,SSL_OP_ALL|0);
+         SSL_CTX_set_default_verify_paths(ctx);
+         SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, NULL);

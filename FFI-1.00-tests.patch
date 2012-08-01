@@ -1,0 +1,55 @@
+--- FFI-1.00/t/Support.pm.orig	2000-10-31 14:25:42.000000000 +0000
++++ FFI-1.00/t/Support.pm	2005-09-24 11:37:11.750000000 +0000
+@@ -39,8 +39,9 @@
+ # Get the libc and libm libraries
+ 
+ use vars qw($libc $libm);
+-if ($^O eq 'MSWin32') {
+-    $libc = load("MSVCRT40") || load("MSVCRT20");
++if ($^O =~ /(MSWin32|mingw)/) {
++    $libc = load("MSVCRT80") || load("MSVCRT71") || load("MSVCRT70") ||
++            load("MSVCRT60") || load("MSVCRT40") || load("MSVCRT20");
+     $libm = $libc;
+ }
+ else {
+@@ -51,7 +52,11 @@
+             # unintelligible to dlopen().
+             $libc = load("libc.so.6");
+         }
++        if ($^O =~ /cygwin/i) {
++            $libc = load("cygwin1");
++	    $libm = $libc;
++        }
+     }
+     if (!$libc) {
+         die "Can't load -lc: ", DynaLoader::dl_error(), "\nGiving up.\n";
+--- FFI-1.00/t/win32.t.orig	1999-10-01 15:32:25.000000000 +0000
++++ FFI-1.00/t/win32.t	2005-09-24 12:29:36.781250000 +0000
+@@ -1,4 +1,4 @@
+-if ($^O ne "MSWin32") {
++if ($^O != /(MSWin32|mingw|cygwin)/) {
+     print "1..0\n";
+     exit 0;
+ }
+@@ -34,7 +34,8 @@
+ $n = $GetCurrentDirectory->(200, $d);
+ $d = substr($d, 0, $n);
+ 
+-($cwd = cwd) =~ s#/#\\#g;
++$cwd = cwd; #) =~ s#/#\\#g;
++if ($^O eq 'cygwin') { $cwd = `cygpath -w $cwd`; chomp $cwd; }
+ $d eq $cwd or print "not ";
+ print "ok 7\n";
+ 
+@@ -52,6 +53,11 @@
+ $d = ' ' x 200;
+ $n = $GetModuleFileName->($h, $d, 200);
+ $d = substr($d, 0, $n);
++if ($d and ($^O eq 'cygwin')) {
++  $d = `cygpath -au "$d"`;
++  chomp $d;
++  $d =~ s/\.exe$//;
++}
+ print "not " unless $d eq $^X;
+ print "ok 10\n";
+

@@ -1,0 +1,13 @@
+cygwin perl5.8.6 Win32::GetShortPathName apparently is broken
+
+--- ./t/2-pp.t.orig	2005-05-28 20:48:29.000000000 +0000
++++ ./t/2-pp.t	2005-06-11 10:42:03.001250000 +0000
+@@ -50,7 +50,7 @@
+     exit;
+ }
+ 
+-if (defined &Win32::GetShortPathName) {
++if (defined &Win32::GetShortPathName and $^O ne 'cygwin') {
+     $^X = lc(Win32::GetShortPathName($^X));
+     $startperl = lc(Win32::GetShortPathName($startperl));
+ }

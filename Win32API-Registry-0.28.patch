@@ -1,0 +1,14 @@
+--- Win32API-Registry-0.28/Makefile.PL.orig	2007-01-28 08:36:21.000000000 +0100
++++ Win32API-Registry-0.28/Makefile.PL	2007-12-24 16:32:27.781250000 +0100
+@@ -134,9 +134,9 @@
+ 
+     push @m, "
+ clean ::
+-    $self->{RM_F} @clean\n"   if  @clean;
++	$self->{RM_F} @clean\n"   if  @clean;
+     push @m, "
+ realclean ::
+-    $self->{RM_F} @realclean\n"   if  @realclean;
++	$self->{RM_F} @realclean\n"   if  @realclean;
+     return join('',@m);
+ }

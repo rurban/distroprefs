@@ -1,0 +1,5 @@
+---
+match:
+  distribution: "YAML-0.80"
+patches:
+  - "../../YAML-0.80.patch"

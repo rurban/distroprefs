@@ -1,0 +1,92 @@
+diff --git a/ChangeLog b/ChangeLog
+index 375e7cb..05b52d1 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,3 +1,22 @@
++2012-06-06 rurban
++
++	git repo at https://github.com/rurban/Socket6
++
++	* Socket6.pm: Bump version number to 0.23_01.
++
++	* Makefile.PL: Fixed [cpan #77665] pass perl cc and ccflags to configure
++
++	Submitted by:	rurban@cpan.org
++
++	* Makefile.PL (configure_mswin32): Fixed [cpan #65710]
++	undefined ref to inet_ntop,inet_pton on Windows XP.
++
++	Submitted by:	APOCAL@cpan.org
++
++	* t/use.t: Fixed [cpan #75211] test redefinition warnings
++
++	Submitted by:	Manoj Kumar <mkmetw@hotmail.com>
++
+ 2008-11-02  Hajimu UMEMOTO  <ume@mahoroba.org>
+ 
+ 	* Socket6.pm: Bump version number to 0.23.
+diff --git a/Makefile.PL b/Makefile.PL
+index 9547afc..b7e1097 100644
+--- a/Makefile.PL
++++ b/Makefile.PL
+@@ -28,12 +28,13 @@
+ # $Id: Makefile.PL,v 1.8 2008/11/01 19:01:10 ume Exp $
+ 
+ use ExtUtils::MakeMaker;
++use Config;
+ 
+ if ($^O eq 'MSWin32') {
+     configure_mswin32();
+ } else {
+     my $path_perl = ($^X =~ m!^/!o) ? $^X : `which $^X`;
+-    my $cmd = './configure';
++    my $cmd = "CC='$Config{cc}' CFLAGS='$Config{ccflags}' ./configure";
+     $cmd .= " --with-perl=$path_perl" if ($path_perl);
+     system($cmd);
+ }
+@@ -53,8 +54,6 @@ WriteMakefile(
+ 
+ sub configure_mswin32
+ {
+-    require Config;
+-
+     open(IN, '<config.pl.in') || die "Failed to open file 'config.pl.in' [$!]";
+     open(OUT, '>config.pl')   || die "Failed to open file 'config.pl' [$!]";
+ 
+@@ -74,6 +73,10 @@ sub configure_mswin32
+     open(IN, '<config.h.in') || die "Failed to open file 'config.h.in' [$!]";
+     open(OUT, '>config.h')   || die "Failed to open file 'config.h' [$!]";
+ 
++    print(OUT "#ifndef NTDDI_LONGHORN\n");
++    print(OUT "#  define NTDDI_LONGHORN 0x06000000\n");
++    print(OUT "#endif\n");
++
+     while (<IN>) {
+ 	if (/HAVE_PL_SV_UNDEF/) {
+ 	    print(OUT "#define HAVE_PL_SV_UNDEF 1\n");
+diff --git a/Socket6.pm b/Socket6.pm
+index c92bf56..adaf8ec 100644
+--- a/Socket6.pm
++++ b/Socket6.pm
+@@ -37,7 +37,7 @@ package Socket6;
+ 
+ use strict;
+ use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS $AUTOLOAD);
+-$VERSION = "0.23";
++$VERSION = "0.23_01";
+ 
+ =head1 NAME
+ 
+diff --git a/t/use.t b/t/use.t
+index 7df9e58..6daf9ff 100644
+--- a/t/use.t
++++ b/t/use.t
+@@ -31,7 +31,7 @@
+ 
+ use strict;
+ use Test;
+-use Socket;
++use Socket qw(AF_INET SOCK_STREAM);
+ BEGIN { plan tests => 3 }
+ 
+ use Socket6; ok(1);

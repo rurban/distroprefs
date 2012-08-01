@@ -1,0 +1,48 @@
+difforig DBD-SQLite-1.25
+
+diff -u  DBD-SQLite-1.25/sqlite3.c.orig
+--- DBD-SQLite-1.25/sqlite3.c.orig	2009-04-23 12:12:04.000000000 +0200
++++ DBD-SQLite-1.25/sqlite3.c	2009-08-20 13:10:19.812500000 +0200
+@@ -25938,6 +25938,7 @@
+ 
+ #ifdef __CYGWIN__
+ # include <sys/cygwin.h>
++# include <cygwin/version.h>
+ #endif
+ 
+ /*
+@@ -27630,9 +27631,34 @@
+   
+ #if defined(__CYGWIN__)
+   UNUSED_PARAMETER(nFull);
++#if (CYGWIN_VERSION_API_MINOR >= 181)
++  int nByte;
++  char *zOut;
++  WCHAR *zConverted;
++  nByte = nFull + 260 + 1001; /* from the cygwin sources */
++  zConverted = malloc( nByte*sizeof(zConverted[0]) );
++  if( zConverted==0 ){
++    return SQLITE_NOMEM;
++  }
++  cygwin_conv_path(CCP_POSIX_TO_WIN_W, zRelative, zConverted, nByte*sizeof(zConverted[0]));
++#if 0
++  printf("%s => %ls => %ls\n", zRelative, zConverted, &zConverted[4]);
++#endif
++  /* 4th: "\\?\D:..." => "D:..." */
++  zOut = unicodeToUtf8(&zConverted[4]);
++  free(zConverted);
++  if( zOut ){
++    sqlite3_snprintf(pVfs->mxPathname, zFull, "%s", zOut);
++    free(zOut);
++    return SQLITE_OK;
++  }else{
++    return SQLITE_NOMEM;
++  }
++#else
+   cygwin_conv_to_full_win32_path(zRelative, zFull);
+   return SQLITE_OK;
+ #endif
++#endif
+ 
+ #if SQLITE_OS_WINCE
+   UNUSED_PARAMETER(nFull);

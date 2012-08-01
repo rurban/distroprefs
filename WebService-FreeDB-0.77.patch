@@ -1,0 +1,26 @@
+--- WebService-FreeDB-0.77-dIV5tr/FreeDB.pm~	2006-09-06 06:11:38.000000000 -0500
++++ WebService-FreeDB-0.77-dIV5tr/FreeDB.pm	2011-09-28 10:17:20.000000000 -0500
+@@ -198,6 +198,7 @@
+ 		#ignore until begin of data
+ 		while (!($line =~ /^<table width="100%" border="0" cellspacing="1" cellpadding="8" bgcolor="#FFFFFF"><tr><td>$/)) {
+ 			$line = shift(@lines);
++		  last unless $line;
+ 		}
+ 		if (defined $self->{ARG}->{DEBUG} && $self->{ARG}->{DEBUG} >= 2) {
+ 			print STDERR "**found start of data :$line;\n"; 
+@@ -213,6 +214,7 @@
+ 		#ignore commercials
+ 		while (!($lines[1] =~ /^\s*tracks:\s*?(\d+)<br>$/)) {
+ 			shift(@lines);
++			last unless @lines;
+ 		}
+ 
+ 		if ($lines[1] =~ /^\s*tracks:\s*?(\d+)<br>$/) {
+@@ -253,6 +255,7 @@
+ 				while (!($line =~ /<\/pre><\/tr><\/td><\/table><\/center>/)) {
+ 					$disc{rest} .= $line."\n";
+ 					$line = shift(@lines);
++					last unless $line;
+ 				}
+ 			}
+ 			$line = shift(@lines);

@@ -1,0 +1,72 @@
+[CPAN #74826]
+test fixes for 5.16 and #74687 #73702
+
+I've combined both patches in #74687 #73702, fixed it for perl5.8.5
+B::Deperase 0.67 and also fixed 5.16.
+
+tested with all perls. just 5.8.4 fails because of schwern EUMM. works
+with older EUMM though.
+
+ or } expected while parsing object/hash, at character offset 400
+(before ""author":["Ingy d\x{f6}...") at
+/usr/local/lib/perl5/5.8.4/CPAN/Meta/Converter.pm line 23
+
+diff -u  YAML-0.79/t/dump-code.t.orig
+--- YAML-0.79/t/dump-code.t.orig	2012-01-02 01:44:27.000000000 -0600
++++ YAML-0.79/t/dump-code.t	2012-02-09 14:10:25.000000000 -0600
+@@ -1,10 +1,14 @@
+ use t::TestYAML tests => 7;
+ 
++use YAML ();   # [CPAN #74687] must load before B::Deparse for B::Deparse < 0.71
+ use B::Deparse;
+ if (new B::Deparse -> coderef2text ( sub { no strict; 1; use strict; 1; })
+     =~ 'refs') {
+  local $/;
+- (my $data = <DATA>) =~ s/use strict/use strict 'refs'/g;
++ (my $data = <DATA>) =~ s/use strict/use strict 'refs'/g if $] < 5.015;
++ if ($B::Deparse::VERSION > 0.67 and $B::Deparse::VERSION < 0.71) { # [CPAN #73702]
++   $data =~ s/use warnings;/BEGIN {\${^WARNING_BITS} = "UUUUUUUUUUUU\\001"}/g;
++ }
+  open DATA, '<', \$data;
+ }
+ 
+diff -u  YAML-0.79/t/dump-perl-types.t.orig
+--- YAML-0.79/t/dump-perl-types.t.orig	2011-04-19 07:02:48.000000000 -0500
++++ YAML-0.79/t/dump-perl-types.t	2012-02-09 14:10:42.000000000 -0600
+@@ -2,6 +2,18 @@
+ 
+ filters { perl => ['eval', 'yaml_dump'] };
+ 
++use YAML ();   # [CPAN #74687] must load before B::Deparse for B::Deparse < 0.71
++use B::Deparse;
++if (new B::Deparse -> coderef2text ( sub { no strict; 1; use strict; 1; })
++    =~ 'refs') {
++ local $/;
++ (my $data = <DATA>) =~ s/use strict/use strict 'refs'/g;
++ if ($B::Deparse::VERSION > 0.67 and $B::Deparse::VERSION < 0.71) { # [CPAN #73702]
++   $data =~ s/use warnings;/BEGIN {\${^WARNING_BITS} = "UUUUUUUUUUUU\\001"}/g;
++ }
++ open DATA, '<', \$data;
++}
++
+ no_diff;
+ run_is perl => 'yaml';
+ 
+@@ -36,7 +48,7 @@
+ --- !!perl/code |
+ {
+     use warnings;
+-    use strict 'refs';
++    use strict;
+     print "Hello, world\n";
+ }
+ 
+@@ -82,7 +94,7 @@
+ CODE: !!perl/code |
+   {
+       use warnings;
+-      use strict 'refs';
++      use strict;
+       print "Hello, world\n";
+   }
+ 

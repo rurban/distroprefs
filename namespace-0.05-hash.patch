@@ -1,0 +1,62 @@
+difforig 
+
+diff -u  ./Changes.orig
+--- ./Changes.orig	2001-10-06 11:09:44.000000000 +0200
++++ ./Changes	2011-02-27 15:04:41.827741100 +0100
+@@ -13,3 +13,6 @@
+ 0.04  25 Jun 2001
+ 
+ 0.05  04 Oct 2001
++
++0.06  27 Feb 2011 rurban
++    - prevent defined(%hash) is deprecated warnings for 5.14
+diff -u  ./namespace.pm.orig
+--- ./namespace.pm.orig	2001-10-04 07:56:54.000000000 +0200
++++ ./namespace.pm	2011-02-27 15:03:37.660428700 +0100
+@@ -31,12 +31,12 @@
+  no namespace ALIAS;
+ 
+ 
+-If ALIAS begin with '::', then alias will be expandet to 
+-caller namespace. If following example of pragma namespace 
++If ALIAS begin with '::', then alias will be expandet to
++caller namespace. If following example of pragma namespace
+ called from main:: module, then alias will be expandet to main::ALIAS::.
+-     
++
+  use namespace ::ALIAS => PACKAGE
+-    
++
+ 
+ =head1 EXAMPLES
+ 
+@@ -75,7 +75,7 @@
+ =cut
+ 
+ use strict qw/subs vars/;
+-$namespace::VERSION = '0.05';
++$namespace::VERSION = '0.06';
+ 
+ 
+ sub import{
+@@ -84,9 +84,9 @@
+ 
+     $als = $clr.$als if substr($als, 0, 2) eq '::';
+ 
+-    die "Package '$als' already defined!" if defined %{$als.'::'};
++    die "Package '$als' already defined!" if %{$als.'::'};
+ 
+-    require join( '/', split '::', $pkg ) . '.pm' unless defined %{$pkg.'::'};
++    require join( '/', split '::', $pkg ) . '.pm' unless %{$pkg.'::'};
+     @{$als.'::ISA'} = $pkg;
+ 
+     if( @_ and $_[0] eq '()' ){ shift }
+@@ -117,7 +117,7 @@
+             *{$Als.'::'.$2} = 
+                !$1        ? \&{$Pkg.'::'.$2} :
+                 $1 eq '$' ? \${$Pkg.'::'.$2} :
+-                $1 eq '@' ? \@{$Pkg.'::'.$2} : 
++                $1 eq '@' ? \@{$Pkg.'::'.$2} :
+                             \%{$Pkg.'::'.$2};
+         }
+         else{ die "Undefined behavior!\n" }

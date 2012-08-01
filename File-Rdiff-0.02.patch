@@ -1,0 +1,37 @@
+difforig File-Rdiff-0.02
+
+2008-03-15  Reini Urban <rurban@x-ray.at>
+
+diff -ub  File-Rdiff-0.02/Makefile.PL.orig
+--- File-Rdiff-0.02/Makefile.PL.orig	2005-03-03 16:56:52.000000000 +0000
++++ File-Rdiff-0.02/Makefile.PL	2008-03-15 19:51:58.343750000 +0000
+@@ -13,3 +13,13 @@
+     VERSION_FROM => "Rdiff.pm",
+ );
+ 
++package MY;
++
++# check for librsync.h (since 0.9.6) or rsync.h (until 0.9.5)
++# is there a compiler's incpath module?
++sub cflags {
++  my $cflags = shift->SUPER::cflags(@_);
++  $cflags =~ s/^(CCFLAGS = .+)(\r?\n)/\1 -DHAVE_LIBRSYNC_H\2/m
++    if -e "/usr/include/librsync.h" or -e "/usr/local/include/librsync.h";
++  $cflags;
++}
+diff -ub  File-Rdiff-0.02/Rdiff.xs.orig
+--- File-Rdiff-0.02/Rdiff.xs.orig	2005-03-03 16:56:52.000000000 +0000
++++ File-Rdiff-0.02/Rdiff.xs	2008-03-15 19:42:33.031250000 +0000
+@@ -2,7 +2,11 @@
+ #include "perl.h"
+ #include "XSUB.h"
+ 
+-#include "rsync.h"
++#ifdef HAVE_LIBRSYNC_H
++#  include "librsync.h"
++#else
++#  include "rsync.h"
++#endif
+ 
+ /* try to be compatible with older perls */
+ /* SvPV_nolen() macro first defined in 5.005_55 */

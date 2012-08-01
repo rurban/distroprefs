@@ -1,0 +1,69 @@
+diff --git a/Changes b/Changes
+index 3cab264..4e8c239 100644
+--- a/Changes
++++ b/Changes
+@@ -2,6 +2,12 @@
+  Revision history for Log::Log4perl
+ ##################################################
+ 
++1.36 (not yet released)
++   *    (ms) [rt.cpan.org #74833] Reini Urban fixed "defined @array" for
++             perl 5.16
++   *    (ms) [rt.cpan.org #74836] Cope with Carp's questionable decision to
++             add a trailing dot to its messages.
++
+ 1.35 (2012/01/03)
+    *    (ms) [rt.cpan.org #73462] Changed logwarn/logcluck/logcarp/error_warn 
+              to warn() unconditionally and send the message to log4perl which
+diff --git a/lib/Log/Log4perl.pm b/lib/Log/Log4perl.pm
+index 2b528be..f1562fc 100644
+--- a/lib/Log/Log4perl.pm
++++ b/lib/Log/Log4perl.pm
+@@ -14,7 +14,7 @@ use Log::Log4perl::Level;
+ use Log::Log4perl::Config;
+ use Log::Log4perl::Appender;
+ 
+-our $VERSION = '1.35';
++our $VERSION = '1.36';
+ 
+    # set this to '1' if you're using a wrapper
+    # around Log::Log4perl
+diff --git a/lib/Log/Log4perl/Config.pm b/lib/Log/Log4perl/Config.pm
+index 4cd7a9f..159fe02 100644
+--- a/lib/Log/Log4perl/Config.pm
++++ b/lib/Log/Log4perl/Config.pm
+@@ -872,7 +872,7 @@ sub allowed_code_ops {
+     }
+     else {
+         # give back 'undef' instead of an empty arrayref
+-        unless( defined @Log::Log4perl::ALLOWED_CODE_OPS_IN_CONFIG_FILE ) {
++        unless( @Log::Log4perl::ALLOWED_CODE_OPS_IN_CONFIG_FILE ) {
+             return;
+         }
+     }
+diff --git a/t/022Wrap.t b/t/022Wrap.t
+index 97d467b..e9aa76f 100644
+--- a/t/022Wrap.t
++++ b/t/022Wrap.t
+@@ -74,6 +74,10 @@ $rootlogger->debug("Hello");
+ my $buf = $app0->buffer();
+ $buf =~ s#(\S+022Wrap\.t)#basename( $1 )#eg;
+ 
++# [rt 74836] Carp.pm added a dot at the end with 1.25. 
++# Be dot-agnostic.
++$buf =~ s/\.$//;
++
+ is($buf,
+     "File: 022Wrap.t Line number: $line package: main " .
+     "trace: at 022Wrap.t line $line",
+@@ -87,7 +91,10 @@ $line = __LINE__ + 1;
+ $rootlogger->debug("Hello");
+ 
+   # Win32
++# [rt 74836] Carp.pm added a dot at the end with 1.25. 
++# Be dot-agnostic.
+ $buf = $app0->buffer();
++$buf =~ s/\.$//;
+ $buf =~ s#(\S+022Wrap\.t)#basename( $1 )#eg;
+ 
+ is($buf,

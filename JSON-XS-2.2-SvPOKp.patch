@@ -1,0 +1,16 @@
+difforig JSON-XS-2.2
+
+2008-04-25 18:18:38  <rurban@x-ray.at>
+
+diff -ub  JSON-XS-2.2/XS.xs.orig
+--- JSON-XS-2.2/XS.xs.orig	2008-04-05 20:14:48.000000000 +0200
++++ JSON-XS-2.2/XS.xs	2008-04-25 18:17:32.140625000 +0200
+@@ -1415,7 +1415,7 @@
+   SvGETMAGIC (string);
+   SvUPGRADE (string, SVt_PV);
+ 
+-  if (SvCUR (string) > json->max_size && json->max_size)
++  if (SvPOKp(string) && SvCUR (string) > json->max_size && json->max_size)
+     croak ("attempted decode of JSON text of %lu bytes size, but max_size is set to %lu",
+            (unsigned long)SvCUR (string), (unsigned long)json->max_size);
+ 

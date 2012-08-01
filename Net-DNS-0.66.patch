@@ -1,0 +1,144 @@
+difforig Net-DNS-0.66
+
+diff -u  Net-DNS-0.66/Makefile.PL.orig
+--- Net-DNS-0.66/Makefile.PL.orig	2010-08-23 16:24:36.818945600 +0200
++++ Net-DNS-0.66/Makefile.PL	2010-08-24 09:32:39.713174700 +0200
+@@ -45,7 +45,10 @@
+ 	'IPv6-tests!'   => \$IPv6_tests,
+ );
+ 
+-
++# for cygwin auto-packacking only
++$online_tests = 0;
++$IPv6_tests = 1;
++# end cygwin auto-packacking
+ 
+ #
+ # Test to see if IPv6 is available, unless IPv6 testing has been declined.
+@@ -90,16 +93,15 @@
+ 
+ 
+ 
+-if ($^O eq 'MSWin32' || $^O eq 'cygwin') {
++if ($^O eq 'MSWin32') {
+     unless(    eval {require WIN32::API; }	   ){
+ 	warn <<AMEN; 
+ I can not find WIN32::API version 0.55 or higher.
+-
+ I will add WIN32::API to the list of prerequisites.
+ AMEN
+ 
+ 
+-if ( $^O eq "MSWin32" ){ 
++if ( $^O eq "MSWin32" ){
+     warn <<AMEN2;
+ Note that, WIN32::API is included in recent versions
+ of ActivePerl (5.10 since build 1003) and recent
+@@ -108,11 +110,6 @@
+ tested with other versions. In case of failure please
+ consider upgrading.
+ AMEN2
+-}else{
+-    warn <<AMEN3;
+-When using cygwin missing dependencies can be installed using CPAN.
+-AMEN3
+-
+ }
+ 
+ 
+@@ -158,13 +155,6 @@
+ 	}
+ }
+ 
+-
+-
+-
+-
+-
+-
+-
+ if ($use_xs) {
+ 	# turn the XS bits on.
+         print "Activating XS Magic...\n" if DEBUG; 
+diff -u  Net-DNS-0.66/lib/Net/DNS/Resolver.pm.orig
+--- Net-DNS-0.66/lib/Net/DNS/Resolver.pm.orig	2010-08-23 16:24:37.328996600 +0200
++++ Net-DNS-0.66/lib/Net/DNS/Resolver.pm	2010-08-23 16:52:24.986184800 +0200
+@@ -8,18 +8,18 @@
+ 
+ $VERSION = (qw$LastChangedRevision: 830 $)[1];
+ 
+-BEGIN {
++#BEGIN {
+ 	if ($^O eq 'MSWin32') {
+ 		require Net::DNS::Resolver::Win32;
+ 		@ISA = qw(Net::DNS::Resolver::Win32);
+ 	} elsif ($^O eq 'cygwin') {
+-		require Net::DNS::Resolver::Win32;
+-		@ISA = qw(Net::DNS::Resolver::Win32);
+-	} else {   
++		require Net::DNS::Resolver::Cygwin;
++		@ISA = qw(Net::DNS::Resolver::Cygwin);
++	} else {
+ 		require Net::DNS::Resolver::UNIX;
+ 		@ISA = qw(Net::DNS::Resolver::UNIX);
+ 	}
+-}
++#}
+ 
+ __PACKAGE__->init();
+ 
+diff -u  Net-DNS-0.66/lib/Net/DNS/Resolver/Cygwin.pm.orig
+--- Net-DNS-0.66/lib/Net/DNS/Resolver/Cygwin.pm.orig	2009-12-30 11:01:40.000000000 +0100
++++ Net-DNS-0.66/lib/Net/DNS/Resolver/Cygwin.pm	2010-08-25 12:10:17.255289300 +0200
+@@ -1,4 +1,4 @@
+-package Net::DNS::Resolver::Cygwin;
++package Net::DNS::Resolver::Cygwin; # -*- tab-width:4 -*-
+ #
+ # $Id: Cygwin.pm 696 2007-12-28 13:46:20Z olaf $
+ #
+@@ -19,7 +19,7 @@
+ 
+ 	if (open(LM, "<$key")) {
+ 		$value = <LM>;
+-		$value =~ s/\0+$//;
++		$value =~ s/\0+$// if $value;
+ 		close(LM);
+ 	}
+ 	
+@@ -33,7 +33,7 @@
+ 	local *LM;
+ 	
+ 	my $root = '/proc/registry/HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/Tcpip/Parameters/';
+-   
++
+ 	unless (-d $root) {
+ 		# Doesn't exist, maybe we are on 95/98/Me?
+ 		$root = '/proc/registry/HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/VxD/MSTCP/';
+@@ -90,12 +90,13 @@
+ 				my $ip;
+ 				$ip = getregkey($regiface, "DhcpIPAddress") || getregkey($regiface, "IPAddress");
+ 				$ns = getregkey($regiface, "NameServer") ||
+-				    getregkey($regiface, "DhcpNameServer") || ''				    unless !$ip || ($ip =~ /0\.0\.0\.0/);
+-				
++				    getregkey($regiface, "DhcpNameServer") || ''
++                      unless !$ip || ($ip =~ /0\.0\.0\.0/);
++
+ 				$nameservers .= " $ns" if $ns;
+-			    }
+-		    }
+-	    }
++            }
++        }
++    }
+ 	
+ 	if (!$nameservers) {
+ 		$nameservers = $nt4nameservers;
+@@ -166,7 +167,7 @@
+ 
+ =head1 COPYRIGHT
+ 
+-Copyright (c) 1997-2002 Michael Fuhr. 
++Copyright (c) 1997-2002 Michael Fuhr.
+ 
+ Portions Copyright (c) 2002-2004 Chris Reinhardt.
+ 

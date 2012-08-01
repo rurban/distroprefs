@@ -1,0 +1,13 @@
+diffbk re-engine-LPEG-0.04-Waq1U_
+
+diff -u re-engine-LPEG-0.04-Waq1U_/Makefile.PL~ re-engine-LPEG-0.04-Waq1U_/Makefile.PL
+--- re-engine-LPEG-0.04-Waq1U_/Makefile.PL~	2008-11-08 10:48:44.000000000 +0100
++++ re-engine-LPEG-0.04-Waq1U_/Makefile.PL	2010-07-09 08:43:31.756160500 +0200
+@@ -85,6 +85,6 @@
+     },
+ 
+     # This used to be '-shared lib*/*.o' but that doesn't work on Win32
+-    LDDLFLAGS     => "-shared @OBJ",
++    LDDLFLAGS     => "-shared \$(LDFLAGS) @OBJ",
+ );
+ 

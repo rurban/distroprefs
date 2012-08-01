@@ -1,0 +1,41 @@
+difforig Win32-GUI-1.05
+
+	* GUI.rc is readonly in the downloaded archive, and therefore build_tools/updateRC.pl 
+	fails to write it.
+	* gcc-3.4 issues a warning if -Wdeclaration-after-statement is used with
+	cpp files (c++ mode).
+
+2007-07-28  Reini Urban <rurban@x-ray.at>
+
+diff -ub  Win32-GUI-1.05/Makefile.PL.orig
+--- Win32-GUI-1.05/Makefile.PL.orig	2006-11-02 20:36:58.000000000 +0000
++++ Win32-GUI-1.05/Makefile.PL	2007-07-28 20:48:08.812500000 +0000
+@@ -279,6 +279,12 @@
+   return $inherited;
+ }
+ 
++sub cflags {
++  my $inherited = shift->SUPER::cflags(@_);
++  $inherited =~ s/-Wdeclaration-after-statement//mg;
++  return $inherited;
++}
++
+ # Remove the Test-More dependency from the PPD file, as it is not
+ # a requirement for a binary distribution
+ sub ppd {
+diff -ub  Win32-GUI-1.05/build_tools/updateRC.pl.orig
+--- Win32-GUI-1.05/build_tools/updateRC.pl.orig	2005-08-03 21:45:58.000000000 +0000
++++ Win32-GUI-1.05/build_tools/updateRC.pl	2007-07-28 20:55:31.812500000 +0000
+@@ -60,7 +60,11 @@
+ close($in);
+ 
+ # write out the new rcfile
+-open(my $out, ">$rcfile") or die "Failed to open $rcfile for writing";
++my $out;
++if (!open($out, ">$rcfile")) {
++  chmod 0644, $rcfile;
++  open($out, ">$rcfile") or die "Failed to open $rcfile for writing";
++}
+ print $out $outtext;
+ close($out);
+ 

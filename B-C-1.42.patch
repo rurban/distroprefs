@@ -1,0 +1,22 @@
+diff -bu B-C-1.42/t/modules.t~ B-C-1.42/t/modules.t
+--- B-C-1.42/t/modules.t~	2012-01-31 17:54:57.000000000 -0600
++++ B-C-1.42/t/modules.t	2012-02-10 16:28:03.488020438 -0600
+@@ -271,11 +271,13 @@
+   if ($] > 5.015 and $] < 5.015006) { foreach(qw(
+    B::Hooks::EndOfScope
+   )) { return '> 5.15' if $_ eq $module; }}
+-  #if ($] > 5.015) { foreach(qw(
+-  #    Moose
+-  #    MooseX::Types
+-  #    DateTime
+-  #)) { return '> 5.15 (unshare_hek)' if $_ eq $module; }}
++  # gcc timeout issues on smaller machines
++  if ($] > 5.015) { foreach(qw(
++      Module::Build
++      Moose
++      MooseX::Types
++      DateTime
++  )) { return '> 5.15' if $_ eq $module; }}
+ 
+   # ---------------------------------------
+   if ($Config{useithreads}) {

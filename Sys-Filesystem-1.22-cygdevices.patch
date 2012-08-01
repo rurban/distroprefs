@@ -1,0 +1,63 @@
+difforig Sys-Filesystem-1.22
+
+2007-07-08  Reini Urban <rurban@x-ray.at>
+
+diff -ub  Sys-Filesystem-1.22/lib/Sys/Filesystem/Cygwin.pm.orig
+--- Sys-Filesystem-1.22/lib/Sys/Filesystem/Cygwin.pm.orig	2006-06-01 19:10:48.000000000 +0000
++++ Sys-Filesystem-1.22/lib/Sys/Filesystem/Cygwin.pm	2007-07-08 18:03:45.734375000 +0000
+@@ -27,7 +27,7 @@
+ use Carp qw(croak);
+ 
+ use vars qw($VERSION);
+-$VERSION = '1.07' || sprintf('%d', q$Revision: 364 $ =~ /(\d+)/g);
++$VERSION = '1.08' || sprintf('%d', q$Revision: 364 $ =~ /(\d+)/g);
+ 
+ sub new {
+ 	ref(my $class = shift) && croak 'Class name required';
+@@ -39,6 +39,7 @@
+ 	my @special_fs = qw(swap proc devpts tmpfs);
+ 
+ 	my $mtab = new FileHandle;
++	my $have_Win32API = eval { require Win32API::File; };
+ 	if ($mtab->open('mount|')) {
+ 		while (<$mtab>) {
+ 			next if (/^\s*#/ || /^\s*$/);
+@@ -48,9 +49,38 @@
+ 				for (my $i = 0; $i < @keys; $i++) {
+ 					$self->{$vals[1]}->{$keys[$i]} = $vals[$i];
+ 				}
++				my $drive = substr($self->{$vals[1]}->{fs_spec},0,2);
++				if (exists $self->{drivetype}->{$drive}) {
++				  $self->{$vals[1]}->{device} = $self->{drivetype}->{$drive};
++				} else {
++				  $self->{$vals[1]}->{device} = 'unknown';
++				  if ($have_Win32API) {
++				    my $osFsType = "\0"x256;
++				    my $osVolName = "\0"x256;
++				    my $ouFsFlags = 0;
++				    my $drivetype = Win32API::File::GetDriveType($drive);
++				    #define DRIVE_UNKNOWN              0
++				    #define DRIVE_NO_ROOT_DIR          1
++				    #define DRIVE_REMOVABLE            2
++				    #define DRIVE_FIXED                3
++				    #define DRIVE_REMOTE               4
++				    #define DRIVE_CDROM                5
++				    #define DRIVE_RAMDISK              6
++				    if ($drivetype == 5) {
++				      $self->{drivetype}->{$drive} =
++					$self->{$vals[1]}->{device} = 'iso9660';
++				    } elsif ($drivetype > 1) {
++				      Win32API::File::GetVolumeInformation($drive, $osVolName, 256, [], [], $ouFsFlags, $osFsType, 256 ) and
++				      # NTFS, FAT32, ...
++				      $self->{drivetype}->{$drive} =
++					$self->{$vals[1]}->{device} = $osFsType;
++				    }
++				  }
++				}
+ 			}
+ 		}
+ 		$mtab->close;
++		undef $self->{drivetype}->{$drive};
+ 
+ 	} else {
+ 		croak "Unable to open pipe handle for mount command: $!\n";

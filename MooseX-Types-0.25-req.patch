@@ -1,0 +1,14 @@
+diffbk MooseX-Types-0.25/
+
+diff -u MooseX-Types-0.25/Makefile.PL~ MooseX-Types-0.25/Makefile.PL
+--- MooseX-Types-0.25/Makefile.PL~	2010-11-15 04:36:28.000000000 +0100
++++ MooseX-Types-0.25/Makefile.PL	2011-02-13 16:53:29.306430900 +0100
+@@ -22,6 +22,8 @@
+ requires        q{Carp::Clan},                  '6.00';
+ requires        q{Scalar::Util},                '1.19';
+ requires        q{Sub::Name},                   0;
++requires        q{Sub::Identify},               0;
++requires        q{Variable::Magic},             0;
+ 
+ add_metadata( x_authority => 'cpan:PHAYLON' );
+ 

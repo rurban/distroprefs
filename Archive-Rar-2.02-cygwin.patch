@@ -1,0 +1,61 @@
+diffbk lib/Archive/Rar.pm
+
+diff -u lib/Archive/Rar.pm~ lib/Archive/Rar.pm
+--- lib/Archive/Rar.pm~	2008-03-06 15:12:01.000000000 +0100
++++ lib/Archive/Rar.pm	2009-09-23 09:29:08.828125000 +0200
+@@ -219,14 +219,19 @@
+ 
+         # goto Suite if ($command =~ /^[levx]/i && -f $self->{archive});
+         # fixed #32090
+-        $self->{archive} =~ /\.(\w+)$/;
+-        my $ext = ".$1";
++        my $ext = "";
++        if ($self->{archive} =~ /\.(\w+)$/) {
++          $ext = ".$1";
++        }
+         $ext = $IsWindows ? '.exe' : '.sfx' if ( defined $args{'-sfx'} && $args{'-sfx'} );
+         $self->{archive} =~ s/\.\w+$/$ext/;
+         $self->{archive} = CleanDir( $self->{archive} );
+-        my $expr = $IsWindows ? '^([a-z_A-Z]:)?\/' : '^\/';
+-        if ( $self->{archive} !~ /$expr/ ) {
++        # cygwin allows a mix of windows rar and cygwin paths
++        if ($^O ne 'cygwin') {
++          my $expr = $IsWindows ? '^([a-z_A-Z]:)?\/' : '^\/';
++          if ( $self->{archive} !~ /$expr/ ) {
+             $self->{archive} = getcwd() . '/' . $self->{archive};
++          }
+         }
+         $self->{archive} = CleanDir( $self->{archive} );
+     }
+@@ -242,19 +247,19 @@
+ 
+     # new feature for using with nice
+     $self->{nice} = '';
+-    if ( $command =~ /^[x]/i ) {
++    if ( $command =~ /^"?[xX]/ ) {
+         $self->{nice} .= '"nice"'
+           if !IsEmpty($args{'-lowprio'})
+             and $args{'-lowprio'}
+             and $IsWindows;
+     }
+-    if ( $command =~ /^[a]/i ) {
++    if ( $command =~ /^"?[aA]/ ) {
+         $self->{options} .= ' "-sfx"' if ( defined $args{'-sfx'} && $args{'-sfx'} );
+         $self->{options} .= ' "-r"' if ( !IsEmpty( $args{'-recurse'} ) );
+         $self->{options} .= ' "-m"' . $args{'-mode'} if ( !IsEmpty( $args{'-mode'} ) );
+         $self->{options} .= ' "-v"' . $args{'-size'} if ( !IsEmpty( $args{'-size'} ) );
+     }
+-    if ( $command =~ /^[levx]/i ) {
++    if ( $command =~ /^"?[levx]/i ) {
+         $self->{options} .= ' "-v"' if ( !IsEmpty( $args{'-volume'} ) );
+     }
+ 
+@@ -374,7 +379,7 @@
+ sub List {
+     my ( $retour, %currfile, @attrib );
+     my $self         = shift;
+-    $self->{list}    = undef;
++    $self->{list}    = ();
+     $self->{command} = '"vt"';
+     $self->SetOptions( $self->{command}, @_ );
+ 

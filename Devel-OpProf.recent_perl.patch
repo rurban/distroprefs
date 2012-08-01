@@ -1,0 +1,40 @@
+diff -r c3844d7255fc OpProf.xs
+--- a/OpProf.xs	Wed Apr 16 08:13:45 2008 +0100
++++ b/OpProf.xs	Wed Apr 16 08:43:44 2008 +0100
+@@ -10,25 +10,21 @@
+ #include "perl.h"
+ #include "XSUB.h"
+ 
+-#ifdef PERL_OBJECT
+-#define CALLOP this->*PL_op
+-#else
+-#define CALLOP *PL_op
+-#endif
+-
+ static int profiling = 0;
+ static unsigned long *op_count;
+ 
+-static int runops_opprof(void)
+-{
+-    dTHR;
++int runops_opprof(pTHX) {
++  dSP;
++  dVAR;
++  while ((PL_op = CALL_FPTR(PL_op->op_ppaddr)(aTHX))) {
++    if (profiling) {
++	    op_count[PL_op->op_type]++;
++    }
++    PERL_ASYNC_CHECK();
++  }
+ 
+-    do {
+-	if (profiling)
+-	    op_count[PL_op->op_type]++;
+-    } while (PL_op = (CALLOP->op_ppaddr)(ARGS));
+-    TAINT_NOT;
+-    return 0;
++  TAINT_NOT;
++  return 0;
+ }
+ 
+ MODULE = Devel::OpProf		PACKAGE = Devel::OpProf

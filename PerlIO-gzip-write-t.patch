@@ -1,0 +1,39 @@
+20,22c20,29
+< my $sh;
+< if (-s $Config{sh}) {
+<   open FOO, "<", $Config{sh} or die $!;
+---
+> my ($sh_name,$sh)=($Config{sh});
+> if (-s $sh_name) {
+>     unless (open FOO, "<", $sh_name) {
+> 	if ($! =~ /^No such file or directory/) {
+> 	    $sh_name.='.exe';
+> 	    open FOO, "<", $sh_name or die $!;
+> 	}
+> 	else {die $!}
+>     }
+> 
+26,29c33,36
+<   die "Can't slurp $Config{sh}: $!" unless defined $sh;
+<   die sprintf ("Slurped %d, but disk file $Config{sh} is %d bytes",
+< 	       length $sh, -s $Config{sh})
+<     unless length $sh == -s $Config{sh};
+---
+>   die "Can't slurp $sh_name: $!" unless defined $sh;
+>   die sprintf ("Slurped %d, but disk file $sh_name is %d bytes",
+> 	       length $sh, -s $sh_name)
+>     unless length $sh == -s $sh_name;
+66c73
+<     skip "Your configured shell, '$Config{sh}', is missing or size 0",7
+---
+>     skip "Your configured shell, '$sh_name', is missing or size 0",7
+70c77
+<     ok ((print GZ $sh), "print contents of $Config{sh}")
+---
+>     ok ((print GZ $sh), "print contents of $sh_name")
+74,75c81,82
+<     ok (compare (\*GZ, $Config{sh}) == 0,
+<         "compare compressed copy with '$Config{sh}'");
+---
+>     ok (compare (\*GZ, $sh_name) == 0,
+>         "compare compressed copy with '$sh_name'");

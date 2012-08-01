@@ -1,0 +1,148 @@
+diff -ru B-Generate-1.06-orig/Build.PL B-Generate-1.06-newest/Build.PL
+--- B-Generate-1.06-orig/Build.PL	Tue Jun 18 21:14:58 2002
++++ B-Generate-1.06-newest/Build.PL	Fri Nov 28 19:34:36 2003
+@@ -16,12 +16,18 @@
+      }
+      );
+      
++my %newTweaks;
++if ($] >= 5.008) {
++    %newTweaks = (extra_compiler_flags => '-DPERL_CUSTOM_OPS -DPERL_CUSTOM_OPCODES');
++}
+ 
+ my $build = $class->new
+     (
+      module_name => 'B::Generate',
+-     license => 'unknown',
++     license => 'unknown',	# Simon ?
+      dynamic_config => 0,
++     requires => { perl => '5.5.62' },
++     %newTweaks,
+      );
+ $build->create_build_script;
+ 
+diff -ru B-Generate-1.06-orig/Changes B-Generate-1.06-newest/Changes
+--- B-Generate-1.06-orig/Changes	Sun Jul 28 10:44:27 2002
++++ B-Generate-1.06-newest/Changes	Fri Nov 28 19:34:36 2003
+@@ -1,5 +1,14 @@
+ Revision history for Perl extension B::Generate.
+ 
++1.07_01 Fri Nov  7 23:30:03 MST 2003
++    changes to compile for 5.8.1+ by Jim Cromie <jcromie@cpan.org>
++    - altered Build.PL to add extra_compiler_flags when building for 5.8.x,
++      ie: -DPERL_CUSTOM_OPS -DPERL_CUSTOM_OPCODES
++      these didnt work for me under 5.6.x
++    - silenced redefined warnings with $SIG{__WARN__}
++    - various XS tweaks: casts, aTHX_, and Perl_ prefix on symbols
++    - various pm tweaks to silence warnings
++
+ 1.06 Sun Jul 28 18:43:06 CEST 2002
+     - Added support for changing PV in SvPV
+ 
+diff -ru B-Generate-1.06-orig/lib/B/Generate.pm B-Generate-1.06-newest/lib/B/Generate.pm
+--- B-Generate-1.06-orig/lib/B/Generate.pm	Tue Jul  2 06:39:09 2002
++++ B-Generate-1.06-newest/lib/B/Generate.pm	Fri Nov 28 19:34:36 2003
+@@ -9,11 +9,16 @@
+ 
+ our @ISA = qw(DynaLoader);
+ 
+-our $VERSION = '1.06';
++our $VERSION = '1.07_01';
+ 
+ {
+-no warnings;
+-bootstrap B::Generate $VERSION;
++    # no warnings; # doesnt work.
++    # this does: L<perlfunc/Alphabetical Listing of Perl Functions/warn>
++    local $SIG{__WARN__} = sub {
++	return if $_[0] =~ /Subroutine B(::\w+)+ redefined/;
++	warn $_[0];
++    };
++    bootstrap B::Generate $VERSION;
+ }
+ 
+ use constant OP_LIST => 141; # MUST FIX CONSTANTS.
+diff -ru B-Generate-1.06-orig/lib/B/Generate.xs B-Generate-1.06-newest/lib/B/Generate.xs
+--- B-Generate-1.06-orig/lib/B/Generate.xs	Sun Jul 28 10:45:48 2002
++++ B-Generate-1.06-newest/lib/B/Generate.xs	Fri Nov 28 19:34:36 2003
+@@ -193,7 +193,11 @@
+     sv_setiv(newSVrv(arg, type), iv);
+     return arg;
+ }
+-#define PERL_CUSTOM_OPS
++
++/* 
++   #define PERL_CUSTOM_OPS
++   now defined by Build.PL, if building for 5.8.x
++ */
+ static I32
+ op_name_to_num(SV * name)
+ {
+@@ -460,7 +464,7 @@
+ OP_find_cv(o)
+ 	B::OP	o
+     CODE:
+-	RETVAL = SvRV(find_cv_by_root((OP*)o));
++	RETVAL = (CV*) SvRV(find_cv_by_root((OP*)o));
+     OUTPUT:
+ 	RETVAL
+ 
+@@ -641,8 +645,8 @@
+ 
+         o = CALL_FPTR(PL_check[type])(aTHX_ (OP*)o);
+ 
+-        if (o->op_type == type)
+-            o = fold_constants(o);
++	if (o->op_type == type)
++            o = (OP*) Perl_fold_constants(aTHX_ o);
+ 
+     OUTPUT:
+         o
+@@ -766,7 +770,7 @@
+         else {
+             o = newBINOP(optype, flags, first, last);
+ #ifdef PERL_CUSTOM_OPCODES
+-            if (typenum == OP_CUSTOM)
++            if (optype == OP_CUSTOM)
+                 o->op_ppaddr = custom_op_ppaddr(SvPV_nolen(type));
+ #endif
+         }
+diff -ru B-Generate-1.06-orig/test.pl B-Generate-1.06-newest/test.pl
+--- B-Generate-1.06-orig/test.pl	Sun Jul 28 10:49:27 2002
++++ B-Generate-1.06-newest/test.pl	Fri Nov 28 19:34:36 2003
+@@ -26,7 +26,7 @@
+     my $i = 0;
+     for(
+         $x = B::main_start;
+-        B::opnumber("const") != $x->type || $x->sv->sv != 30;
++        B::opnumber("const") ne $x->type || $x->sv->sv ne 30;
+         $x=$x->next){}
+     $x->sv(13);
+ 
+@@ -34,7 +34,7 @@
+ 	$x = svref_2object($foo)->START;
+ 	ref($x) ne 'B::NULL';
+ 	$x = $x->next) {
+-	next unless($x->can(sv));
++	next unless($x->can('sv'));
+ 	if($x->sv->PV eq "not ok 5\n") {
+ 	    $x->sv("ok 5\n");
+ 	    last;
+@@ -45,7 +45,7 @@
+ 	$x = svref_2object(\&foo::baz)->START;
+ 	ref($x) ne 'B::NULL';
+ 	$x = $x->next) {
+-	next unless($x->can(sv));
++	next unless($x->can('sv'));
+ 	if($x->sv->PV eq "not ok 6\n") {
+ 	    $x->sv("ok 6\n");
+ 	    last;
+@@ -59,7 +59,7 @@
+ $a = 17; $b = 15; print "ok ", $a + $b, "\n";
+ $c = 30; $d = 10; print "ok ", $c - $d, "\n";
+ 
+-my $newop = B::BINOP->new("add", 0, undef, undef); # This used to segv
++my $newop = B::BINOP->new("add", 0, 0, 0); # undef, undef); # This used to segv
+ print "ok 4\n";
+ BEGIN {
+ $foo = sub {

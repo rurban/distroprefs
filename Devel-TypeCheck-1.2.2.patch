@@ -1,0 +1,46 @@
+difforig Devel-TypeCheck-1.2.2
+
+2008-03-02  Reini Urban <rurban@x-ray.at>
+
+diff -ub  Devel-TypeCheck-1.2.2/lib/Devel/TypeCheck/Glob2type.pm.orig
+--- Devel-TypeCheck-1.2.2/lib/Devel/TypeCheck/Glob2type.pm.orig	2005-10-07 01:53:56.000000000 +0000
++++ Devel-TypeCheck-1.2.2/lib/Devel/TypeCheck/Glob2type.pm	2008-03-02 22:07:54.109375000 +0000
+@@ -28,6 +28,7 @@
+ Retrieve a glob from the global table.
+ 
+ =cut
++
+ sub get {
+     my ($this, $glob, $env) = @_;
+ 
+@@ -45,6 +46,7 @@
+ The list of all symbols tracked in this table.
+ 
+ =cut
++
+ sub symbols {
+     my ($this) = @_;
+     return keys(%$this);
+@@ -52,19 +54,20 @@
+ 
+ 1;
+ 
+-=back
+-
+ =item B<del>
+ 
+ Remove a glob from the global table.  Used in an ad-hoc fashion to localize *_ in functions.
+ 
+ =cut
++
+ sub del {
+     my ($this, $glob) = @_;
+ 
+     delete($this->{$glob});
+ }
+ 
++=back
++
+ =head1 AUTHOR
+ 
+ Gary Jackson, C<< <bargle at umiacs.umd.edu> >>

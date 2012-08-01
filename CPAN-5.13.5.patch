@@ -1,0 +1,21 @@
+diff -bu CPAN/FTP.pm~ CPAN/FTP.pm
+--- CPAN/FTP.pm~	2010-09-12 21:29:17.167500000 +0200
++++ CPAN/FTP.pm	2010-10-01 14:40:45.879750000 +0200
+@@ -576,12 +576,15 @@
+                     $ThesiteURL = $ro_url;
+                     return $ungz;
+                 }
+-                else {
++                elsif ( -f $l && -r _) {
+                     eval { CPAN::Tarzip->new($l)->gunzip($aslocal) };
+-                    if ( -f $aslocal) {
++                    if ( -f $aslocal && -s _) {
+                         $ThesiteURL = $ro_url;
+                         return $aslocal;
+                     }
++                    elsif (! -s $aslocal) {
++			unlink $aslocal;
++		    }
+                     else {
+                         $CPAN::Frontend->mywarn("Error decompressing '$l': $@\n")
+                             if $@;

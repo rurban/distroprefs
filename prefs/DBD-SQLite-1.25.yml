@@ -1,0 +1,5 @@
+---
+match:
+  distribution: "ADAMK/DBD-SQLite-1."
+patches:
+  - "../../DBD-SQLite-1.25.patch"

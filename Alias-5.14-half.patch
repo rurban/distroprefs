@@ -1,0 +1,51 @@
+diff -bu Alias-2.32-ptuoy9/Alias.xs~ Alias-2.32-ptuoy9/Alias.xs
+--- Alias-2.32-ptuoy9/Alias.xs~	2011-06-10 10:01:48.000000000 +0200
++++ Alias-2.32-ptuoy9/Alias.xs	2011-06-10 10:05:22.421875000 +0200
+@@ -205,8 +205,11 @@
+ 			save_gp(gv,TRUE);   /* hide previous entry in symtab */
+ 			break;
+ 		    case SVt_PVCV:
+-			SAVESPTR(GvCV(gv));
++                        {
++			  CV* cv=GvCV(gv);
++			  SAVESPTR(cv);
+ 			GvCV_set(gv,Null(CV*));
++			}
+ 			break;
+ 		    default:
+ 			save_scalar(gv);
+diff -bu Alias-2.32-ptuoy9/t/alias.t~ Alias-2.32-ptuoy9/t/alias.t
+--- Alias-2.32-ptuoy9/t/alias.t~	1999-02-05 23:31:27.000000000 +0100
++++ Alias-2.32-ptuoy9/t/alias.t	2011-06-10 10:09:33.187500000 +0200
+@@ -74,11 +74,11 @@
+ T(join('|', $foo, @bar, %buz) eq '6|7|8|b|9');
+ 
+ eval { fuz() };   # the local subroutine shouldn't be here now
+-print "# after fuz(): $@";
++print "# after fuz()\n$@";
+ T($@);
+ 
+ eval { Foo->new->privmeth };   # private method shouldn't exist either
+-print "# after Foo->new->privmeth: $@";
++print "# after Foo->new->privmeth\n$@";
+ T($@);
+ 
+ package Bar;
+@@ -129,7 +129,7 @@
+ }
+ 
+ eval { Bar->new->s_privmeth };   # private method shouldn't exist either
+-print "# after Bar->new->s_privmeth: $@";
++print "# after Bar->new->s_privmeth\n$@";
+ T($@);
+ 
+ package Baz;
+@@ -187,7 +187,7 @@
+ T(join('|', $::s_foo, @::s_bar) eq '6|7|8');
+ 
+ eval { Baz->new->s_privmeth };   # private method shouldn't exist either
+-print "# after Baz->new->s_privmeth: $@";
++print "# after Baz->new->s_privmeth\n$@";
+ T($@);
+ 
+ 

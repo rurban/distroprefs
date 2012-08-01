@@ -1,0 +1,102 @@
+2007-09-01  Reini Urban <rurban@x-ray.at>
+Attached patch adapts Streamer to the new 5.9 struct regexp.
+Just the madness tests fail.
+
+Failed Test        Stat Wstat Total Fail  List of Failed
+-------------------------------------------------------------------------------
+t/impure_madness.t    2   512     8    2  5-6
+t/madness.t           2   512     6    2  3-4
+t/madness_w.t         2   512     6    2  3-4
+
+diff -ub  ./Streamer.xs.orig
+--- ./Streamer.xs.orig	2007-08-22 21:56:52.000000000 +0000
++++ ./Streamer.xs	2007-09-01 10:00:25.875000000 +0000
+@@ -51,6 +51,7 @@
+ #elif PERL_SUBVERSION>=1
+ #   define BFD_Svs_SMG_OR_RMG SVs_SMG
+ #   define MY_PLACEHOLDER PL_sv_placeholder
++#   define PERL_ENABLE_TRIE_OPTIMISATION 1
+ #else
+ #   define BFD_Svs_SMG_OR_RMG SVs_RMG
+ #   define MY_PLACEHOLDER PL_sv_undef
+@@ -350,7 +351,7 @@
+     if(!sv_isobject(sv)) {
+ 	XSRETURN_UNDEF;
+     }
+-    RETVAL = sv_reftype(SvRV(sv),TRUE);
++    RETVAL = (char *)sv_reftype(SvRV(sv),TRUE);
+ }
+ OUTPUT:
+     RETVAL
+@@ -558,7 +559,7 @@
+     if(!SvROK(sv)) {
+ 	XSRETURN_NO;
+     } else {
+-        RETVAL = sv_reftype(SvRV(sv),FALSE);
++        RETVAL = (char *)sv_reftype(SvRV(sv),FALSE);
+     }
+ }
+ OUTPUT:
+@@ -820,6 +821,7 @@
+ 
+                         char *fptr = "msix";
+                         char ch;
++#ifndef PERL_ENABLE_TRIE_OPTIMISATION
+                         U16 reganch = (U16)((re->reganch & PMf_COMPILETIME) >> 12);
+ 
+                         while((ch = *fptr++)) {
+@@ -828,9 +830,13 @@
+                             }
+                             reganch >>= 1;
+                         }
+-
++#endif
+                         pattern = sv_2mortal(newSVpvn(re->precomp,re->prelen));
++#ifndef PERL_ENABLE_TRIE_OPTIMISATION
+                         if (re->reganch & ROPT_UTF8) SvUTF8_on(pattern);
++#else
++			if (re->extflags & RXf_UTF8) SvUTF8_on(pattern);
++#endif
+ 
+                         /* return the pattern and the modifiers */
+                         XPUSHs(pattern);
+@@ -851,6 +857,7 @@
+                                 char ch;
+                                 int right = 4;
+                                 char need_newline = 0;
++#ifndef PERL_ENABLE_TRIE_OPTIMISATION
+                                 U16 reganch = (U16)((re->reganch & PMf_COMPILETIME) >> 12);
+ 
+                                 while((ch = *fptr++)) {
+@@ -866,6 +873,7 @@
+                                     reflags[left] = '-';
+                                     left = 5;
+                                 }
++#endif
+                                 mg->mg_len = re->prelen + 4 + left;
+                                 /*
+                                  * If /x was used, we have to worry about a regex
+@@ -882,7 +890,11 @@
+                                  * don't find '#' or '\n'), we don't need to add
+                                  * anything.  -jfriedl
+                                  */
++#ifndef PERL_ENABLE_TRIE_OPTIMISATION
+                                 if (PMf_EXTENDED & re->reganch)
++#else
++				if (re->extflags & RXf_PMf_EXTENDED)
++#endif
+                                 {
+                                     char *endptr = re->precomp + re->prelen;
+                                     while (endptr >= re->precomp)
+@@ -913,7 +925,11 @@
+                             }
+                             /* return the pattern in (?msix:..) format */
+                             pattern = sv_2mortal(newSVpvn(mg->mg_ptr,mg->mg_len));
++#ifndef PERL_ENABLE_TRIE_OPTIMISATION
+                             if (re->reganch & ROPT_UTF8) SvUTF8_on(pattern);
++#else
++			    if (re->extflags & RXf_UTF8) SvUTF8_on(pattern);
++#endif
+                             XPUSHs(pattern);
+                             XSRETURN(1);
+                     }

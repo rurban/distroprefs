@@ -1,0 +1,19 @@
+Fix $version_finder space in current dir
+
+DB<44> x "$perl $version_finder < $prereq_input"
+0  '/usr/bin/perl /cygdrive/d/data/urbanr/My Documents/.cpan/build/CPAN-Reporter-1.1800/blib/lib/CPAN/Reporter/PrereqCheck.pm < /tmp/CPAN-Reporter-PI-1giFSOv3'
+  DB<45> n
+Can't open perl script "/cygdrive/d/data/urbanr/My": No such file or directory
+
+diff -u CPAN-Reporter-1.1800/lib/CPAN/Reporter.pm~ CPAN-Reporter-1.1800/lib/CPAN/Reporter.pm
+--- CPAN-Reporter-1.1800/lib/CPAN/Reporter.pm~	2010-07-26 22:03:04.000000000 +0200
++++ CPAN-Reporter-1.1800/lib/CPAN/Reporter.pm	2010-08-12 08:37:03.709507900 +0200
+@@ -1365,7 +1365,7 @@
+ #
+ #--------------------------------------------------------------------------#
+ 
+-my $version_finder = $INC{'CPAN/Reporter/PrereqCheck.pm'};
++my $version_finder = quotemeta($INC{'CPAN/Reporter/PrereqCheck.pm'});
+ 
+ sub _version_finder {
+     my %prereqs = @_;

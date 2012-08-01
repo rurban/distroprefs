@@ -1,0 +1,17 @@
+--- Text-Diff-0.35/t/outputs.t.orig	2004-07-24 11:37:00.127883200 +0100
++++ Text-Diff-0.35/t/outputs.t	2004-07-24 11:38:53.420790400 +0100
+@@ -30,11 +30,11 @@
+ 
+ sub {
+     require IO::File ;
+-    my $fh = IO::File->new( ">output.t.foo" ) ;
++    my $fh = IO::File->new( ">output.t.foo2" ) ;
+     _d $fh ;
+     $fh = undef ;
+-    ok slurp "output.t.foo", $expected ;
+-    unlink "output.t.foo" or warn $! ;
++    ok slurp "output.t.foo2", $expected ;
++    unlink "output.t.foo2" or warn $! ;
+ },
+ 
+ sub { ok 0 < index( diff( \"\n", \"", { STYLE => "Table" } ), "\\n" ) },

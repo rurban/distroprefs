@@ -1,0 +1,133 @@
+commit d74c8f9a2ad374ff03a69a80226aeba23ced33bd
+Author: Reini Urban <rurban@cpanel.net>
+Date:   Fri Feb 10 15:56:06 2012 -0600
+
+    [CPAN #74827] Carp 1.25 has now a dot
+
+diff --git a/Changes b/Changes
+index d01b0c3..ea92f16 100644
+--- a/Changes
++++ b/Changes
+@@ -1,5 +1,9 @@
+ Revision history for Perl extension Test::Warn.
+ 
++0.24  2012-02-10 14:49:49 rurban
++        - compatibility with Perl 5.16, Carp 1.25 (RURBAN)
++	- test fixes for Win95
++
+ 0.23  2011-02-24
+         - compatibility with Perl 5.14 (ANDK)
+ 
+diff --git a/MYMETA.json b/MYMETA.json
+diff --git a/t/carped.t b/t/carped.t
+index cc4df22..60c9a4d 100644
+--- a/t/carped.t
++++ b/t/carped.t
+@@ -29,8 +29,8 @@ test_test "Warnings and Carpings mixed, asked only for like warnings";
+ test_out "not ok 1";
+ my @test_diag = (
+ "found warning: Warning 1 at $tcarped line 13.",
+-"found carped warning: Carping 2 at $tcarped line 14",
+-"found carped warning: Carping 3 at $tcarped line 15",
++"found carped warning: Carping 2 at $tcarped line 14".($Carp::VERSION gt "1.24"?".":""),
++"found carped warning: Carping 3 at $tcarped line 15".($Carp::VERSION gt "1.24"?".":""),
+ "found warning: Warning 4 at $tcarped line 16.",
+ "expected to find carped warning: (?-xism:1)",
+ "expected to find carped warning: (?-xism:2)",
+@@ -56,8 +56,8 @@ test_out "not ok 1";
+ test_fail +10;
+ test_diag 
+ "found warning: Warning 1 at $tcarped line 13.",
+-"found carped warning: Carping 2 at $tcarped line 14",
+-"found carped warning: Carping 3 at $tcarped line 15",
++"found carped warning: Carping 2 at $tcarped line 14".($Carp::VERSION gt "1.24"?".":""),
++"found carped warning: Carping 3 at $tcarped line 15".($Carp::VERSION gt "1.24"?".":""),
+ "found warning: Warning 4 at $tcarped line 16.",
+ "expected to find carped warning: Warning 1",
+ "expected to find carped warning: Carping 2",
+diff --git a/t/warning_is.t b/t/warning_is.t
+index 33b0696..e18aaa6 100644
+--- a/t/warning_is.t
++++ b/t/warning_is.t
+@@ -93,8 +93,9 @@ sub _found_carp_msg {
+                          "at",
+                          __FILE__,
+                          "line",
+-                         CARP_LINE) )     # Note the difference, that carp msg
+-        : "didn't find a warning";       # aren't finished by '.'
++                         CARP_LINE.($Carp::VERSION gt "1.24"?".":"")
++	    ) )     # Note the difference, that carp msg
++        : "didn't find a warning";       # weren't finished by '.'
+ }
+ 
+ sub _exp_carp_msg {
+diff --git a/t/warning_like.t b/t/warning_like.t
+index bd4a7dd..87347b0 100644
+--- a/t/warning_like.t
++++ b/t/warning_like.t
+@@ -96,8 +96,9 @@ sub _found_carp_msg {
+                          "at",
+                          __FILE__,
+                          "line",
+-                         CARP_LINE) )     # Note the difference, that carp msg
+-        : "didn't find a warning";       # aren't finished by '.'
++                         CARP_LINE.($Carp::VERSION gt "1.24"?".":"")
++	    ) )     # Note the difference, that carp msg
++        : "didn't find a warning";       # wasn't finished by '.'
+ }
+ 
+ sub _exp_carp_msg {
+diff --git a/t/warnings_are.t b/t/warnings_are.t
+index a14af98..6b47dfc 100644
+--- a/t/warnings_are.t
++++ b/t/warnings_are.t
+@@ -85,7 +85,9 @@ sub _found_warn_msg {
+ }
+ 
+ sub _found_carp_msg {
+-    @_ ? map({"found carped warning: $_ at ". __FILE__ . " line " . CARP_LINE} @_)
++    @_ ? map({"found carped warning: $_ at ". __FILE__ . " line " . CARP_LINE
++		.($Carp::VERSION gt "1.24"?".":"")
++	     } @_)
+        : "didn't find a warning";
+ }
+ 
+diff --git a/t/warnings_like.t b/t/warnings_like.t
+index 4ec22c2..e1d17b9 100644
+--- a/t/warnings_like.t
++++ b/t/warnings_like.t
+@@ -88,7 +88,9 @@ sub _found_warn_msg {
+ }
+ 
+ sub _found_carp_msg {
+-    @_ ? map({"found carped warning: $_ at ". __FILE__ . " line " . CARP_LINE} @_)
++    @_ ? map({"found carped warning: $_ at ". __FILE__ . " line " . CARP_LINE
++		.($Carp::VERSION gt "1.24"?".":"")
++	     } @_)
+        : "didn't find a warning";
+ }
+ 
+commit 3c9c219542cd7ea1b963e25614dcd1444305ee71
+Author: Reini Urban <rurban@cpanel.net>
+Date:   Fri Feb 10 16:00:29 2012 -0600
+
+    test fixes for Win95
+
+diff --git a/t/carped.t b/t/carped.t
+index 60c9a4d..6023652 100644
+--- a/t/carped.t
++++ b/t/carped.t
+@@ -16,11 +16,8 @@ sub foo {
+     warn "Warning 4";
+ }
+ 
+-#use File::Spec;
+-#my $tcarped = File::Spec->catfile('t','carped.t');
+-#$tcarped =~ s/\\/\//g if $^O eq 'MSWin32';
+-#also will not work on VMS
+-my $tcarped = 't/carped.t';
++# VMS should work because of vmsify on unix paths
++my $tcarped = $^O eq 'MSWin32'?'t\carped.t':'t/carped.t';
+ 
+ test_out "ok 1";
+ warnings_like {foo()} [map {qr/$_/} (1 .. 4)];

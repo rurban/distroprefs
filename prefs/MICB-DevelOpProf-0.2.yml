@@ -1,0 +1,6 @@
+---
+comment: "Support newer perls"
+match:
+  distribution: "^MICB/DevelOpProf-0\.2\.tar\.gz$"
+patches:
+  - "/home/rurban/.cpan/DevelOpProf-0.2.patch"

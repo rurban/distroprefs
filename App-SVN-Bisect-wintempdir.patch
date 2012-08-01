@@ -1,0 +1,28 @@
+diffbk App-SVN-Bisect-1.0
+
+diff -u App-SVN-Bisect-1.0/t/01_basic_operation.t~ App-SVN-Bisect-1.0/t/01_basic_operation.t
+--- App-SVN-Bisect-1.0/t/01_basic_operation.t~	2009-12-04 16:57:40.000000000 +0100
++++ App-SVN-Bisect-1.0/t/01_basic_operation.t	2010-07-28 10:25:44.790465700 +0200
+@@ -2,6 +2,7 @@
+ use warnings;
+ 
+ use File::Temp qw(tempdir);
++use Cwd qw(getcwd);
+ use Test::More;
+ use Test::Exception;
+ use Test::Output;
+@@ -12,6 +13,7 @@
+ BEGIN { $tests = 0; };
+ plan tests => $tests;
+ 
++my $curdir = getcwd();
+ my $tempdir = tempdir( CLEANUP => 1 );
+ chdir($tempdir);
+ mkdir(".svn");
+@@ -294,5 +296,6 @@
+ 
+ 
+ # test ->exit()
++chdir $curdir;
+ App::SVN::Bisect->exit(0);
+ exit(1);

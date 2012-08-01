@@ -1,0 +1,13 @@
+--- Makefile.PL~	2011-06-18 16:27:16.000000000 -0500
++++ Makefile.PL	2011-06-18 16:33:18.000000000 -0500
+@@ -30,8 +30,10 @@
+     'Carp::Clan' => '6.00',
+     'Moose' => '1.06',
+     'Scalar::Util' => '1.19',
++    'Sub::Identify' => '0',
+     'Sub::Install' => '0.924',
+     'Sub::Name' => '0',
++    'Variable::Magic' => '0',
+     'namespace::clean' => '0.08'
+   },
+   'VERSION' => '0.27',

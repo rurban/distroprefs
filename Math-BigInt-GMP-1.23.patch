@@ -1,0 +1,38 @@
+difforig Math-BigInt-GMP-1.23
+
+2007-07-28  Reini Urban <rurban@x-ray.at>
+
+diff -ub  Math-BigInt-GMP-1.23/GMP.xs.orig
+--- Math-BigInt-GMP-1.23/GMP.xs.orig	2007-07-25 18:15:05.000000000 +0000
++++ Math-BigInt-GMP-1.23/GMP.xs	2007-07-28 20:22:35.593750000 +0000
+@@ -15,11 +15,11 @@
+ #define NEW_GMP_MPZ_T_INIT RETVAL = malloc (sizeof(mpz_t)); mpz_init(*RETVAL);
+ #define GMP_GET_ARG_0 	   if (sv_derived_from(x, "Math::BigInt::GMP")) {\
+ 			   IV tmp = SvIV((SV*)SvRV(x));\
+-			   TEMP = (mpz_t*) tmp;\
++			   TEMP = INT2PTR(mpz_t*, tmp);\
+ 		  } else { croak("x is not of type Math::BigInt::GMP"); }
+ #define GMP_GET_ARG_1 	   if (sv_derived_from(y, "Math::BigInt::GMP")) {\
+ 			   IV tmp = SvIV((SV*)SvRV(y));\
+-			   TEMP_1 = (mpz_t*) tmp;\
++			   TEMP_1 = INT2PTR(mpz_t*, tmp);\
+ 		  } else { croak("y is not of type Math::BigInt::GMP"); }
+ #define GMP_GET_ARGS_0_1   GMP_GET_ARG_0; GMP_GET_ARG_1;
+ 
+diff -ub  Math-BigInt-GMP-1.23/typemap.orig
+--- Math-BigInt-GMP-1.23/typemap.orig	2002-12-15 13:05:05.000000000 +0000
++++ Math-BigInt-GMP-1.23/typemap	2007-07-28 20:18:51.843750000 +0000
+@@ -4,11 +4,11 @@
+ MPZ
+         if (sv_derived_from($arg, \"Math::BigInt::GMP\")) {
+             IV tmp = SvIV((SV*)SvRV($arg));
+-            $var = ($type) tmp;
++            $var = INT2PTR($type, tmp);
+         }
+         else
+             croak(\"$var is not of type Math::BigInt::GMP\")
+ 
+ OUTPUT
+ MPZ
+-	sv_setref_pv($arg, \"Math::BigInt::GMP\", (void*)$var);
++	sv_setref_pv($arg, \"Math::BigInt::GMP\", INT2PTR(void*, $var));

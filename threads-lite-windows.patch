@@ -1,0 +1,15 @@
+To fix cygwin and probably windows also:
+src/resources.c:64: error: external linkage required for symbol 'end_locker' because of 'dllexport' attribute
+
+diff -u ./src/resources.c~ ./src/resources.c
+--- ./src/resources.c~	2011-03-05 14:45:35.000000000 +0100
++++ ./src/resources.c	2011-05-11 09:56:10.983500000 +0200
+@@ -61,7 +61,7 @@
+ 	COND_DESTROY(&counter.condvar);
+ }
+ 
+-static XS(end_locker) {
++XS(end_locker) {
+ 	dVAR; dXSARGS;
+ 	perl_mutex* mutex;
+ 

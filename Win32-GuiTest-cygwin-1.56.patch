@@ -1,0 +1,31 @@
+diff -bu ./GuiTest.xs~ ./GuiTest.xs
+--- ./GuiTest.xs~	2008-10-01 13:32:59.000000000 +0200
++++ ./GuiTest.xs	2010-05-22 02:39:35.579625000 +0200
+@@ -24,13 +24,13 @@
+ 
+ 
+ #ifdef __cplusplus
+-//extern "C" {
++extern "C" {
+ #endif
+ #include "EXTERN.h"
+ #include "perl.h"
+ #include "XSUB.h"
+ #ifdef __cplusplus
+-//}
++}
+ #endif
+ 
+ #define MAX_DATA_BUF 1024
+diff -bu ./Makefile.PL~ ./Makefile.PL
+--- ./Makefile.PL~	2008-10-01 13:32:59.000000000 +0200
++++ ./Makefile.PL	2010-05-22 02:45:13.548375000 +0200
+@@ -29,7 +29,7 @@
+ 	(( $^O =~ /cygwin/i) ? (
+ 			LD		=> 'g++',
+ 			LDDLFLAGS	=> '-shared',
+-			LIBS		=> ['-L/usr/lib/w32api -lgdi32'],
++			LIBS		=> ['-L/usr/lib/w32api -lgdi32 -lssp'],
+ 	) : ()),
+ 	ABSTRACT_FROM			=> 'lib/Win32/GuiTest.pm',
+ 	AUTHOR				=> 'Dennis K. Paulsen (ctrondlp@cpan.org), Ernesto Guisado (erngui@acm.org)',

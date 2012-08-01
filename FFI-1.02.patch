@@ -1,0 +1,91 @@
+difforig FFI-1.02
+
+2007-12-26  Reini Urban <rurban@x-ray.at>
+
+diff -ub  FFI-1.02/Makefile.PL.orig
+--- FFI-1.02/Makefile.PL.orig	2007-02-07 09:31:18.000000000 +0000
++++ FFI-1.02/Makefile.PL	2007-12-26 19:18:49.656250000 +0000
+@@ -37,9 +37,7 @@
+ 
+     open my $fh, ">", "$probe.c" or die "open: $!";
+     print $fh <<'.';
+-#include <avcall.h>
+ #include <callback.h>
+-#include <trampoline_r.h>
+ 
+ int
+ main(int argv, char ** argc) {
+@@ -55,8 +53,8 @@
+     require ExtUtils::MM;
+     my $mm = MM->new({NAME => 'FFI'});
+ 
+-    print "$mm->{CC} $libs $probe.c 2> $probe.err\n";
+-    system "$mm->{CC} $libs -o $probe.exe $probe.c 2> $probe.err" and die << ".";
++    print "$mm->{CC} $probe.c $libs 2> $probe.err\n";
++    system "$mm->{CC} $probe.c $libs -o $probe.exe 2> $probe.err" and die << ".";
+ *** ffcall probe compilation failed. Do you have the ffcall library (and
+     its development files) installed? If not, you can fetch it at:
+ 
+@@ -68,7 +66,7 @@
+     The compilation error messages are available at $probe.err .
+ 
+ .
+-    
++
+     unlink "$probe.$_" for qw(c o exe err);
+ 
+     return (LIBS => [$libs]);
+diff -ub  FFI-1.02/t/Support.pm.orig
+--- FFI-1.02/t/Support.pm.orig	2007-02-02 14:17:02.000000000 +0000
++++ FFI-1.02/t/Support.pm	2007-12-26 19:12:50.203125000 +0000
+@@ -40,7 +40,8 @@
+ 
+ use vars qw($libc $libm);
+ if ($^O eq 'MSWin32') {
+-    $libc = load("MSVCRT40") || load("MSVCRT20");
++    $libc = load("MSVCRT80") || load("MSVCRT71") || load("MSVCRT70") ||
++	    load("MSVCRT60") || load("MSVCRT40") || load("MSVCRT20");
+     $libm = $libc;
+ }
+ else {
+@@ -51,6 +52,10 @@
+             # unintelligible to dlopen().
+             $libc = load("libc.so.6");
+         }
++        elsif ($^O eq "cygwin") {
++	  $libc = load("cygwin1.dll");
++	  $libm = $libc;
++	}
+     }
+     if (!$libc) {
+         die "Can't load -lc: ", DynaLoader::dl_error(), "\nGiving up.\n";
+diff -ub  FFI-1.02/t/win32.t.orig
+--- FFI-1.02/t/win32.t.orig	2007-02-02 14:17:02.000000000 +0000
++++ FFI-1.02/t/win32.t	2007-12-26 19:09:39.937500000 +0000
+@@ -2,7 +2,7 @@
+ 
+ use Test::More;
+ 
+-if ($^O ne "MSWin32") {
++if ($^O ne "MSWin32" and $^O ne "cygwin") {
+     plan skip_all => 'Windows specific tests';
+ } else {
+     plan tests => 12;
+@@ -25,6 +25,7 @@
+ $d = substr($d, 0, $n);
+ 
+ ($cwd = cwd) =~ s#/#\\#g;
++$cwd = Win32::GetCwd() if $^O eq "cygwin";
+ is $d, $cwd;
+ 
+ $d = ' ' x 200;
+@@ -38,7 +39,8 @@
+ $d = ' ' x 200;
+ $n = $GetModuleFileName->($h, $d, 200);
+ $d = substr($d, 0, $n);
+-is $d, $^X;
++$exp = $^O eq "MSWin32" ? $^X : Cygwin::posix_to_win_path($^X);
++is $d, $exp;
+ 
+ $EnumWindows = $user32->function("EnumWindows", 'sIII');
+ 

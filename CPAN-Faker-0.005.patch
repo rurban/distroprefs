@@ -1,0 +1,32 @@
+difforig CPAN-Faker-0.005
+
+diff -u  CPAN-Faker-0.005/lib/CPAN/Faker.pm.orig
+--- CPAN-Faker-0.005/lib/CPAN/Faker.pm.orig	2008-05-07 16:22:49.000000000 +0200
++++ CPAN-Faker-0.005/lib/CPAN/Faker.pm	2008-06-05 14:38:55.750000000 +0200
+@@ -8,11 +8,11 @@
+ 
+ =head1 VERSION
+ 
+-version 0.004
++version 0.005
+ 
+ =cut
+ 
+-our $VERSION = '0.004';
++our $VERSION = '0.005';
+ 
+ use CPAN::Checksums ();
+ use Compress::Zlib ();
+@@ -170,8 +170,10 @@
+   my $iter = File::Next::files($self->source);
+ 
+   while (my $file = $iter->()) {
+-    my $dist = $self->dist_class->from_file($file);
+-    $self->add_dist($dist);
++    if ($file =~ /\.(yml|yaml)$/) {
++      my $dist = $self->dist_class->from_file($file);
++      $self->add_dist($dist);
++    }
+   }
+ 
+   $self->_update_author_checksums;

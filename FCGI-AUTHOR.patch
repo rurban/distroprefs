@@ -1,0 +1,15 @@
+
+diff -u  FCGI-0.71/Makefile.PL.orig
+--- FCGI-0.71/Makefile.PL.orig	2009-12-08 13:09:45.000000000 +0100
++++ FCGI-0.71/Makefile.PL	2011-01-04 17:19:43.026374500 +0100
+@@ -70,8 +70,8 @@
+ 
+ push(@extras,
+     ABSTRACT => 'Fast CGI module',
+-    AUTHOR   => 'Sven Verdoolaege (skimo@kotnet.org)')
+-        if ($ExtUtils::MakeMaker::VERSION >= 5.4301); 
++    AUTHOR   => ['Sven Verdoolaege (skimo@kotnet.org)'])
++        if ($ExtUtils::MakeMaker::VERSION >= 5.4301);
+ 
+ $plfiles = { 'echo.PL' => 'echo.fpl', 
+ 	     'remote.PL' => 'remote.fpl',

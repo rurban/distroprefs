@@ -1,0 +1,6 @@
+---
+comment: "some 5.14 fixes"
+match:
+  distribution: "^GSAR/Alias-2.32\.tar\.gz$"
+patches:
+  - "/home/rurban/.cpan/Alias-2.32.patch"

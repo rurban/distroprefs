@@ -1,0 +1,10 @@
+--- Class-MethodMaker-2.18-CEL0x2/MANIFEST~	2011-04-16 10:14:53.000000000 -0500
++++ Class-MethodMaker-2.18-CEL0x2/MANIFEST	2011-09-28 08:55:46.000000000 -0500
+@@ -23,7 +23,6 @@
+ META.yml
+ MethodMaker.xs
+ README
+-SIGNATURE
+ t/array.t
+ t/basic.t
+ t/diffclass.t

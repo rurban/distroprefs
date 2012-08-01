@@ -1,0 +1,5 @@
+---
+match:
+  distribution: "Devel-Size-0.77_50"
+patches:
+  - "../../Devel-Size-0.77_50.patch"

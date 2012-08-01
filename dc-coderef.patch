@@ -1,0 +1,198 @@
+Only in .: blib
+Only in .: dc-coderef.patch
+diff -ru ../Devel-Cycle-1.07/lib/Devel/Cycle.pm ./lib/Devel/Cycle.pm
+--- ../Devel-Cycle-1.07/lib/Devel/Cycle.pm	2006-05-23 21:29:32.000000000 -0500
++++ ./lib/Devel/Cycle.pm	2007-08-30 14:14:59.000000000 -0500
+@@ -55,7 +55,7 @@
+       _do_report(++$counter,shift)
+     }
+   }
+-  _find_cycle($ref,{},$callback,1,());
++  _find_cycle($ref,{},$callback,1,{},());
+ }
+ 
+ sub find_cycle {
+@@ -67,7 +67,7 @@
+       _do_report(++$counter,shift)
+     }
+   }
+-  _find_cycle($ref,{},$callback,0,());
++  _find_cycle($ref,{},$callback,0,{},());
+ }
+ 
+ sub _find_cycle {
+@@ -75,59 +75,93 @@
+   my $seenit    = shift;
+   my $callback  = shift;
+   my $inc_weak_refs = shift;
+-  my %complain;
++  my $complain  = shift;
+   my @report  = @_;
+ 
+   return unless ref $current;
+ 
+-  # note: it seems like you could just do:
+-  #
+-  #    return if isweak($current);
+-  #
+-  # but strangely the weak flag doesn't seem to survive the copying,
+-  # so the test has to happen directly on the reference in the data
+-  # structure being scanned.
+-
+   if ($seenit->{$current}) {
+     $callback->(\@report);
+     return;
+   }
+   $seenit->{$current}++;
+ 
+-  my $type = _get_type($current);
++  _find_cycle_dispatch($current,{%$seenit},$callback,$inc_weak_refs,$complain,@report);
++}
+ 
+-  if ($type eq 'SCALAR') {
+-     return if !$inc_weak_refs && isweak($current);
+-    _find_cycle($$current,{%$seenit},$callback,$inc_weak_refs,
+-		(@report,['SCALAR',undef,$current => $$current,$inc_weak_refs?isweak($current):()]));
+-  }
++sub _find_cycle_dispatch {
++  my $type = _get_type($_[0]);
+ 
+-  elsif ($type eq 'ARRAY') {
+-    for (my $i=0; $i<@$current; $i++) {
+-      next if !$inc_weak_refs && isweak($current->[$i]);
+-      _find_cycle($current->[$i],{%$seenit},$callback,$inc_weak_refs,
+-		  (@report,['ARRAY',$i,$current => $current->[$i],$inc_weak_refs?isweak($current->[$i]):()]));
+-    }
++  my $sub = do { no strict 'refs'; \&{"_find_cycle_$type"} };
++  die "Invalid type: $type" unless $sub;
++
++  $sub->(@_);
++}
++
++sub _find_cycle_SCALAR {
++  my $current   = shift;
++  my $seenit    = shift;
++  my $callback  = shift;
++  my $inc_weak_refs = shift;
++  my $complain  = shift;
++  my @report  = @_;
++
++  return if !$inc_weak_refs && isweak($current);
++  _find_cycle($$current,{%$seenit},$callback,$inc_weak_refs,$complain,
++              (@report,['SCALAR',undef,$current => $$current,$inc_weak_refs?isweak($current):()]));
++}
++
++sub _find_cycle_ARRAY {
++  my $current   = shift;
++  my $seenit    = shift;
++  my $callback  = shift;
++  my $inc_weak_refs = shift;
++  my $complain  = shift;
++  my @report  = @_;
++
++  for (my $i=0; $i<@$current; $i++) {
++    next if !$inc_weak_refs && isweak($current->[$i]);
++    _find_cycle($current->[$i],{%$seenit},$callback,$inc_weak_refs,$complain,
++                (@report,['ARRAY',$i,$current => $current->[$i],$inc_weak_refs?isweak($current->[$i]):()]));
+   }
+-  elsif ($type eq 'HASH') {
+-    for my $key (sort keys %$current) {
+-       next if !$inc_weak_refs && isweak($current->{$key});
+-      _find_cycle($current->{$key},{%$seenit},$callback,$inc_weak_refs,
+-		  (@report,['HASH',$key,$current => $current->{$key},$inc_weak_refs?isweak($current->{$key}):()]));
+-    }
++}
++
++sub _find_cycle_HASH {
++  my $current   = shift;
++  my $seenit    = shift;
++  my $callback  = shift;
++  my $inc_weak_refs = shift;
++  my $complain  = shift;
++  my @report  = @_;
++
++  for my $key (sort keys %$current) {
++    next if !$inc_weak_refs && isweak($current->{$key});
++    _find_cycle($current->{$key},{%$seenit},$callback,$inc_weak_refs,$complain,
++                (@report,['HASH',$key,$current => $current->{$key},$inc_weak_refs?isweak($current->{$key}):()]));
+   }
+-  elsif ($type eq 'CODE') {
+-    if (HAVE_PADWALKER) {
+-      my $closed_vars = PadWalker::closed_over( $current );
+-      foreach my $varname ( sort keys %$closed_vars ) {
+-        my $value = $closed_vars->{$varname};
+-        next if !$inc_weak_refs && isweak($$value);
+-        _find_cycle( $$value,{%$seenit},$callback,$inc_weak_refs,
+-		     (@report,['CODE',$varname,$current => $$value,$inc_weak_refs?isweak($$value):()]));
+-      }
+-    } elsif (!$complain{$current}++ && !$QUIET) {
++}
++
++sub _find_cycle_CODE {
++  my $current   = shift;
++  my $seenit    = shift;
++  my $callback  = shift;
++  my $inc_weak_refs = shift;
++  my $complain  = shift;
++  my @report  = @_;
++
++  unless (HAVE_PADWALKER) {
++    if (!$complain->{$current}++ && !$QUIET) {
+       carp "A code closure was detected in but we cannot check it unless the PadWalker module is installed";
+     }
++
++    return;
++  }
++
++  my $closed_vars = PadWalker::closed_over( $current );
++  foreach my $varname ( sort keys %$closed_vars ) {
++    my $value = $closed_vars->{$varname};
++    _find_cycle_dispatch($value,{%$seenit},$callback,$inc_weak_refs,$complain,
++                         (@report,['CODE',$varname,$current => $value]));
+   }
+ }
+ 
+Only in .: Makefile
+Only in .: pm_to_blib
+diff -ru ../Devel-Cycle-1.07/t/Devel-Cycle.t ./t/Devel-Cycle.t
+--- ../Devel-Cycle-1.07/t/Devel-Cycle.t	2005-01-21 16:58:57.000000000 -0600
++++ ./t/Devel-Cycle.t	2007-08-30 14:12:16.000000000 -0500
+@@ -5,9 +5,11 @@
+ 
+ # change 'tests => 1' to 'tests => last_test_to_print';
+ 
+-use Test::More tests => 7;
++use strict;
++
++use Test::More tests => 8;
+ use Scalar::Util qw(weaken isweak);
+-BEGIN { use_ok('Devel::Cycle') };
++BEGIN{use_ok('Devel::Cycle')}
+ 
+ #########################
+ 
+@@ -57,3 +59,24 @@
+ find_weakened_cycle($test,sub {$counter++});
+ is($counter,4,'found four cycles (including weakened ones) in $test after second weaken()');
+ 
++SKIP:
++{
++    skip 'These tests require PadWalker 1.0+', 1
++        unless Devel::Cycle::HAVE_PADWALKER;
++
++    $counter = 0;
++
++    my %cyclical = ( a => [],
++                     b => {},
++                   );
++    $cyclical{a}[0]   = $cyclical{a};
++    $cyclical{b}{key} = $cyclical{a};
++
++    my @cyclical = [];
++    $cyclical[0] = \@cyclical;
++
++    my $sub = sub { return \@cyclical, \%cyclical; };
++
++    find_cycle($sub,sub {$counter++});
++    is($counter,3,'found three cycles in $cyclical closure');
++}

@@ -1,0 +1,33 @@
+2004-08-12 20:41:22 rurban@x-ray.at
+
+	Builds out of the box. just make the tests run smoother.
+
+--- C-DynaLib-0.55/test.pl~	1998-04-30 00:02:17.000000000 +0100
++++ C-DynaLib-0.55/test.pl	2004-08-12 19:46:34.930374600 +0100
+@@ -47,7 +47,8 @@
+ $libc = new C::DynaLib($Config{'libc'} || "-lc");
+ 
+ if (! $libc) {
+-  if ($^O =~ /win32/i) {
++  # cygwin has no shared libc.so, just static. same for libm.so
++  if ($^O =~ /(MSWin32)|(cygwin)/) {
+     $libc = new C::DynaLib("MSVCRT40") || new C::DynaLib("MSVCRT20");
+   } elsif ($^O =~ /linux/i) {
+     # Some glibc versions install "libc.so" as a linker script,
+@@ -197,12 +198,15 @@
+   $got = &$sub(-1);
+   
+   # Can't do this because it's broken in too many Perl versions:
+-  # $expected = unpack("I", pack("i", -1));
++  if ($^O eq 'cygwin') {
++    $expected = unpack("I", pack("i", -1));
++  } else {
+   $expected = 0;
+   for ($i = 1; $i > 0; $i <<= 1) {
+     $expected += $i;
+   }
+   $expected -= $i;
++  }
+   assert(1, $got, $expected);
+   
+   $int_size = length(pack("i",0));

@@ -1,0 +1,19 @@
+difforig Math-BigInt-GMP-1.22
+
+2007-07-23  Reini Urban <rurban@x-ray.at>
+
+diff -ub  Math-BigInt-GMP-1.22/GMP.xs.orig
+--- Math-BigInt-GMP-1.22/GMP.xs.orig	2007-05-14 16:47:14.000000000 +0000
++++ Math-BigInt-GMP-1.22/GMP.xs	2007-07-23 18:18:29.687500000 +0000
+@@ -33,9 +33,9 @@
+   CODE:
+     NEW_GMP_MPZ_T;
+     /* using the IV directly is a bit faster */
+-    if (SvIOK(x))
++    if (SvUOK(x))
+       {
+-      mpz_init_set_si(*RETVAL, SvIV(x));
++      mpz_init_set_si(*RETVAL, (UV)SvUV(x));
+       }
+     else
+       {

@@ -1,0 +1,5 @@
+---
+match:
+  distribution: "B-C-1.42"
+patches:
+  - "../../B-C-1.42.patch"

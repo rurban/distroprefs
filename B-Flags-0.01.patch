@@ -1,0 +1,264 @@
+difforig B-Flags-0.02
+
+2008-03-02  Reini Urban <rurban@x-ray.at>
+
+diff -ub  B-Flags-0.02/Changes.orig
+--- B-Flags-0.02/Changes.orig	2001-05-13 18:35:25.000000000 +0000
++++ B-Flags-0.02/Changes	2008-03-02 21:23:13.671875000 +0000
+@@ -1,5 +1,9 @@
+ Revision history for Perl extension B::Flags.
+ 
++0.02  2008-03-02 22:11:08 rurban@cpan.org
++	- updates for 5.10 and 5.11@33408
++	- prefixed op want flags with "WANT_"
++
+ 0.01  Sun May 13 19:35:25 2001
+ 	- original version; created by h2xs 1.20 with options
+ 		-A -n B::Flags
+diff -ub  B-Flags-0.02/Flags.pm.orig
+--- B-Flags-0.02/Flags.pm.orig	2001-05-13 19:50:05.000000000 +0000
++++ B-Flags-0.02/Flags.pm	2008-03-02 21:08:27.328125000 +0000
+@@ -9,7 +9,7 @@
+ require DynaLoader;
+ our @ISA = qw(DynaLoader);
+ 
+-our $VERSION = '0.01';
++our $VERSION = '0.02';
+ 
+ bootstrap B::Flags $VERSION;
+ 
+diff -ub  B-Flags-0.02/Flags.xs.orig
+--- B-Flags-0.02/Flags.xs.orig	2001-05-13 19:51:19.000000000 +0000
++++ B-Flags-0.02/Flags.xs	2008-03-02 21:53:18.625000000 +0000
+@@ -14,16 +14,16 @@
+         RETVAL = newSVpvn("", 0);
+         switch (o->op_flags & OPf_WANT) {
+         case OPf_WANT_VOID:
+-            sv_catpv(RETVAL, ",VOID");
++            sv_catpv(RETVAL, ",WANT_VOID");
+             break;
+         case OPf_WANT_SCALAR:
+-            sv_catpv(RETVAL, ",SCALAR");
++            sv_catpv(RETVAL, ",WANT_SCALAR");
+             break;
+         case OPf_WANT_LIST:
+-            sv_catpv(RETVAL, ",LIST");
++            sv_catpv(RETVAL, ",WANT_LIST");
+             break;
+         default:
+-            sv_catpv(RETVAL, ",UNKNOWN");
++            sv_catpv(RETVAL, ",WANT_UNKNOWN");
+             break;
+         }
+         if (o->op_flags & OPf_KIDS)
+@@ -55,6 +55,16 @@
+                 sv_catpv(RETVAL, ",TARGET_MY");
+ #endif
+         }
++        if (o->op_type == OP_ENTERITER || o->op_type == OP_ITER) {
++#ifdef OPpITER_REVERSED
++            if (o->op_private & OPpITER_REVERSED)
++                sv_catpv(RETVAL, ",ITER_REVERSED");
++#endif
++#ifdef OPpITER_DEF
++            if (o->op_private & OPpITER_DEF)
++                sv_catpv(RETVAL, ",ITER_DEF");
++#endif
++        }
+ #ifdef OPpREFCOUNTED
+         else if (o->op_type == OP_LEAVESUB ||
+                  o->op_type == OP_LEAVE ||
+@@ -80,7 +90,22 @@
+                 sv_catpv(RETVAL, ",BACKWARDS");
+         }
+ #endif
++#ifdef OPpRUNTIME
++        else if (o->op_type == OP_MATCH ||
++                 o->op_type == OP_SUBST) {
++            if (o->op_private & OPpRUNTIME)
++                sv_catpv(RETVAL, ",RUNTIME");
++        }
++#endif
+         else if (o->op_type == OP_TRANS) {
++#ifdef OPpTRANS_FROM_UTF
++            if (o->op_private & OPpTRANS_FROM_UTF)
++                sv_catpv(RETVAL, ",FROM_UTF");
++#endif
++#ifdef OPpTRANS_TO_UTF
++            if (o->op_private & OPpTRANS_TO_UTF)
++                sv_catpv(RETVAL, ",TO_UTF");
++#endif
+ #ifdef OPpTRANS_SQUASH
+             if (o->op_private & OPpTRANS_SQUASH)
+                 sv_catpv(RETVAL, ",SQUASH");
+@@ -173,6 +198,14 @@
+ #endif
+             }
+         }
++#ifdef OPpPAD_STATE
++        else if ((o->op_type == OP_PADSV) && (o->op_private & OPpPAD_STATE))
++		sv_catpv(RETVAL, ",PAD_STATE");
++#endif
++#ifdef OPpDONT_INIT_GV
++        else if ((o->op_type == OP_RV2GV) && (o->op_private & OPpDONT_INIT_GV))
++		sv_catpv(RETVAL, ",DONT_INIT_GV");
++#endif
+         else if (o->op_type == OP_CONST) {
+ #ifdef OPpCONST_BARE
+             if (o->op_private & OPpCONST_BARE)
+@@ -194,6 +227,14 @@
+             if (o->op_private & OPpCONST_ENTERED)
+                 sv_catpv(RETVAL, ",ENTERED");
+ #endif
++#ifdef OPpCONST_NOVER
++            if (o->op_private & OPpCONST_NOVER)
++                sv_catpv(RETVAL, ",NOVER");
++#endif
++#ifdef OPpCONST_SHORTCIRCUIT
++            if (o->op_private & OPpCONST_SHORTCIRCUIT)
++                sv_catpv(RETVAL, ",SHORTCIRCUIT");
++#endif
+         }
+ #ifdef OPpFLIP_LINENUM
+         else if (o->op_type == OP_FLIP) {
+@@ -205,12 +246,16 @@
+                 sv_catpv(RETVAL, ",LINENUM");
+         } 
+ #endif
+-#ifdef OPpLVAL_INTRO
+         else if (o->op_type == OP_RV2CV) {
++#ifdef OPpLVAL_INTRO
+             if (o->op_private & OPpLVAL_INTRO)
+                 sv_catpv(RETVAL, ",INTRO");
+-        }
+ #endif
++#ifdef OPpMAY_RETURN_CONSTANT
++            if (o->op_private & OPpMAY_RETURN_CONSTANT)
++                sv_catpv(RETVAL, ",MAY_RETURN_CONSTANT");
++#endif
++        }
+ #ifdef OPpEARLY_CV
+         else if (o->op_type == OP_GV) {
+             if (o->op_private & OPpEARLY_CV)
+@@ -248,12 +293,31 @@
+             if (o->op_private & OPpSORT_REVERSE)
+                 sv_catpv(RETVAL, ",REVERSE");
+ #endif
++#ifdef OPpSORT_INPLACE
++            if (o->op_private & OPpSORT_INPLACE)
++                sv_catpv(RETVAL, ",INPLACE");
++#endif
++#ifdef OPpSORT_DESCEND
++            if (o->op_private & OPpSORT_DESCEND)
++                sv_catpv(RETVAL, ",DESCEND");
++#endif
++#ifdef OPpSORT_QSORT
++            if (o->op_private & OPpSORT_QSORT)
++                sv_catpv(RETVAL, ",QSORT");
++#endif
++#ifdef OPpSORT_STABLE
++            if (o->op_private & OPpSORT_STABLE)
++                sv_catpv(RETVAL, ",STABLE");
++#endif
+         }
+-#ifdef OPpDONE_SVREF
++#if defined(OPpDONE_SVREF) && (PERL_VERSION < 9)
+         else if (o->op_type == OP_THREADSV) {
+             if (o->op_private & OPpDONE_SVREF)
+                 sv_catpv(RETVAL, ",SVREF");
+         }
++#elsif defined(OPpDONE_SVREF)
++        else if (o->op_private & OPpDONE_SVREF)
++                sv_catpv(RETVAL, ",SVREF");
+ #endif
+         else if (o->op_type == OP_OPEN || o->op_type == OP_BACKTICK) {
+ #ifdef OPpOPEN_IN_RAW
+@@ -273,16 +337,47 @@
+                 sv_catpv(RETVAL, ",OUT_CRLF");
+ #endif
+         }
+-#ifdef OPpEXIT_VMSISH
+         else if (o->op_type == OP_EXIT) {
++#ifdef OPpEXIT_VMSISH
+             if (o->op_private & OPpEXIT_VMSISH)
+                 sv_catpv(RETVAL, ",EXIST_VMSISH");
+-        }
+ #endif
++#ifdef OPpHUSH_VMSISH
++            if (o->op_private & OPpHUSH_VMSISH)
++                sv_catpv(RETVAL, ",HUSH_VMSISH");
++#endif
++        }
+ #ifdef OPpLVAL_INTRO
+         if (o->op_flags & OPf_MOD && o->op_private & OPpLVAL_INTRO)
+             sv_catpv(RETVAL, ",INTRO");
+ #endif
++#ifdef OP_IS_FILETEST_ACCESS
++	if (OP_IS_FILETEST_ACCESS(o)) {
++#ifdef OPpFT_ACCESS
++            if (o->op_private & OPpFT_ACCESS)
++                sv_catpv(RETVAL, ",FT_ACCESS");
++#endif
++#ifdef OPpFT_STACKED
++            if (o->op_private & OPpFT_STACKED)
++                sv_catpv(RETVAL, ",FT_STACKED");
++#endif
++	}
++#endif
++#ifdef OPpGREP_LEX
++        else if (o->op_type == OP_MAPSTART  ||
++		 o->op_type == OP_MAPWHILE  ||
++                 o->op_type == OP_GREPSTART ||
++                 o->op_type == OP_GREPWHILE ) {
++            if (o->op_private & OPpGREP_LEX)
++                sv_catpv(RETVAL, ",GREP_LEX");
++	}
++#endif
++#ifdef OPpEVAL_HAS_HH
++        else if (o->op_type == OP_ENTEREVAL ) {
++            if (o->op_private & OPpEVAL_HAS_HH)
++                sv_catpv(RETVAL, ",EVAL_HAS_HH");
++	}
++#endif
+ 
+         if (SvCUR(RETVAL))
+             sv_chop(RETVAL, SvPVX(RETVAL)+1);
+@@ -300,7 +395,12 @@
+         RETVAL = newSVpvn("", 0);
+         flags = SvFLAGS(sv);
+         type = SvTYPE(sv);
++#ifdef SVs_PADBUSY
+         if (flags & SVs_PADBUSY)    sv_catpv(RETVAL, "PADBUSY,");
++#endif
++#ifdef SVs_PADSTALE
++        if (flags & SVs_PADSTALE)    sv_catpv(RETVAL, "PADSTALE,");
++#endif
+         if (flags & SVs_PADTMP)     sv_catpv(RETVAL, "PADTMP,");
+         if (flags & SVs_PADMY)      sv_catpv(RETVAL, "PADMY,");
+         if (flags & SVs_TEMP)       sv_catpv(RETVAL, "TEMP,");
+@@ -319,7 +419,9 @@
+         if (flags & SVf_OOK)        sv_catpv(RETVAL, "OOK,");
+         if (flags & SVf_FAKE)       sv_catpv(RETVAL, "FAKE,");
+         if (flags & SVf_READONLY)   sv_catpv(RETVAL, "READONLY,");
+-
++#ifdef SVf_BREAK
++        if (flags & SVf_BREAK)      sv_catpv(RETVAL, "BREAK,");
++#endif
+         if (flags & SVf_AMAGIC)     sv_catpv(RETVAL, "OVERLOAD,");
+         if (flags & SVp_IOK)        sv_catpv(RETVAL, "pIOK,");
+         if (flags & SVp_NOK)        sv_catpv(RETVAL, "pNOK,");
+@@ -345,6 +447,14 @@
+             if (HvSHAREKEYS(sv))    sv_catpv(RETVAL, "SHAREKEYS,");
+             if (HvLAZYDEL(sv))      sv_catpv(RETVAL, "LAZYDEL,");
+             break;
++        case SVt_PVAV:
++#ifdef SVpav_REAL
++            if (flags & SVpav_REAL)  sv_catpv(RETVAL, "REAL,");
++#endif
++#ifdef SVpav_REIFY
++            if (flags & SVpav_REIFY) sv_catpv(RETVAL, "REIFY,");
++#endif
++            break;
+         case SVt_PVGV:
+             if (GvINTRO(sv))        sv_catpv(RETVAL, "INTRO,");
+             if (GvMULTI(sv))        sv_catpv(RETVAL, "MULTI,");

@@ -1,0 +1,13 @@
+difforig t/20expect.t
+
+diff -u t/20expect.t.orig t/20expect.t
+--- t/20expect.t.orig	2008-01-16 01:31:21.000000000 +0100
++++ t/20expect.t	2008-06-09 13:46:40.093750000 +0200
+@@ -23,6 +23,7 @@
+ 	}
+ 	close $rc
+ 		or die "Can't flush .perldb: $!";
++	chmod 0600, '.perldb';
+ 	system $^X, '-Mblib', $program;
+ 	$? == 0
+ 		or die "Can't run $^X -Mblib $program: $?";
