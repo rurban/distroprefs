@@ -1,0 +1,60 @@
+From d9a2aecb95aadc3af1b8ff14201545fc81a8880d Mon Sep 17 00:00:00 2001
+From: Reini Urban <rurban@cpanel.net>
+Date: Mon, 5 Mar 2012 15:18:28 -0600
+Subject: [PATCH] 1.45_01: fix instable get_my_thread_id witrh extra DIE
+ handler, GLOBAL_openssl_mutex is static
+
+---
+ SSLeay.xs         |    6 ++++--
+ lib/Net/SSLeay.pm |    2 +-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/SSLeay.xs b/SSLeay.xs
+index ad89735..f49a587 100644
+--- a/SSLeay.xs
++++ b/SSLeay.xs
+@@ -105,9 +105,10 @@ DWORD GLOBAL_openssl_mutex_creator;
+ UV get_my_thread_id(void) /* returns threads->tid() value */
+ {
+     dSP;
+-    UV tid;
++    UV tid = 0;
+     int count;
+ 
++#ifdef USE_THREADS
+     ENTER;
+     SAVETMPS;
+     PUSHMARK(SP);
+@@ -123,6 +124,7 @@ UV get_my_thread_id(void) /* returns threads->tid() value */
+     PUTBACK;
+     FREETMPS;
+     LEAVE;
++#endif
+     
+     return tid;
+ }
+@@ -257,7 +259,7 @@ void openssl_threads_cleanup(void)
+ #endif
+ #endif    
+     for (i=0; i<CRYPTO_num_locks(); i++) MUTEX_DESTROY(&GLOBAL_openssl_mutex[i]);
+-    Safefree(GLOBAL_openssl_mutex);
++    /*Safefree(GLOBAL_openssl_mutex);  this is static */
+ }
+ 
+ #endif
+diff --git a/lib/Net/SSLeay.pm b/lib/Net/SSLeay.pm
+index cbd3545..ee628a3 100644
+--- a/lib/Net/SSLeay.pm
++++ b/lib/Net/SSLeay.pm
+@@ -61,7 +61,7 @@ $Net::SSLeay::slowly = 0;
+ $Net::SSLeay::random_device = '/dev/urandom';
+ $Net::SSLeay::how_random = 512;
+ 
+-$VERSION = '1.45';
++$VERSION = '1.45_01';
+ @ISA = qw(Exporter);
+ @EXPORT_OK = qw(
+     AT_MD5_WITH_RSA_ENCRYPTION
+-- 
+1.7.5.4
+

@@ -1,0 +1,16 @@
+difforig IO-Socket-SSL-1.51-D4Bwxn
+
+diff -u  IO-Socket-SSL-1.51-D4Bwxn/t/memleak_bad_handshake.t.orig
+--- IO-Socket-SSL-1.51-D4Bwxn/t/memleak_bad_handshake.t.orig	2011-12-06 15:16:52.000000000 -0600
++++ IO-Socket-SSL-1.51-D4Bwxn/t/memleak_bad_handshake.t	2011-12-07 09:25:56.725993900 -0600
+@@ -15,8 +15,8 @@
+     exit
+ }
+ 
+-if ( grep { $^O =~m{aix}i ) {
+-    print "1..0 # Skipped: might hang, see https://rt.cpan.org/Ticket/Display.html?id=72170\n":
++if ( $^O =~m{aix}i ) {
++    print "1..0 # Skipped: might hang, see https://rt.cpan.org/Ticket/Display.html?id=72170\n";
+     exit
+ }
+ 

@@ -1,0 +1,33 @@
+RT#73072: [PATCH] 2 cygwin failures with 1.001\
+
+diff -u  File-pushd-1.001-JElyDI/lib/File/pushd.pm.orig
+--- File-pushd-1.001-JElyDI/lib/File/pushd.pm.orig	2011-12-07 09:45:31.679118900 -0600
++++ File-pushd-1.001-JElyDI/lib/File/pushd.pm	2011-12-07 09:44:13.132243900 -0600
+@@ -39,6 +39,7 @@
+ 
+     my $tainted_dest;
+     eval { $tainted_dest   = $target_dir ? abs_path( $target_dir ) : $orig };
++    croak "Can't locate directory $target_dir: $@" if $@;
+ 
+     my $dest;
+     if ( $tainted_dest =~ $options->{untaint_pattern} ) {
+@@ -48,8 +49,6 @@
+       $dest = $tainted_dest;
+     }
+ 
+-    croak "Can't locate directory $target_dir: $@" if $@;
+-
+     if ($dest ne $orig) {
+         chdir $dest or croak "Can't chdir to $dest\: $!";
+     }
+diff -u  File-pushd-1.001-JElyDI/t/File_pushd.t.orig
+--- File-pushd-1.001-JElyDI/t/File_pushd.t.orig	2011-12-07 09:54:47.585368900 -0600
++++ File-pushd-1.001-JElyDI/t/File_pushd.t	2011-12-07 09:54:47.538493900 -0600
+@@ -196,6 +196,7 @@
+   delete @ENV{qw(IFS CDPATH ENV BASH_ENV)};
+   $^X =~ m{(.*)[\\/]perl.*$};
+   $ENV{PATH} = $1; # for taint mode
++  $ENV{PATH} = "$1:/usr/bin" if $^O eq 'cygwin';
+   $temp_dir = `$^X $program_file`;
+ }
+ 
