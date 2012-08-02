@@ -1,0 +1,16 @@
+[rt.cpan.org #73111]
+We have a config probe for struct assignment, USE_STRUCT_COPY, because
+older compilers cannot do that. Newer ones generate the same code.
+
+diff -bu JSON-XS-2.32-Edka0J/XS.xs~ JSON-XS-2.32-Edka0J/XS.xs
+--- JSON-XS-2.32-Edka0J/XS.xs~	2011-08-11 12:06:17.000000000 -0500
++++ JSON-XS-2.32-Edka0J/XS.xs	2011-12-08 12:16:47.674864945 -0600
+@@ -1562,7 +1562,7 @@
+ 
+   SvGROW (string, SvCUR (string) + 1); // should basically be a NOP
+ 
+-  dec.json  = *json;
++  StructCopy(json, &dec.json, JSON);
+   dec.cur   = SvPVX (string);
+   dec.end   = SvEND (string);
+   dec.err   = 0;
