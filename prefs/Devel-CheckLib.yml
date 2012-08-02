@@ -2,4 +2,4 @@
 match:
   distribution: "/Devel-CheckLib-"
 patches:
-  - "../../Devel-CheckLib-spacepath.patch"
+  - "RURBAN/patches/Devel-CheckLib-spacepath.patch"

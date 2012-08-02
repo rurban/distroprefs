@@ -2,4 +2,4 @@
 match:
   distribution: "Module-Find-010"
 patches:
-  - "../../Module-Find-010.patch"
+  - "RURBAN/patches/Module-Find-010.patch"

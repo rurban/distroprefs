@@ -2,4 +2,4 @@
 match:
   distribution: "Log-Log4perl-1.35"
 patches:
-  - "../../Log-Log4perl-1.35.patch"
+  - "RURBAN/patches/Log-Log4perl-1.35.patch"

@@ -2,4 +2,4 @@
 match:
   distribution: "LEONT/threads-lite-0.030"
 patches:
-  - "../../threads-lite-windows.patch"
+  - "RURBAN/patches/threads-lite-windows.patch"

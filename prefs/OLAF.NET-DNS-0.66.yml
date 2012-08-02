@@ -3,4 +3,4 @@ comment: "darwin ranlib"
 match:
   distribution: "^OLAF/Net-DNS-0\.66\.tar\.gz$"
 patches:
-  - "../../Net-DNS-0.66-darwin.patch"
+  - "RURBAN/patches/Net-DNS-0.66-darwin.patch"

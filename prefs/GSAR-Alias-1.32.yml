@@ -3,4 +3,4 @@ comment: "from Niko Tyni, debian"
 match:
   distribution: "^GSAR/Alias-2.32\.tar\.gz$"
 patches:
-  - "../../Alias-dce94627191-Tyni.patch"
+  - "RURBAN/patches/Alias-dce94627191-Tyni.patch"

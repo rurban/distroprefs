@@ -2,4 +2,4 @@
 match:
   distribution: "Devel-LexAlias-0.04"
 patches:
-  - "../../Devel-LexAlias-0.04.patch"
+  - "RURBAN/patches/Devel-LexAlias-0.04.patch"

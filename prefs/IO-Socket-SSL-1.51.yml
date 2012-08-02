@@ -2,4 +2,4 @@
 match:
   distribution: "SULLR/IO-Socket-SSL-1\.51"
 patches:
-  - "../../IO-Socket-SSL-1.51.patch"
+  - "RURBAN/patches/IO-Socket-SSL-1.51.patch"

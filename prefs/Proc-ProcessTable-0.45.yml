@@ -2,4 +2,4 @@
 match:
   distribution: "/Proc-ProcessTable-0.45"
 patches:
-  - "../../Proc-ProcessTable-0.45.patch"
+  - "RURBAN/patches/Proc-ProcessTable-0.45.patch"

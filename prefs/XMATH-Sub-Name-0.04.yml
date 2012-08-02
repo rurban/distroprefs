@@ -3,4 +3,4 @@ comment:  "http://rt.cpan.org/Ticket/Display.html?id=59558"
 match: 
   distribution: "^XMATH/Sub-Name-0\.04\.tar\.gz$"
 patches:
-  - "../../Sub-Name-5.13.3.patch"
+  - "RURBAN/patches/Sub-Name-5.13.3.patch"

@@ -2,4 +2,4 @@
 match:
   distribution: "DAGOLDEN/Metabase-Fact-0.018"
 patches:
-  - "../../Metabase-Fact-0.018-t.patch"
+  - "RURBAN/patches/Metabase-Fact-0.018-t.patch"

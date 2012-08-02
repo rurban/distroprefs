@@ -3,4 +3,4 @@ comment: "clang and win32"
 match:
   distribution: "^UMEMOTO/Socket6-0\.23\.tar\.gz$"
 patches:
-  - "../../Socket6-0.23_01.patch"
+  - "RURBAN/patches/Socket6-0.23_01.patch"

@@ -2,4 +2,4 @@
 match:
   distribution: "DAGOLDEN/File-pushd-1.001.yml"
 patches:
-  - "../../File-pushd-1.001.patch"
+  - "RURBAN/patches/File-pushd-1.001.patch"

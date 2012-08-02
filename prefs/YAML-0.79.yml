@@ -2,4 +2,4 @@
 match:
   distribution: "YAML-0.79"
 patches:
-  - "../../YAML-0.79.patch"
+  - "RURBAN/patches/YAML-0.79.patch"

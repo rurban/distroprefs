@@ -2,4 +2,4 @@
 match:
   distribution: "GAAS/Digest-MD5-"
 patches:
-  - "../../Digest-MD5-2.51-v5.6.patch"
+  - "RURBAN/patches/Digest-MD5-2.51-v5.6.patch"

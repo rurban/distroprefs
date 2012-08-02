@@ -2,4 +2,4 @@
 match:
   distribution: "Devel-Cover-0.79"
 patches:
-  - "../../Devel-Cover-0.79.patch"
+  - "RURBAN/patches/Devel-Cover-0.79.patch"

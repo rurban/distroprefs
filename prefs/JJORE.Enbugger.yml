@@ -2,4 +2,4 @@
 match:
   distribution: "Enbugger-1\.03"
 patches:
-  - "../../Enbugger-1.03.patch"
+  - "RURBAN/patches/Enbugger-1.03.patch"

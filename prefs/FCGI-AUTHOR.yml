@@ -2,4 +2,4 @@
 match:
   distribution: "FLORA/FCGI-0.71"
 patches:
-  - "../../FCGI-AUTHOR.patch"
+  - "RURBAN/patches/FCGI-AUTHOR.patch"

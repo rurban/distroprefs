@@ -3,4 +3,4 @@ comment: "-ObjC not valid with gcc"
 match:
   distribution: "^CHANSEN/Mac-SystemDirectory-0.06\.tar\.gz$"
 patches:
-  - "../../Mac-SystemDirectory-0.06-m.patch"
+  - "RURBAN/patches/Mac-SystemDirectory-0.06-m.patch"

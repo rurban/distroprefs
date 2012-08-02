@@ -3,4 +3,4 @@ comment: "Support newer perls"
 match:
   distribution: "^MICB/DevelOpProf-0\.2\.tar\.gz$"
 patches:
-  - "../../DevelOpProf-0.2.patch"
+  - "RURBAN/patches/DevelOpProf-0.2.patch"

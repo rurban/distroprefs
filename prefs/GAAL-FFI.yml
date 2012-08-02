@@ -3,4 +3,4 @@ comment: "cygwin fixes"
 match:
   distribution: "^GAAL/FFI-1\.\d\d\.tar\.gz$"
 patches:
-  - "../../FFI-1.02.patch"
+  - "RURBAN/patches/FFI-1.02.patch"

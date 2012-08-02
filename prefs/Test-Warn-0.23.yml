@@ -2,4 +2,4 @@
 match:
   distribution: "Test-Warn-0.23"
 patches:
-  - "../../Test-Warn-0.23.patch"
+  - "RURBAN/patches/Test-Warn-0.23.patch"

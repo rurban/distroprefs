@@ -2,4 +2,4 @@
 match:
   distribution: "SMUELLER/Archive-Rar-"
 patches:
-  - "../../Archive-Rar-2.02-cygwin.patch"
+  - "RURBAN/patches/Archive-Rar-2.02-cygwin.patch"

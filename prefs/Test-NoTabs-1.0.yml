@@ -2,4 +2,4 @@
 match:
   distribution: "BOBTFISH/Test-NoTabs-1.0"
 patches:
-  - "../../Test-NoTabs-1.0.patch"
+  - "RURBAN/patches/Test-NoTabs-1.0.patch"

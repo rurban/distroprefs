@@ -2,4 +2,4 @@
 match:
   distribution: '^\QTIMB/DBI-1.622.tar.gz\E$"
 patches:
-  - "../../DBI-1.622-rt75614-use-after-free-global-destruction.patch"
+  - "RURBAN/patches/DBI-1.622-rt75614-use-after-free-global-destruction.patch"
