@@ -1,4 +1,7 @@
 ---
+comment: |
+  TODO some failing module tests
+
 match:
   distribution: "B-C-1.42"
 patches:
