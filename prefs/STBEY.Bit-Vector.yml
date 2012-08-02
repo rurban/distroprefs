@@ -7,4 +7,4 @@ comment: |
 match:
   distribution: 'STBEY/Bit-Vector-7\.1\.tar\.gz'
 patches:
-  - ../../Bit-Vector-7.1-ZEFRAMish-01.patch.gz
+  - ANDK/patches/Bit-Vector-7.1-ZEFRAMish-01.patch.gz

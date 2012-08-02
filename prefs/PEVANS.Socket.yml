@@ -2,4 +2,4 @@
 match:
   distribution: "PEVANS/Socket-1\.99"
 patches:
-  - "../../Socket-1.99-asan.patch"
+  - "RURBAN/patches/Socket-1.99-asan.patch"
