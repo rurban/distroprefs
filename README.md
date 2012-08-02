@@ -2,13 +2,13 @@ distroprefs
 ===========
 
 Various of my and Andy Koenig's perl CPAN yml and patches.
-This belongs into ~/.cpan/.
+This belongs into `~/.cpan/`
 
 See `perldoc CPAN`
 
 ---
 
-The distroprefs system of "CPAN.pm" allows the user to specify
+The distroprefs system of `CPAN` allows the user to specify
 extra informations and recipes in YAML files to either
 
 *   patch broken distros
@@ -26,10 +26,22 @@ extra informations and recipes in YAML files to either
 
 *   disable the installation of an object altogether
 
-See the YAML and Data::Dumper files that come with the "CPAN.pm" distribution in the
-"distroprefs/" directory for examples.
+See the YAML files that come with the `CPAN` distribution in the
+`distroprefs/` directory for examples.
 
-Sources:
+Policy
+======
+* Keep patches as subdir of authors. E.g. `sources/authors/id/R/RU/RURBAN/patches`
+  * Keep them for older releases
+* yml name: `<AUTHOR>.<DISTRO>.yml`
+  * Delete outdated ymls
+* No way yet to handle and merge distroprefs from multiple sources.
+  git fork and merge?
+* Either the patch or the yml should keep the CPAN RT ticket number,
+  e.g. [CPAN #nnnnnn]
+
+Sources
+=======
 *  https://github.com/rurban/distroprefs
 *  http://ftp.nc.debian.org/CPAN/modules/by-module/Devel/ANDK/patches/
 *  https://github.com/andk/cpanpm/tree/master/patches
