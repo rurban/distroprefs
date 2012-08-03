@@ -1,0 +1,12 @@
+diff -bu Test-Pod-1.44-nBjou0/lib/Test/Pod.pm~ Test-Pod-1.44-nBjou0/lib/Test/Pod.pm
+--- Test-Pod-1.44-nBjou0/lib/Test/Pod.pm~	2012-08-03 10:18:54.000000000 -0500
++++ Test-Pod-1.44-nBjou0/lib/Test/Pod.pm	2012-08-03 10:19:11.322477103 -0500
+@@ -61,7 +61,7 @@
+ 
+ =cut
+ 
+-#use 5.008;
++use 5.006;
+ 
+ use Test::Builder;
+ use File::Spec;
