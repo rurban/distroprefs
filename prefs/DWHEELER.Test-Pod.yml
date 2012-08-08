@@ -4,4 +4,4 @@ match:
   perlconfig: 
     version: "^5\.6\."
 patches:
-  - "RURBAN/patches/Test-Pod-1.44-perl56.patch
+  - "RURBAN/patches/Test-Pod-1.44-perl56.patch"
