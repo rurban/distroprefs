@@ -1,5 +1,5 @@
 ---
 match:
-  distribution: "TIMB/DBI-1\.622"
+  distribution: "TIMB/DBI-1\.622\."
 patches:
   - "RURBAN/patches/DBI-1.622-rt75614-use-after-free-global-destruction.patch"
