@@ -1,0 +1,12 @@
+diff -bu Pod-S5-0.08-dMppPP/S5.pm~ Pod-S5-0.08-dMppPP/S5.pm
+--- Pod-S5-0.08-dMppPP/S5.pm~	2007-12-07 05:57:18.000000000 -0600
++++ Pod-S5-0.08-dMppPP/S5.pm	2012-08-13 09:58:43.178400794 -0500
+@@ -519,7 +519,7 @@
+ 						     substitutions => $substitutions,
+ 						     format_table => \%highlite
+ 						     );
+-	$s5 .= $hl->highlightText($text);
++	$s5 .= "<p class=\"code $lang\">".$hl->highlightText($text)."</p>";
+       };
+       if ($@) {
+ 	warn qq(WARNING: Could not render text input for syntax $lang: $@, using TEXT mode.\n);

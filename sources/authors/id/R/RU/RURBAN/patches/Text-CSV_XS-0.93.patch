@@ -1,0 +1,14 @@
+diff -bu ./CSV_XS.xs~ ./CSV_XS.xs
+--- ./CSV_XS.xs~	2012-11-19 09:18:05.000000000 -0600
++++ ./CSV_XS.xs	2012-11-26 16:05:43.410586807 -0600
+@@ -522,9 +522,8 @@
+ 	csv->verbatim			= bool_opt ("verbatim");
+ 	csv->auto_diag			= bool_opt ("auto_diag");
+ 
+-	sv_cache = newSVpvn ("", CACHE_SIZE);
++	sv_cache = newSVpvn ("\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", CACHE_SIZE);
+ 	csv->cache = (byte *)SvPVX (sv_cache);
+-	memset (csv->cache, 0, CACHE_SIZE);
+ 	SvREADONLY_on (sv_cache);
+ 
+ 	csv->cache[CACHE_ID_quote_char]			= csv->quote_char;

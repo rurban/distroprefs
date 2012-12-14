@@ -1,0 +1,51 @@
+difforig 
+
+diff -u  ./DBI.xs.orig
+--- ./DBI.xs.orig	2012-11-19 17:00:41.000000000 -0600
++++ ./DBI.xs	2012-11-19 17:59:24.218494738 -0600
+@@ -1502,7 +1502,8 @@
+     /* also store a direct pointer to imp, aka PVX(dbih_imp_sv),        */
+     /* in mg_ptr (with mg_len set to null, so it wont be freed)         */
+     sv_magic(SvRV(h), dbih_imp_sv, DBI_MAGIC, (char*)imp, 0);
+-    SvREFCNT_dec(dbih_imp_sv);  /* since sv_magic() incremented it      */
++    if (SvREFCNT(dbih_imp_sv) > 1)
++        SvREFCNT_dec(dbih_imp_sv);  /* if sv_magic() incremented it     */
+     SvRMAGICAL_on(SvRV(h));     /* so DBI magic gets sv_clear'd ok      */
+ 
+     {
+@@ -3341,7 +3342,8 @@
+             }
+             if (ima_flags & IMA_KEEP_ERR)
+                 keep_error = TRUE;
+-            if (ima_flags & IMA_KEEP_ERR_SUB
++            if ((ima_flags & IMA_KEEP_ERR_SUB)
++		&& !PL_dirty
+                 && DBIc_PARENT_COM(imp_xxh) && DBIc_CALL_DEPTH(DBIc_PARENT_COM(imp_xxh)) > 0)
+                 keep_error = TRUE;
+             if (ima_flags & IMA_CLEAR_STMT) {
+@@ -3448,6 +3450,7 @@
+             DBIc_ACTIVE_off(imp_xxh);
+         }
+         call_depth = 0;
++        is_nested_call = 0;
+     }
+     else {
+         DBI_SET_LAST_HANDLE(h);
+@@ -3460,11 +3463,13 @@
+             /* XXX sv_copy() if Profiling? */
+             (void)hv_store((HV*)SvRV(parent), "Statement", 9, SvREFCNT_inc(tmp_sv), 0);
+         }
++        is_nested_call = 
++          (call_depth > 1 ||
++           (!PL_dirty && /* not in global destruction [CPAN #75614] */
++            DBIc_PARENT_COM(imp_xxh) &&
++            DBIc_CALL_DEPTH(DBIc_PARENT_COM(imp_xxh))) >= 1);
+     }
+ 
+-    is_nested_call = ( call_depth > 1 || (DBIc_PARENT_COM(imp_xxh) && (DBIc_CALL_DEPTH(DBIc_PARENT_COM(imp_xxh)) >= 1)) );
+-
+-
+     /* --- dispatch --- */
+ 
+     if (!keep_error && meth_type != methtype_set_err) {
+diff -u  ./dbixs_rev.h.orig
