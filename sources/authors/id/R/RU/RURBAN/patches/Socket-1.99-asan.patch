@@ -1,9 +1,8 @@
-difforig Socket-1.99-Osq8ZG
-
-diff -u  Socket-1.99-Osq8ZG/Socket.xs.orig
---- Socket-1.99-Osq8ZG/Socket.xs.orig	2012-02-16 18:14:33.000000000 -0600
-+++ Socket-1.99-Osq8ZG/Socket.xs	2012-03-07 15:43:47.600312241 -0600
-@@ -713,9 +713,15 @@
+diff --git a/Socket.xs b/Socket.xs
+index beac92e..db06f99 100644
+--- a/Socket.xs
++++ b/Socket.xs
+@@ -713,9 +713,15 @@ unpack_sockaddr_un(sun_sv)
  	if (sockaddrlen != sizeof(addr))
  		croak("Bad arg length for %s, length is %"UVuf", should be %"UVuf,
  		      "Socket::unpack_sockaddr_un", (UV)sockaddrlen, (UV)sizeof(addr));
@@ -21,3 +20,19 @@ diff -u  Socket-1.99-Osq8ZG/Socket.xs.orig
  
  	if (addr.sun_family != AF_UNIX)
  		croak("Bad address family for %s, got %d, should be %d",
+@@ -901,8 +907,13 @@ inet_ntop(af, ip_address_sv)
+ #endif
+ 		      "Socket::inet_ntop", af);
+ 	}
+-
+-	Copy(ip_address, &addr, sizeof addr, char);
++	if (addrlen < sizeof(addr)) {
++	   Copy(ip_address, &addr, addrlen, char);
++           Zero(&addr+addrlen, sizeof(addr)-addrlen, char);
++	}
++	else {
++	  Copy(ip_address, &addr, sizeof addr, char);
++	}
+ 	inet_ntop(af, &addr, str, sizeof str);
+ 
+ 	ST(0) = sv_2mortal(newSVpvn(str, strlen(str)));
