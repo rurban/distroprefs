@@ -3,3 +3,13 @@ match:
   distribution: "TIMB/DBI-1\.622\."
 patches:
   - "RURBAN/patches/DBI-1.622-rt75614-use-after-free-global-destruction.patch"
+---
+match:
+  distribution: "TIMB/DBI-1\.622_"
+patches:
+  - "RURBAN/patches/DBI-1.622_921.patch"
+---
+match:
+  distribution: "TIMB/DBI-1\.623\."
+patches:
+  - "RURBAN/patches/DBI-1.622_921.patch"
