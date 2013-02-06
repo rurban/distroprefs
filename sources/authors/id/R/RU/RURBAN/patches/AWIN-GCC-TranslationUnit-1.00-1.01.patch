@@ -1,0 +1,65 @@
+diff -bu ./Changes~ ./Changes
+--- ./Changes~	2003-11-10 07:50:23.000000000 +0100
++++ ./Changes	2010-05-10 17:37:34.237875000 +0200
+@@ -1,5 +1,9 @@
+ Revision history for Perl extension GCC::TranslationUnit.
+ 
++1.01  2010-05-10 17:36:51 rurban
++	* add binfo and check for bases
++	* fix Class 'GCC::Node::call_expr' tried to inherit from itself #57341
++
+ 1.00  Sun Nov  9 22:02:49 2003
+ 	- original version; created by h2xs 1.22 with options
+ 		-n GCC::TranslationUnit -X
+diff -bu ./TranslationUnit.pm~ ./TranslationUnit.pm
+--- ./TranslationUnit.pm~	2003-11-10 07:51:18.000000000 +0100
++++ ./TranslationUnit.pm	2010-05-10 17:36:42.159750000 +0200
+@@ -1,7 +1,7 @@
+ package GCC::TranslationUnit;
+ use strict;
+ 
+-our $VERSION = "1.00";
++our $VERSION = "1.01";
+ 
+ use GCC::Tree;
+ 
+@@ -234,6 +234,8 @@
+     #
+     # Remember: 4 character max per key!
+     $node->{raises} = $self->node($1) if $dump =~ s/\sraises: \@(\d+)//;
++    # And another one, within binfo
++    $node->{bases} = $self->node($1) if $dump =~ s/\sbases: (\d+)//;
+     
+     # At this point, we assume all the remaining key/value pairs match
+     # the following regex.
+diff -bu ./lib/GCC/Node/Expression.pm~ ./lib/GCC/Node/Expression.pm
+--- ./lib/GCC/Node/Expression.pm~	2003-11-10 07:03:34.000000000 +0100
++++ ./lib/GCC/Node/Expression.pm	2010-05-10 13:24:29.800375000 +0200
+@@ -49,7 +49,7 @@
+ 
+ # DEFTREECODE (CALL_EXPR, "call_expr", 'e', 2)
+ package GCC::Node::call_expr;
+-use base qw(GCC::Node::call_expr);
++use base qw(GCC::Node::Expression);
+ 
+ sub fn { shift->{fn} }
+ sub args { shift->{args} }
+diff -bu ./lib/GCC/Node/Type.pm~ ./lib/GCC/Node/Type.pm
+--- ./lib/GCC/Node/Type.pm~	2003-11-10 07:03:34.000000000 +0100
++++ ./lib/GCC/Node/Type.pm	2010-05-10 17:30:23.753500000 +0200
+@@ -227,5 +227,15 @@
+ # DEFTREECODE (TYPEOF_TYPE, "typeof_type", 't', 0)
+ package GCC::Node::typeof_type; use base qw(GCC::Node::Type);
+ 
++# TYPE_BINFO
++#@146    binfo            type: @131     bases: 1        accs: pub   binf: @175
++package GCC::Node::binfo;
++use base qw(GCC::Node::Type);
++
++sub type    { shift->{type} }
++sub bases   { shift->{bases} }
++sub access  { shift->{accs} }
++sub binfo   { shift->{binf} }
++
+ # vim:set shiftwidth=4 softtabstop=4:
+ 1;
