@@ -1,0 +1,24 @@
+difforig 
+
+diff -u  ./tests/201_config.t.orig
+--- ./tests/201_config.t.orig	2013-02-06 11:50:10.184057702 -0600
++++ ./tests/201_config.t	2013-02-06 11:49:08.120631862 -0600
+@@ -282,14 +282,15 @@
+   my $fail = 0;
+   my $succ = 0;
+   while( $rc =~ /SV\s*=\s*(\S+).*?REFCNT\s*=\s*(\d+)/g ) {
+-    if( $2 == 1 ) {
++    my ($m,$r) = ($1,$2);
++    if( $r == 1 ) {
+       $succ++
+     }
+-    elsif ($1 eq 'NULL' && $2 > 10000) { # we hit &PL_sv_undef...
++    elsif ($m =~ /NULL$/ && $r > 100) { # we hit &PL_sv_undef...
+       $succ++
+     }
+     else {
+-      print "# REFCNT = $2 for Sv$1, should be 1\n";
++      print "# REFCNT = $r for Sv$m, should be 1\n";
+       $fail++;
+     }
+   }
