@@ -111,7 +111,7 @@ match:
     |JANL/Net-Server-0.99.6.1                # hangs
     |JANPAZ/Font-TFM-\d                      # asks for path to tfm files
     |JASONK/Data-Faker-0.07                  # t/Data-Faker-DateTime.t runs forever
-    |JDPORTER/Crypt-RandPasswd-0.02          # hangs *sometimes*
+    #|JDPORTER/Crypt-RandPasswd-0.02          # hangs *sometimes*
     |JESSE/HTTP-Server-Simple-Recorder-0.03  # hangs *sometimes*, even on perls that have previously succeeded
     |JESUS/Net-RabbitMQ                      # hangs
     |JETTERO/App-MrShell-2.0207.tar.gz       # hangs with v5.15.0-2-g1162210/2b65
