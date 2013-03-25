@@ -10,6 +10,6 @@ patches:
   - "RURBAN/patches/DBI-1.622_921.patch"
 ---
 match:
-  distribution: "TIMB/DBI-1\.623\."
+  distribution: "TIMB/DBI-1\.62[34]\."
 patches:
   - "RURBAN/patches/DBI-1.622_921.patch"
