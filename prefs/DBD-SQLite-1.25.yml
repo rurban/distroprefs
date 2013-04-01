@@ -1,5 +1,5 @@
 ---
 match:
-  distribution: "ADAMK/DBD-SQLite-1."
+  distribution: "ADAMK/DBD-SQLite-1\.25"
 patches:
   - "RURBAN/patches/DBD-SQLite-1.25.patch"
