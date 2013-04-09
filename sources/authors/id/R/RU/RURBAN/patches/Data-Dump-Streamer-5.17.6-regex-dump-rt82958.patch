@@ -1,0 +1,54 @@
+---
+ lib/Data/Dump/Streamer.pm |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/lib/Data/Dump/Streamer.pm b/lib/Data/Dump/Streamer.pm
+index a7f16fb..1311eab 100644
+--- a/lib/Data/Dump/Streamer.pm
++++ b/lib/Data/Dump/Streamer.pm
+@@ -127,7 +127,7 @@ BEGIN {
+         # As I write this, 5.13.10 doesn't exist so I'm guessing that
+         # we can begin using the ordinary core function again.
+         eval q[
+-            use re qw(regexp_pattern);
++            use re qw(regexp_pattern is_regexp);
+             *regex= *regexp_pattern;
+         ] or die $@;
+     }
+@@ -135,7 +135,7 @@ BEGIN {
+         # Perl-5.13.6 through perl-5.13.9 began returning modifier
+         # flags that weren't yet legal at the time.
+         eval q[
+-            use re qw(regexp_pattern);
++            use re qw(regexp_pattern is_regexp);
+             sub regex {
+                 if (wantarray) {
+                     my ($pat,$mod) = regexp_pattern($_[0]);
+@@ -153,11 +153,14 @@ BEGIN {
+     }
+     elsif ($]>=5.009004) {
+         eval q[
+-            use re qw(regexp_pattern);
++            use re qw(regexp_pattern is_regexp);
+             *regex= *regexp_pattern;
+             1;
+         ] or die $@;
+     }
++    else {
++      eval q[sub is_regexp($) { defined regex($_[0]) }];
++    }
+     if ($]<=5.008) {
+         *hidden_keys=sub(\%)  { return () };
+         *legal_keys=sub(\%)   { return keys %{$_[0]} };
+@@ -2827,7 +2830,7 @@ sub _dump_rv {
+         $idx=$self->{ref}{$addr};
+         $type=reftype($item);
+         $class=blessed($item);
+-        $class=undef if $class and $class eq 'Regexp' and regex $item;
++        $class=undef if $class and $class eq 'Regexp' and is_regexp $item;
+ 
+         $DEBUG and
+         printf "_dump_rv %d %s %#x\n",$depth,$name,$addr;
+-- 
+1.7.10.4
+

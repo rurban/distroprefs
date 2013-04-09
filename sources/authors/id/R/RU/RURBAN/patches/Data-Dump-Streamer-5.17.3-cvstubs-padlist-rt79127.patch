@@ -1,0 +1,16 @@
+Binary files Data-Dump-Streamer-2.34-39uVmd/lib/Data/Dump/Streamer.o and Data-Dump-Streamer-2.34-yhMVdp/lib/Data/Dump/Streamer.o differ
+diff -rup Data-Dump-Streamer-2.34-39uVmd/lib/Data/Dump/Streamer.pm Data-Dump-Streamer-2.34-yhMVdp/lib/Data/Dump/Streamer.pm
+--- Data-Dump-Streamer-2.34-39uVmd/lib/Data/Dump/Streamer.pm	2012-06-06 02:47:31.000000000 -0700
++++ Data-Dump-Streamer-2.34-yhMVdp/lib/Data/Dump/Streamer.pm	2012-08-22 23:16:29.000000000 -0700
+@@ -3695,9 +3695,9 @@ sub _get_lexicals {
+     }
+ 
+     my $svo=B::svref_2object($cv);
+-    my @pl_array = $svo->PADLIST->ARRAY;
++    my @pl_array = eval { $svo->PADLIST->ARRAY };
+ 
+-    my @name_obj = $pl_array[0]->ARRAY;
++    my @name_obj = eval { $pl_array[0]->ARRAY };
+ 
+     my %named;
+     for my $i ( 0..$#name_obj ) {
