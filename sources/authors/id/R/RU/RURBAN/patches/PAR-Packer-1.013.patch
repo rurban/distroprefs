@@ -1,0 +1,82 @@
+2013-03-06 15:50:37 rurban
+
+1. windres: unexpected version string length 68 != 32 + 8
+
+That's a known mingw/cygwin binutils bug, and should be not fatal. 
+The resource can be purely optional.
+
+2. -Mblib within myldr fails to find PAR::Filter::PodStrip
+you need to use -Mblib -Mblib=..
+
+3. myldr/blib/lib/PAR/StrippedPARL/Static.pm cannot be found when PAR::StrippedPARL::Static 
+is not installed, 
+
+You did not add myldr to libscan (preferred), and did not add myldr to -Mblib.
+All this because of a wrong logic in the main Makefile.PL ("double negation always causes trouble")
+
+diff -u  ./Makefile.PL.orig
+--- ./Makefile.PL.orig	2013-03-06 15:39:37.239573200 -0600
++++ ./Makefile.PL	2013-03-06 15:42:37.344245200 -0600
+@@ -100,7 +100,7 @@
+ 
+     # Do not run 10parl-generation tests in case of a pre built .par (doesn't work)
+     my %tests = map { $_ => 1 } <t/*.t>;
+-    delete $tests{'t/10-parl-generation.t'} unless (!$par and $cc);
++    delete $tests{'t/10-parl-generation.t'} if ($par or !$cc);
+ 
+     makemaker_args(
+         MAN1PODS		=> {
+@@ -117,9 +117,7 @@
+             'script/tkpp',
+         ],
+         DIR                     => [
+-          (!$par and $cc) ? (
+-            'myldr'
+-          ) : (),
++          ($par or !$cc) ? () : ('myldr')
+         ],
+         NEEDS_LINKING	        => 1,
+         test => { TESTS => join(" ", sort keys %tests) },
+diff -u  ./myldr/Makefile.PL.orig
+--- ./myldr/Makefile.PL.orig	2013-03-06 15:18:26.403589200 -0600
++++ ./myldr/Makefile.PL	2013-03-06 15:24:20.613621200 -0600
+@@ -113,11 +113,16 @@
+     $lddebug = ($debug or $^O eq 'darwin') ? '' : '-s ';
+     $warn = $debug ? '-Wall -Wno-comments ' : '';
+     if( $^O =~ /^(?:MSWin|cygwin)/ ){
+-   $res = 'ppresource.coff';
+-   $pre_res = qq(winres\\pp.res);
+-   $rt_cmd = qq(windres -F pei-i386 -i winres\\pp.rc -o $pre_res);
+-   $res_cmd = qq(windres -o ppresource.coff $pre_res);
+-   $res_section = $res;
++      $res = 'ppresource.coff';
++      $pre_res = qq(winres/pp.res);
++      $rt_cmd = qq(windres -F pei-i386 -i winres/pp.rc -o $pre_res);
++      $res_cmd = qq(windres -o $res $pre_res);
++      if (system($rt_cmd) || system($res_cmd)) {
++          $res_section = "nul";
++          $res = $rt_cmd = $res_cmd  = "";
++      } else {
++          $res_section = $res;
++      }
+     }
+     $mt_cmd = '-$(NOOP)';
+ } else {
+@@ -308,7 +313,7 @@
+ 	\$(PERLRUN) $f2c -s $par_pl \$@ load_my_par_pl
+ 
+ $parl_exe: $par
+-	\$(PERLRUN) -Mblib run_with_inc.pl $par -q -B -O\$@
++	\$(PERLRUN) -Mblib -Mblib=.. run_with_inc.pl $par -q -B -O\$@
+ 
+ Static.pm: Static.in $par
+ 	\$(PERLRUN) encode_append.pl Static.in $par Static.pm
+@@ -330,7 +335,7 @@
+ pure_all:: $parldyn_exe Dynamic.pm
+ 
+ $parldyn_exe: $par_exe
+-	\$(PERLRUN) -Mblib run_with_inc.pl $par_exe -q -B -O\$@
++	\$(PERLRUN) -Mblib -Mblib=.. run_with_inc.pl $par_exe -q -B -O\$@
+ 
+ boot$o: \$(MKTMP_STUFF) $my_stuff
+ 
