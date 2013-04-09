@@ -1,4 +1,6 @@
+*~
 distroprefs
+distroprefs.old
 cpandb.sql
 cpandb.sql.bak
 cpan_sqlite_log*
