@@ -1,0 +1,38 @@
+From 20b441ad61c43884a18bbc34dc2ecc90b1c15982 Mon Sep 17 00:00:00 2001
+From: Reini Urban <rurban@cpanel.net>
+Date: Wed, 17 Jul 2013 10:12:54 -0500
+Subject: [PATCH] RT#86999 Fix blead dualvar regression
+
+Since 5.19 it is pretty hard to create a PVNV dualvar in PP. Perl does not pollute a NV with a PV slot anymore
+via do { my $x=3.0;my $y = "$x";$x }.
+Improve the test to use explicit Scalar::Util::dualvar
+---
+ t/01_pack.t |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/t/01_pack.t b/t/01_pack.t
+index 5d0e7df..33e8243 100644
+--- a/t/01_pack.t
++++ b/t/01_pack.t
+@@ -1,6 +1,9 @@
+ use t::Util;
+ use Test::More;
+ use Data::MessagePack;
++if ($] >= 5.019) {
++  require Scalar::Util;
++}
+ 
+ sub packit {
+     local $_ = unpack("H*", Data::MessagePack->pack($_[0]));
+@@ -33,7 +36,7 @@ my @dat = (
+     -32768, 'd1 80 00',
+     -32769, 'd2 ff ff 7f ff',
+     1.0,   'cb 3f f0 00 00 00 00 00 00',
+-    do { my $x=3.0;my $y = "$x";$x },   'a1 33', # PVNV
++    $] < 5.019 ? do { my $x=3.0;my $y = "$x";$x } : Scalar::Util::dualvar(3.0,"3"), 'a1 33', # PVNV
+     do { my $x=3;  my $y = "$x";$x },   'a1 33', # PVIV
+     "",    'a0',
+     "a",   'a1 61',
+-- 
+1.7.10.4
+
