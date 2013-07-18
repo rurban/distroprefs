@@ -1,0 +1,12 @@
+diff -bu ./lib/Perl/Critic/Utils.pm~ ./lib/Perl/Critic/Utils.pm
+--- ./lib/Perl/Critic/Utils.pm~	2012-07-11 01:59:43.000000000 -0500
++++ ./lib/Perl/Critic/Utils.pm	2013-07-18 16:21:08.350243158 -0500
+@@ -331,7 +331,7 @@
+ 
+ sub interpolate {
+     my ( $literal ) = @_;
+-    return eval "\"$literal\"" or confess $EVAL_ERROR;  ## no critic (StringyEval);
++    return (eval "\"$literal\"" || confess $EVAL_ERROR);  ## no critic (StringyEval);
+ }
+ 
+ #-----------------------------------------------------------------------------
