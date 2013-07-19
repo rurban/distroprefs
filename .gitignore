@@ -23,6 +23,8 @@ sources/authors/id/[B-P]
 sources/authors/id/R/R[A-T]
 sources/authors/id/R/RU/RURBAN/[A-Za-o]*
 sources/authors/id/R/RU/RURBAN/[q-z]*
+sources/authors/id/R/RU/RU[A-Q]
+sources/authors/id/R/RU/RU[S-Z]
 sources/authors/id/R/R[V-Z]
 sources/authors/id/[S-Z]
 sources/modules
