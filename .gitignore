@@ -31,3 +31,7 @@ sources/authors/id/R/RU/RU[S-Z]*
 sources/authors/id/R/R[V-Z]
 sources/authors/id/[S-Z]
 sources/modules
+/.DS_Store
+/cleancpan
+/cpan-r.sh
+/rmyml
