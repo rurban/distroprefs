@@ -1,0 +1,30 @@
+diff -bu ./lib/ACME/QuoteDB/LoadDB.pm~ ./lib/ACME/QuoteDB/LoadDB.pm
+--- ./lib/ACME/QuoteDB/LoadDB.pm~	2009-10-01 01:30:25.000000000 -0500
++++ ./lib/ACME/QuoteDB/LoadDB.pm	2013-07-19 16:23:20.293610841 -0500
+@@ -207,7 +207,7 @@
+       and $hr->{source} eq 'Attribution Source',
+       and $hr->{catg}   eq 'Category',
+       and $hr->{rating} eq 'Rating')
+-      or croak 'incorrect headers or header order';
++      || croak 'incorrect headers or header order';
+ }
+ 
+ sub dbload_from_csv {
+@@ -554,7 +554,7 @@
+        $dbh = undef;
+     };
+ 
+-    return $@ and croak 'Cannot create database tables!';
++    return $@ && croak 'Cannot create database tables!';
+ 
+ }
+ 
+@@ -608,7 +608,7 @@
+         $dbh = undef;
+     };
+ 
+-    return $@ and croak 'Cannot create database tables!';
++    return $@ && croak 'Cannot create database tables!';
+ 
+ }
+ 

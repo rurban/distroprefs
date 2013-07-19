@@ -1,5 +1,5 @@
 ---
 match:
-  distribution: "/Devel-CheckLib-"
+  distribution: "/Devel-CheckLib-0\.98"
 patches:
   - "RURBAN/patches/Devel-CheckLib-spacepath.patch"

@@ -1,0 +1,12 @@
+diff -bu ./lib/Alien/wxWidgets/Utility.pm~ ./lib/Alien/wxWidgets/Utility.pm
+--- ./lib/Alien/wxWidgets/Utility.pm~	2013-04-13 03:15:38.000000000 -0500
++++ ./lib/Alien/wxWidgets/Utility.pm	2013-07-19 16:24:57.200682998 -0500
+@@ -74,7 +74,7 @@
+ sub awx_cc_is_msvc {
+     my( $cc ) = @_;
+ 
+-    return $^O =~ /MSWin32/ and $cc =~ /^cl/i;
++    return ($^O =~ /MSWin32/ and $cc =~ /^cl/i);
+ }
+ 
+ sub awx_cc_is_gcc {
