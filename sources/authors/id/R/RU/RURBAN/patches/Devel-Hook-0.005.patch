@@ -1,0 +1,31 @@
+diff -bu ./lib/Devel/Hook.pod~ ./lib/Devel/Hook.pod
+--- ./lib/Devel/Hook.pod~	2008-03-02 09:20:37.000000000 -0600
++++ ./lib/Devel/Hook.pod	2013-07-19 11:02:41.300357147 -0500
+@@ -32,7 +32,7 @@
+ and its program units. These subroutines correspond
+ to the special code blocks: C<BEGIN>, C<UNITCHECK>,
+ C<CHECK>, C<INIT> and C<END>. 
+-(See details at L< perlmod/BEGIN, UNITCHECK, CHECK, INIT and END >.)
++(See details at L<perlmod/"BEGIN, UNITCHECK, CHECK, INIT and END">.)
+ This module provides
+ limited capabilities to manipulate these arrays.
+ 
+@@ -187,7 +187,7 @@
+ 
+ =head1 SEE ALSO
+ 
+-L< perlmod/BEGIN, UNITCHECK, CHECK, INIT and END >
++L<perlmod/"BEGIN, UNITCHECK, CHECK, INIT and END">
+ 
+ L<Manip::END>
+ 
+diff -bu ./t/02basic.t~ ./t/02basic.t
+--- ./t/02basic.t~	2008-02-29 14:02:39.000000000 -0600
++++ ./t/02basic.t	2013-07-19 11:01:52.584807557 -0500
+@@ -1,5 +1,5 @@
+ 
+-use Test::More no_plan => 1;
++use Test::More no_plan;
+ 
+ use Devel::Hook ();
+ 
