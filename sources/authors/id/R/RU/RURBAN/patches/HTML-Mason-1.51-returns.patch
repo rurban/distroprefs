@@ -1,0 +1,24 @@
+diff -bu ./blib/lib/HTML/Mason/Interp.pm~ ./blib/lib/HTML/Mason/Interp.pm
+--- ./blib/lib/HTML/Mason/Interp.pm~	2013-05-08 20:45:13.000000000 -0500
++++ ./blib/lib/HTML/Mason/Interp.pm	2013-07-19 09:36:54.167807984 -0500
+@@ -865,7 +865,7 @@
+ sub use_autohandlers
+ {
+     my $self = shift;
+-    return defined $self->{autohandler_name} and length $self->{autohandler_name};
++    return (defined $self->{autohandler_name} and length $self->{autohandler_name});
+ }
+ 
+ # Generate HTML that describes Interp's current status.
+diff -bu ./blib/lib/HTML/Mason/Request.pm~ ./blib/lib/HTML/Mason/Request.pm
+--- ./blib/lib/HTML/Mason/Request.pm~	2013-05-08 20:45:13.000000000 -0500
++++ ./blib/lib/HTML/Mason/Request.pm	2013-07-19 09:36:05.008259380 -0500
+@@ -346,7 +346,7 @@
+ sub use_dhandlers
+ {
+     my $self = shift;
+-    return defined $self->{dhandler_name} and length $self->{dhandler_name};
++    return (defined $self->{dhandler_name} and length $self->{dhandler_name});
+ }
+ 
+ sub alter_superclass
