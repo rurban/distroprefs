@@ -1,0 +1,21 @@
+diff -bu ./lib/IO/Socket/SSL/Utils.pm~ ./lib/IO/Socket/SSL/Utils.pm
+--- ./lib/IO/Socket/SSL/Utils.pm~	2013-06-01 13:20:03.000000000 -0500
++++ ./lib/IO/Socket/SSL/Utils.pm	2013-07-19 09:52:23.731255111 -0500
+@@ -48,7 +48,7 @@
+ sub PEM_cert2string {
+     my $cert = shift;
+     return Net::SSLeay::PEM_get_string_X509($cert)
+-	or croak("cannot get string from cert");
++	|| croak("cannot get string from cert");
+ }
+ 
+ sub PEM_file2key {
+@@ -84,7 +84,7 @@
+ sub PEM_key2string {
+     my $key = shift;
+     return Net::SSLeay::PEM_get_string_PrivateKey($key)
+-	or croak("cannot get string from key");
++	|| croak("cannot get string from key");
+ }
+ 
+ sub CERT_free {

@@ -1,0 +1,6 @@
+---
+comment: "wrong return or precedence [cpan #87051]"
+match:
+  distribution: ""
+patches:
+  - "RURBAN/patches/IO-Async-0.58-returnor.patch"

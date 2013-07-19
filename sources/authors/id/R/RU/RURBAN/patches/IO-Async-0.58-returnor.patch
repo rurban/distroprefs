@@ -1,0 +1,39 @@
+diff -bu ./lib/IO/Async/Resolver.pm~ ./lib/IO/Async/Resolver.pm
+--- ./lib/IO/Async/Resolver.pm~	2013-06-12 19:04:03.000000000 -0500
++++ ./lib/IO/Async/Resolver.pm	2013-07-19 09:48:41.213315028 -0500
+@@ -516,23 +516,23 @@
+ 
+ # Now register the inbuilt methods
+ 
+-register_resolver getpwnam => sub { return getpwnam( $_[0] ) or die "$!\n" };
+-register_resolver getpwuid => sub { return getpwuid( $_[0] ) or die "$!\n" };
++register_resolver getpwnam => sub { return getpwnam( $_[0] ) || die "$!\n" };
++register_resolver getpwuid => sub { return getpwuid( $_[0] ) || die "$!\n" };
+ 
+-register_resolver getgrnam => sub { return getgrnam( $_[0] ) or die "$!\n" };
+-register_resolver getgrgid => sub { return getgrgid( $_[0] ) or die "$!\n" };
++register_resolver getgrnam => sub { return getgrnam( $_[0] ) || die "$!\n" };
++register_resolver getgrgid => sub { return getgrgid( $_[0] ) || die "$!\n" };
+ 
+-register_resolver getservbyname => sub { return getservbyname( $_[0], $_[1] ) or die "$!\n" };
+-register_resolver getservbyport => sub { return getservbyport( $_[0], $_[1] ) or die "$!\n" };
++register_resolver getservbyname => sub { return getservbyname( $_[0], $_[1] ) || die "$!\n" };
++register_resolver getservbyport => sub { return getservbyport( $_[0], $_[1] ) || die "$!\n" };
+ 
+-register_resolver gethostbyname => sub { return gethostbyname( $_[0] ) or die "$!\n" };
+-register_resolver gethostbyaddr => sub { return gethostbyaddr( $_[0], $_[1] ) or die "$!\n" };
++register_resolver gethostbyname => sub { return gethostbyname( $_[0] ) || die "$!\n" };
++register_resolver gethostbyaddr => sub { return gethostbyaddr( $_[0], $_[1] ) || die "$!\n" };
+ 
+-register_resolver getnetbyname => sub { return getnetbyname( $_[0] ) or die "$!\n" };
+-register_resolver getnetbyaddr => sub { return getnetbyaddr( $_[0], $_[1] ) or die "$!\n" };
++register_resolver getnetbyname => sub { return getnetbyname( $_[0] ) || die "$!\n" };
++register_resolver getnetbyaddr => sub { return getnetbyaddr( $_[0], $_[1] ) || die "$!\n" };
+ 
+-register_resolver getprotobyname   => sub { return getprotobyname( $_[0] ) or die "$!\n" };
+-register_resolver getprotobynumber => sub { return getprotobynumber( $_[0] ) or die "$!\n" };
++register_resolver getprotobyname   => sub { return getprotobyname( $_[0] ) || die "$!\n" };
++register_resolver getprotobynumber => sub { return getprotobynumber( $_[0] ) || die "$!\n" };
+ 
+ =pod
+ 
