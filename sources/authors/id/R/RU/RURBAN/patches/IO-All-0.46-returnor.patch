@@ -1,0 +1,14 @@
+diff -bu IO-All-0.46-XOGh8X/lib/IO/All.pm~ IO-All-0.46-XOGh8X/lib/IO/All.pm
+--- IO-All-0.46-XOGh8X/lib/IO/All.pm~	2012-07-25 18:34:32.000000000 -0600
++++ IO-All-0.46-XOGh8X/lib/IO/All.pm	2013-07-21 08:32:05.971125231 -0600
+@@ -610,8 +610,8 @@
+         }
+     }
+     $self->error_check;
+-    return (@lines) or
+-           $self->_autoclose && $self->close && () or
++    return (@lines) ||
++           $self->_autoclose && $self->close && () ||
+            ();
+ }
+ 
