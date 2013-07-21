@@ -1,0 +1,6 @@
+---
+comment: "wrong precedence [cpan #87050]"
+match:
+  distribution: "XML-Simple-DTDReader-0\.04"
+patches:
+  - "RURBAN/patches/XML-Simple-DTDReader-0.04-returnor.patch"

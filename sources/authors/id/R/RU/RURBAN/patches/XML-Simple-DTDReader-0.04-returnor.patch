@@ -1,0 +1,12 @@
+diff -bu XML-Simple-DTDReader-0.04-Dc7G90/DTDReader.pm~ XML-Simple-DTDReader-0.04-Dc7G90/DTDReader.pm
+--- XML-Simple-DTDReader-0.04-Dc7G90/DTDReader.pm~	2005-07-30 12:20:21.000000000 -0600
++++ XML-Simple-DTDReader-0.04-Dc7G90/DTDReader.pm	2013-07-20 21:49:26.238711657 -0600
+@@ -277,7 +277,7 @@
+ sub empty {
+   my ($element) = @_;
+   if ($element->isname) {
+-    return $element->quant and ($element->quant eq "*" or $element->quant eq "?");
++    return $element->quant && ($element->quant eq "*" or $element->quant eq "?");
+   } elsif ($element->isseq) {
+     for ($element->children) {
+       return 0 unless empty($_);
