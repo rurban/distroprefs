@@ -1,0 +1,6 @@
+---
+comment: "wrong precedence [cpan #87050]"
+match:
+  distribution: "DBM-Deep-2\.0009"
+patches:
+  - "RURBAN/patches/DBM-Deep-2.0009.patch"

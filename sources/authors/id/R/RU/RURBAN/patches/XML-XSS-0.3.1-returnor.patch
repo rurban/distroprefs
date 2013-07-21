@@ -1,0 +1,20 @@
+diff -bu XML-XSS-0.3.1-xj_2Cr/lib/XML/XSS/StyleAttribute.pm~ XML-XSS-0.3.1-xj_2Cr/lib/XML/XSS/StyleAttribute.pm
+--- XML-XSS-0.3.1-xj_2Cr/lib/XML/XSS/StyleAttribute.pm~	2011-03-14 18:02:34.000000000 -0600
++++ XML-XSS-0.3.1-xj_2Cr/lib/XML/XSS/StyleAttribute.pm	2013-07-20 21:22:08.358694090 -0600
+@@ -30,8 +30,8 @@
+   '='    => sub { shift },
+   'eq'   => sub {
+     my ( $a, $b ) = @_;
+-    return ref($a) eq ref($b)
+-      and refaddr($a) == refaddr($b);
++    return (ref($a) eq ref($b)
++	    and refaddr($a) == refaddr($b));
+   };
+ 
+ 
+@@ -168,3 +168,5 @@
+ 
+ =cut
+ 
++
++
