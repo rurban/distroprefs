@@ -1,0 +1,6 @@
+---
+comment: "wrong precedence [cpan #87050]"
+match:
+  distribution: "Lingua-PT-Abbrev-0\.08"
+patches:
+  - "RURBAN/patches/Lingua-PT-Abbrev-0.08-returnor.patch"

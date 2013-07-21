@@ -1,0 +1,14 @@
+diff -bu Lingua-PT-Abbrev-0.08-cQhM2S/lib/Lingua/PT/Abbrev.pm~ Lingua-PT-Abbrev-0.08-cQhM2S/lib/Lingua/PT/Abbrev.pm
+--- Lingua-PT-Abbrev-0.08-cQhM2S/lib/Lingua/PT/Abbrev.pm~	2012-08-22 02:13:21.000000000 -0600
++++ Lingua-PT-Abbrev-0.08-cQhM2S/lib/Lingua/PT/Abbrev.pm	2013-07-20 21:38:07.678704379 -0600
+@@ -111,8 +111,8 @@
+ sub _exists {
+   my $self = shift;
+   my $word = shift;
+-  return exists($self->{dic}{$word}) or
+-    exists($self->{cdic}{$word}) or
++  return exists($self->{dic}{$word}) ||
++    exists($self->{cdic}{$word}) ||
+       exists($self->{sdic}{$word})
+ }
+ 
