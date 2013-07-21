@@ -1,0 +1,6 @@
+---
+comment: "wrong precedence [cpan #87050]"
+match:
+  distribution: "Mail-Sender-0\.8\.22"
+patches:
+  - "RURBAN/patches/Mail-Sender-0.8.22-returnor.patch"

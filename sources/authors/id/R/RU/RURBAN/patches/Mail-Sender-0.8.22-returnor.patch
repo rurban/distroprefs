@@ -1,0 +1,12 @@
+diff -bu Mail-Sender-0.8.22-yucIHQ/Sender.pm~ Mail-Sender-0.8.22-yucIHQ/Sender.pm
+--- Mail-Sender-0.8.22-yucIHQ/Sender.pm~	2012-12-12 10:29:40.000000000 -0700
++++ Mail-Sender-0.8.22-yucIHQ/Sender.pm	2013-07-20 21:42:51.258707421 -0600
+@@ -2679,7 +2679,7 @@
+ #	if (!defined($self->{'smtpaddr'})) { return $self->Error(HOSTNOTFOUND($self->{'smtp'})); }
+ 
+ 	if (exists $self->{'on_errors'} and (!defined($self->{'on_errors'}) or $self->{'on_errors'} eq 'undef')) {
+-		return $self->Connect() and $self->Close() and 1;
++		return $self->Connect() && $self->Close() && 1;
+ 	} elsif (exists $self->{'on_errors'} and $self->{'on_errors'} eq 'die') {
+ 		$self->Connect();
+ 		$self->Close();
