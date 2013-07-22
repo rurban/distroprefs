@@ -1,0 +1,6 @@
+---
+comment: "wrong precedence [cpan #87050]"
+match:
+  distribution: "Any-Template-1\.015"
+patches:
+  - "RURBAN/patches/Any-Template-1.015-returnor.patch"

@@ -1,0 +1,32 @@
+diff -bu Any-Template-1.015-GwyIwR/lib/Any/Template/Backend/TemplateToolkit.pm~ Any-Template-1.015-GwyIwR/lib/Any/Template/Backend/TemplateToolkit.pm
+--- Any-Template-1.015-GwyIwR/lib/Any/Template/Backend/TemplateToolkit.pm~	2006-05-08 07:29:21.000000000 -0500
++++ Any-Template-1.015-GwyIwR/lib/Any/Template/Backend/TemplateToolkit.pm	2013-07-22 15:51:50.786075824 -0500
+@@ -26,24 +26,24 @@
+ 	my ($self, $data, $ref_buffer) = @_;
+ 	$$ref_buffer = '';
+ 	TRACE("Input", $self->{input});
+-	$self->{engine}->process($self->{input}, $data, $ref_buffer) or die($self->{engine}->error());
++	return $self->{engine}->process($self->{input}, $data, $ref_buffer) || die($self->{engine}->error());
+ }
+ 
+ sub process_to_filehandle {
+ 	my ($self, $data, $fh) = @_;
+ 	TRACE("Input", $self->{input});
+-	$self->{engine}->process($self->{input}, $data, $fh) or die($self->{engine}->error());
++	return $self->{engine}->process($self->{input}, $data, $fh) || die($self->{engine}->error());
+ }
+ 
+ sub process_to_file {
+ 	my ($self, $data, $filepath) = @_;
+ 	TRACE("Input", $self->{input});
+-	$self->{engine}->process($self->{input}, $data, $filepath) or die($self->{engine}->error());
++	return $self->{engine}->process($self->{input}, $data, $filepath) || die($self->{engine}->error());
+ }
+ 
+ sub process_to_sub {
+ 	my ($self, $data, $coderef) = @_;
+-	return $self->{engine}->process($self->{input}, $data, $coderef) or die($self->{engine}->error());
++	return $self->{engine}->process($self->{input}, $data, $coderef) || die($self->{engine}->error());
+ }
+ 
+ #
