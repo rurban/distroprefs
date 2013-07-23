@@ -1,0 +1,12 @@
+diff -bu App-Addex-0.023-JpL92T/lib/App/Addex/Output/Mutt.pm~ App-Addex-0.023-JpL92T/lib/App/Addex/Output/Mutt.pm
+--- App-Addex-0.023-JpL92T/lib/App/Addex/Output/Mutt.pm~	2012-02-27 12:29:37.000000000 -0600
++++ App-Addex-0.023-JpL92T/lib/App/Addex/Output/Mutt.pm	2013-07-23 10:14:49.121000598 -0500
+@@ -76,7 +76,7 @@
+ }
+ 
+ sub _ig {
+-  return $_[0] =~ /;$/ and $_[0] =~ /:/;
++  return ($_[0] =~ /;$/ and $_[0] =~ /:/);
+ }
+ 
+ sub process_entry {
