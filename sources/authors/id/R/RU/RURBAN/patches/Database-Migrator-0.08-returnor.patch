@@ -1,0 +1,12 @@
+diff -bu Database-Migrator-0.08-wUvoWF/lib/Database/Migrator/Core.pm~ Database-Migrator-0.08-wUvoWF/lib/Database/Migrator/Core.pm
+--- Database-Migrator-0.08-wUvoWF/lib/Database/Migrator/Core.pm~	2013-07-18 10:31:42.000000000 -0600
++++ Database-Migrator-0.08-wUvoWF/lib/Database/Migrator/Core.pm	2013-07-22 22:41:58.764598843 -0600
+@@ -264,7 +264,7 @@
+     $a_num ||= 0;
+     $b_num ||= 0;
+ 
+-    return $a_num <=> $b_num or $a_alpha cmp $b_alpha;
++    return ($a_num <=> $b_num or $a_alpha cmp $b_alpha);
+ }
+ 
+ 
