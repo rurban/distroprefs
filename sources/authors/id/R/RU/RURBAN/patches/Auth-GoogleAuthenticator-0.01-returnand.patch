@@ -1,0 +1,14 @@
+diff -bu Auth-GoogleAuthenticator-0.01-1p_stP/lib/Auth/GoogleAuthenticator.pm~ Auth-GoogleAuthenticator-0.01-1p_stP/lib/Auth/GoogleAuthenticator.pm
+--- Auth-GoogleAuthenticator-0.01-1p_stP/lib/Auth/GoogleAuthenticator.pm~	2013-02-22 06:48:10.000000000 -0600
++++ Auth-GoogleAuthenticator-0.01-1p_stP/lib/Auth/GoogleAuthenticator.pm	2013-07-23 16:03:33.045126098 -0500
+@@ -54,8 +54,8 @@
+ 
+ sub verify {
+     my ($self, $code, $ts) = @_;
+-    return $code and
+-        $self->totp( $ts ) == $code;
++    return $code &&
++        ($self->totp( $ts ) == $code);
+ }
+ 
+ 1;
