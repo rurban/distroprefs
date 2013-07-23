@@ -1,0 +1,6 @@
+---
+comment: "wrong precedence [cpan #87050]"
+match:
+  distribution: "App-DoubleUp-v0\.4\.0"
+patches:
+  - "RURBAN/patches/App-DoubleUp-v0.4.0-returnor.patch"

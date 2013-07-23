@@ -1,0 +1,12 @@
+diff -bu App-DoubleUp-v0.4.0-fCZyUR/lib/App/DoubleUp.pm~ App-DoubleUp-v0.4.0-fCZyUR/lib/App/DoubleUp.pm
+--- App-DoubleUp-v0.4.0-fCZyUR/lib/App/DoubleUp.pm~	2012-11-19 04:59:35.000000000 -0600
++++ App-DoubleUp-v0.4.0-fCZyUR/lib/App/DoubleUp.pm	2013-07-23 11:52:13.112468931 -0500
+@@ -119,7 +119,7 @@
+ 
+ sub connect_to_db {
+     my ($self, $dsn, $user, $password) = @_;
+-    return DBI->connect($dsn, $user, $password, { RaiseError => 1, PrintError => 0 }) or die "Can't $dsn";
++    return DBI->connect($dsn, $user, $password, { RaiseError => 1, PrintError => 0 }) || die "Can't $dsn";
+ }
+ 
+ sub process_querys_for_one_db {
