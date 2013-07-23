@@ -1,0 +1,48 @@
+diff -bu DBR-1.5-irzqVf/lib/DBR/Config/Instance.pm~ DBR-1.5-irzqVf/lib/DBR/Config/Instance.pm
+--- DBR-1.5-irzqVf/lib/DBR/Config/Instance.pm~	2011-05-20 19:45:42.000000000 -0500
++++ DBR-1.5-irzqVf/lib/DBR/Config/Instance.pm	2013-07-23 15:28:29.544339091 -0500
+@@ -199,7 +199,7 @@
+ 				    conn     => $self->getconn,
+ 				    session  => $self->{session},
+ 				    instance => $self,
+-				   ) or confess 'Failed to create Handle object';
++				   ) || confess 'Failed to create Handle object';
+       }
+ }
+ 
+diff -bu DBR-1.5-irzqVf/lib/DBR/Config/Table.pm~ DBR-1.5-irzqVf/lib/DBR/Config/Table.pm
+--- DBR-1.5-irzqVf/lib/DBR/Config/Table.pm~	2011-05-20 19:45:42.000000000 -0500
++++ DBR-1.5-irzqVf/lib/DBR/Config/Table.pm	2013-07-23 15:28:54.292111609 -0500
+@@ -250,7 +250,7 @@
+       return DBR::Config::Instance->lookup(
+ 					   session => $self->{session},
+ 					   guid   => $guid
+-					  ) or return $self->_error('Failed to fetch conf instance');
++					  ) || return $self->_error('Failed to fetch conf instance');
+ }
+ 
+ 
+diff -bu DBR-1.5-irzqVf/lib/DBR/Query.pm~ DBR-1.5-irzqVf/lib/DBR/Query.pm
+--- DBR-1.5-irzqVf/lib/DBR/Query.pm~	2011-05-20 19:45:42.000000000 -0500
++++ DBR-1.5-irzqVf/lib/DBR/Query.pm	2013-07-23 15:29:29.155791248 -0500
+@@ -133,7 +133,7 @@
+       return $class->new(
+ 			 %params,
+ 			 @_, # extra params
+-			) or croak "Failed to create new $class object";
++			) || croak "Failed to create new $class object";
+ }
+ 
+ sub child_query{
+diff -bu DBR-1.5-irzqVf/lib/DBR/Query/Select.pm~ DBR-1.5-irzqVf/lib/DBR/Query/Select.pm
+--- DBR-1.5-irzqVf/lib/DBR/Query/Select.pm~	2011-05-20 19:45:42.000000000 -0500
++++ DBR-1.5-irzqVf/lib/DBR/Query/Select.pm	2013-07-23 15:29:11.683951782 -0500
+@@ -102,7 +102,7 @@
+       return $self->{recordobj} ||= DBR::Record::Maker->new(
+ 							    session  => $self->{session},
+ 							    query    => $self,  # This value is not preserved by the record maker, thus no memory leak
+-							   ) or confess ('failed to create record class');
++							   ) || confess ('failed to create record class');
+ }
+ 
+ sub DESTROY{
