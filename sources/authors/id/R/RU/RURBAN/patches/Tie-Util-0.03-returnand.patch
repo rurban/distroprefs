@@ -1,0 +1,12 @@
+diff -bu Tie-Util-0.03-rsTT5F/t/Test/Builder.pm~ Tie-Util-0.03-rsTT5F/t/Test/Builder.pm
+--- Tie-Util-0.03-rsTT5F/t/Test/Builder.pm~	2009-11-14 01:45:00.000000000 -0600
++++ Tie-Util-0.03-rsTT5F/t/Test/Builder.pm	2013-07-23 16:37:47.462425457 -0500
+@@ -856,7 +856,7 @@
+ 
+     no warnings 'numeric';
+     my $numval = $val + 0;
+-    return $numval != 0 and $numval ne $val ? 1 : 0;
++    return ($numval != 0 and $numval ne $val ? 1 : 0);
+ }
+ 
+ =item B<is_eq>
