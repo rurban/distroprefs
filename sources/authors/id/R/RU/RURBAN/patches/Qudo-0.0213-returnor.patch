@@ -1,0 +1,12 @@
+diff -bu Qudo-0.0213-K_SUO0/lib/Qudo/Test.pm~ Qudo-0.0213-K_SUO0/lib/Qudo/Test.pm
+--- Qudo-0.0213-K_SUO0/lib/Qudo/Test.pm~	2011-01-08 00:53:38.000000000 -0600
++++ Qudo-0.0213-K_SUO0/lib/Qudo/Test.pm	2013-07-23 14:07:01.430788003 -0500
+@@ -137,7 +137,7 @@
+         "root",
+         "",
+         { RaiseError => 1 }
+-    ) or die "Couldn't connect to database";
++    ) || die "Couldn't connect to database";
+ }
+ 
+ sub dsn_for {
