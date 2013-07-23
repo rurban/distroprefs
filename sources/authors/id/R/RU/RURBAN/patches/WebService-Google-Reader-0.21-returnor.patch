@@ -1,0 +1,12 @@
+diff -bu WebService-Google-Reader-0.21-WtGY4H/lib/WebService/Google/Reader.pm~ WebService-Google-Reader-0.21-WtGY4H/lib/WebService/Google/Reader.pm
+--- WebService-Google-Reader-0.21-WtGY4H/lib/WebService/Google/Reader.pm~	2011-12-03 00:54:14.000000000 -0600
++++ WebService-Google-Reader-0.21-WtGY4H/lib/WebService/Google/Reader.pm	2013-07-23 12:36:52.976898907 -0500
+@@ -485,7 +485,7 @@
+ }
+ 
+ sub _public {
+-    return not $_[0]->username or not $_[0]->password;
++    return (not $_[0]->username or not $_[0]->password);
+ }
+ 
+ sub _encode_type {

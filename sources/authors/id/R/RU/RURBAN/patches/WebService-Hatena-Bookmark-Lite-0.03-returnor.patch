@@ -1,0 +1,47 @@
+diff -bu WebService-Hatena-Bookmark-Lite-0.03-tinP6y/lib/WebService/Hatena/Bookmark/Lite.pm~ WebService-Hatena-Bookmark-Lite-0.03-tinP6y/lib/WebService/Hatena/Bookmark/Lite.pm
+--- WebService-Hatena-Bookmark-Lite-0.03-tinP6y/lib/WebService/Hatena/Bookmark/Lite.pm~	2009-09-13 10:33:37.000000000 -0500
++++ WebService-Hatena-Bookmark-Lite-0.03-tinP6y/lib/WebService/Hatena/Bookmark/Lite.pm	2013-07-23 12:34:09.890336035 -0500
+@@ -44,7 +44,7 @@
+     $entry->summary( $self->_make_summary($tag,$comment) );
+ 
+     return $self->client->createEntry($PostURI , $entry)
+-        or croak $self->client->errstr;
++        || croak $self->client->errstr;
+ }
+ 
+ sub getEntry{
+@@ -53,7 +53,7 @@
+     my $EditURI = $self->_set_edit_uri( $arg{edit_ep} );
+ 
+     return $self->client->getEntry( $EditURI )
+-        or croak $self->client->errstr;
++        || croak $self->client->errstr;
+ }
+ 
+ sub edit{
+@@ -69,7 +69,7 @@
+     $entry->summary( $self->_make_summary($tag,$comment) );
+ 
+     return $self->client->updateEntry($EditURI , $entry)
+-        or croak $self->client->errstr;
++        || croak $self->client->errstr;
+ }
+ 
+ sub delete{
+@@ -78,14 +78,14 @@
+     my $EditURI = $self->_set_edit_uri( $arg{edit_ep} );
+ 
+     return $self->client->deleteEntry($EditURI )
+-        or croak $self->client->errstr;
++        || croak $self->client->errstr;
+ }
+ 
+ sub getFeed{
+     my $self = shift;
+ 
+     return $self->client->getFeed( $FeedURI )
+-        or croak $self->client->errstr;
++        || croak $self->client->errstr;
+ }
+ 
+ sub entry2edit_ep{

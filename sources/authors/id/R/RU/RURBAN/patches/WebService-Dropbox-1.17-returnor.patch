@@ -1,0 +1,12 @@
+diff -bu WebService-Dropbox-1.17-LKXBxu/lib/WebService/Dropbox.pm~ WebService-Dropbox-1.17-LKXBxu/lib/WebService/Dropbox.pm
+--- WebService-Dropbox-1.17-LKXBxu/lib/WebService/Dropbox.pm~	2013-02-07 02:34:56.000000000 -0600
++++ WebService-Dropbox-1.17-LKXBxu/lib/WebService/Dropbox.pm	2013-07-23 12:43:43.697273222 -0500
+@@ -185,7 +185,7 @@
+                 $path, {
+                     upload_id => $data->{upload_id},
+                     ( $params ? %$params : () )
+-                }, $opts) or die $self->error;
++                }, $opts) || die $self->error;
+         }
+ 
+         $tmp->flush;
