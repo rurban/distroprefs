@@ -1,0 +1,12 @@
+diff -bu TheSchwartz-1.10-kPs9EP/t/lib/db-common.pl~ TheSchwartz-1.10-kPs9EP/t/lib/db-common.pl
+--- TheSchwartz-1.10-kPs9EP/t/lib/db-common.pl~	2010-03-15 16:11:59.000000000 -0500
++++ TheSchwartz-1.10-kPs9EP/t/lib/db-common.pl	2013-07-23 14:50:57.508253923 -0500
+@@ -165,7 +165,7 @@
+ 
+ sub mysql_dbh {
+     return DBI->connect("DBI:mysql:mysql", "root", "", { RaiseError => 1 })
+-        or die "Couldn't connect to database";
++        || die "Couldn't connect to database";
+ }
+ 
+ my $pg_dbh;

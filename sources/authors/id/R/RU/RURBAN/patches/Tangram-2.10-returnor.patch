@@ -1,0 +1,12 @@
+diff -bu Tangram-2.10-fjDp7t/lib/Tangram/Schema.pm~ Tangram-2.10-fjDp7t/lib/Tangram/Schema.pm
+--- Tangram-2.10-fjDp7t/lib/Tangram/Schema.pm~	2006-03-28 23:05:29.000000000 -0600
++++ Tangram-2.10-fjDp7t/lib/Tangram/Schema.pm	2013-07-23 14:54:41.530323494 -0500
+@@ -185,7 +185,7 @@
+ sub classdef
+ {
+    my ($self, $class) = @_;
+-   return $self->{classes}{$class} or confess "unknown class '$class'";
++   return $self->{classes}{$class} || confess "unknown class '$class'";
+ }
+ 
+ *get_class_by_name = \&classdef;
