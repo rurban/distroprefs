@@ -1,0 +1,12 @@
+diff -bu Module-Locate-1.74-Iv3lOP/lib/Module/Locate.pm~ Module-Locate-1.74-Iv3lOP/lib/Module/Locate.pm
+--- Module-Locate-1.74-Iv3lOP/lib/Module/Locate.pm~	2013-07-20 05:06:56.000000000 -0600
++++ Module-Locate-1.74-Iv3lOP/lib/Module/Locate.pm	2013-07-22 18:58:14.136454857 -0600
+@@ -146,7 +146,7 @@
+     ## it looks like %INC entries automagically use / as a separator
+     my $path = join '/', split '::' => "$mod.pm";
+ 
+-    return exists $INC{$path} and defined $INC{$path};
++    return exists($INC{$path}) && defined($INC{$path});
+   }
+ 
+   sub is_pkg_loaded {

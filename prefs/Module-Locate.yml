@@ -1,0 +1,6 @@
+---
+comment: "wrong precedence [cpan #87050]"
+match:
+  distribution: "Module-Locate-1\.74"
+patches:
+  - "RURBAN/patches/Module-Locate-1.74-returnor.patch"
