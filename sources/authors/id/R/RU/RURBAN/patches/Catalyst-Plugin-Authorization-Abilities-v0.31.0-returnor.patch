@@ -1,0 +1,12 @@
+diff -bu Catalyst-Plugin-Authorization-Abilities-v0.31.0-ptQPbD/t/lib/Schema/Utils.pm~ Catalyst-Plugin-Authorization-Abilities-v0.31.0-ptQPbD/t/lib/Schema/Utils.pm
+--- Catalyst-Plugin-Authorization-Abilities-v0.31.0-ptQPbD/t/lib/Schema/Utils.pm~	2012-09-06 14:02:48.000000000 -0500
++++ Catalyst-Plugin-Authorization-Abilities-v0.31.0-ptQPbD/t/lib/Schema/Utils.pm	2013-07-23 16:33:29.888783725 -0500
+@@ -165,7 +165,7 @@
+ 
+   my ($dsn, $user, $pass, $args ) = $self->_connect_info;
+   return $schema_class->connect($dsn, $user, $pass, $args )
+-    or die "Failed to connect to database";
++    || die "Failed to connect to database";
+ }
+ 
+ 
