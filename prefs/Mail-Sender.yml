@@ -1,5 +1,5 @@
 ---
-comment: "wrong precedence [cpan #87050]"
+comment: "wrong return precedence [cpan #87198]"
 match:
   distribution: "Mail-Sender-0\.8\.22"
 patches:

@@ -1,5 +1,5 @@
 ---
-comment: "wrong precedence [cpan #87050]"
+comment: "wrong return precedence [cpan #87205]"
 match:
   distribution: "Database-Migrator-0\.08"
 patches:

@@ -12,9 +12,3 @@ diff -bu XML-XSS-0.3.1-xj_2Cr/lib/XML/XSS/StyleAttribute.pm~ XML-XSS-0.3.1-xj_2C
    };
  
  
-@@ -168,3 +168,5 @@
- 
- =cut
- 
-+
-+

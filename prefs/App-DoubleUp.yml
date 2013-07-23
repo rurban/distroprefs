@@ -1,5 +1,5 @@
 ---
-comment: "wrong precedence [cpan #87050]"
+comment: "wrong return precedence [cpan #87208]"
 match:
   distribution: "App-DoubleUp-v0\.4\.0"
 patches:

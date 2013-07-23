@@ -1,5 +1,5 @@
 ---
-comment: "wrong precedence [cpan #87050]"
+comment: "fix pod errors [cpan #87059]"
 match:
   distribution: "DBM-Deep-2\.0009"
 patches:

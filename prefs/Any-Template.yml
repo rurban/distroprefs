@@ -1,5 +1,5 @@
 ---
-comment: "wrong precedence [cpan #87050]"
+comment: "wrong return precedence [cpan #87201]"
 match:
   distribution: "Any-Template-1\.015"
 patches:

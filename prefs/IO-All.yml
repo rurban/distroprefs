@@ -1,6 +1,6 @@
 ---
-comment: "wrong precedence [cpan #87050]"
+comment: "wrong return precedence [cpan #87200]"
 match:
-  distribution: "IO-All-"
+  distribution: "IO-All-0\.46"
 patches:
   - "RURBAN/patches/IO-All-0.46-returnor.patch"

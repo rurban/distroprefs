@@ -1,5 +1,5 @@
 ---
-comment: "wrong precedence [cpan #87050]"
+comment: "wrong return precedence [cpan #87196]"
 match:
   distribution: "XML-XSS-0\.3\.1"
 patches:
