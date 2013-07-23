@@ -1,0 +1,12 @@
+diff -bu ./Perlbal-1.80-2A2zNz/t/32-pipelining.t~ ./Perlbal-1.80-2A2zNz/t/32-pipelining.t
+--- ./Perlbal-1.80-2A2zNz/t/32-pipelining.t~	2010-12-19 19:24:35.000000000 -0600
++++ ./Perlbal-1.80-2A2zNz/t/32-pipelining.t	2013-07-23 09:58:07.314125483 -0500
+@@ -46,7 +46,7 @@
+ my $sock;
+ my $get_sock = sub {
+     return IO::Socket::INET->new(PeerAddr => "127.0.0.1:$port")
+-        or die "Failed to connect to perlbal";
++        || die "Failed to connect to perlbal";
+ };
+ 
+ $sock = $get_sock->();
