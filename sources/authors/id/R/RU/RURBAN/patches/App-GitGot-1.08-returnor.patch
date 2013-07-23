@@ -1,0 +1,12 @@
+diff -bu App-GitGot-1.08-DKx19p/lib/App/GitGot/Repo/Git.pm~ App-GitGot-1.08-DKx19p/lib/App/GitGot/Repo/Git.pm
+--- App-GitGot-1.08-DKx19p/lib/App/GitGot/Repo/Git.pm~	2013-07-04 16:37:34.000000000 -0500
++++ App-GitGot-1.08-DKx19p/lib/App/GitGot/Repo/Git.pm	2013-07-23 12:27:09.666040351 -0500
+@@ -58,7 +58,7 @@
+   }
+   else {
+     return Git::Wrapper->new( $self->path )
+-      or die "Can't make Git::Wrapper";
++      || die "Can't make Git::Wrapper";
+   }
+ }
+ 
