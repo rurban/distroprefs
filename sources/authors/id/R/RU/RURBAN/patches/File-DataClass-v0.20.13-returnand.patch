@@ -1,0 +1,12 @@
+diff -bu File-DataClass-v0.20.13-IbFp85/lib/File/DataClass/ResultSource.pm~ File-DataClass-v0.20.13-IbFp85/lib/File/DataClass/ResultSource.pm
+--- File-DataClass-v0.20.13-IbFp85/lib/File/DataClass/ResultSource.pm~	2013-06-08 08:24:51.000000000 -0500
++++ File-DataClass-v0.20.13-IbFp85/lib/File/DataClass/ResultSource.pm	2013-07-24 10:47:39.723444907 -0500
+@@ -44,7 +44,7 @@
+ sub has_column {
+    my $attr = $_[ 0 ]->_attributes; my $key = $_[ 1 ] || q(_invalid_key_);
+ 
+-   return exists $attr->{ $key } and $attr->{ $key } ? TRUE : FALSE;
++   return ((exists $attr->{ $key } and $attr->{ $key }) ? TRUE : FALSE);
+ }
+ 
+ sub resultset {

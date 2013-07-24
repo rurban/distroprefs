@@ -1,5 +1,5 @@
 ---
-comment: "dead code [cpan #87xxx]"
+comment: "dead code [cpan #87254]"
 match:
   distribution: "Finance-Currency-Convert-Yahoo-0.2"
 patches:
