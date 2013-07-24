@@ -1,0 +1,12 @@
+diff -bu CatalystX-Usul-0.7.1184-d6QzHp/lib/CatalystX/Usul/Functions.pm~ CatalystX-Usul-0.7.1184-d6QzHp/lib/CatalystX/Usul/Functions.pm
+--- CatalystX-Usul-0.7.1184-d6QzHp/lib/CatalystX/Usul/Functions.pm~	2012-04-21 12:56:12.000000000 -0500
++++ CatalystX-Usul-0.7.1184-d6QzHp/lib/CatalystX/Usul/Functions.pm	2013-07-24 11:23:15.704223612 -0500
+@@ -176,7 +176,7 @@
+    local ($OFS, $ORS) = $OSNAME eq EVIL ? ("\r\n", "\r\n") : ("\n", "\n");
+ 
+    return print {*STDOUT} @rest
+-      or throw( error => 'IO error [_1]', args =>[ $ERRNO ] );
++       || throw( error => 'IO error [_1]', args =>[ $ERRNO ] );
+ }
+ 
+ sub split_on__ (;$$) {

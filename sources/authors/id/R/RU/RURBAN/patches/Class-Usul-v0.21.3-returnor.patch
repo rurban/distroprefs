@@ -1,0 +1,12 @@
+diff -bu Class-Usul-v0.21.3-iy3eqg/lib/Class/Usul/Functions.pm~ Class-Usul-v0.21.3-iy3eqg/lib/Class/Usul/Functions.pm
+--- Class-Usul-v0.21.3-iy3eqg/lib/Class/Usul/Functions.pm~	2013-05-16 05:50:32.000000000 -0500
++++ Class-Usul-v0.21.3-iy3eqg/lib/Class/Usul/Functions.pm	2013-07-24 11:26:58.054197850 -0500
+@@ -149,7 +149,7 @@
+    local ($OFS, $ORS) = is_win32() ? ("\r\n", "\r\n") : ("\n", "\n");
+ 
+    return print {*STDOUT} @rest
+-      or throw( error => 'IO error [_1]', args =>[ $ERRNO ] );
++      || throw( error => 'IO error [_1]', args =>[ $ERRNO ] );
+ }
+ 
+ sub env_prefix ($) {

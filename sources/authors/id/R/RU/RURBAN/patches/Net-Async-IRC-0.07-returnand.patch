@@ -1,0 +1,21 @@
+diff -bu Net-Async-IRC-0.07-BA6fpz/lib/Net/Async/IRC/Protocol.pm~ Net-Async-IRC-0.07-BA6fpz/lib/Net/Async/IRC/Protocol.pm
+--- Net-Async-IRC-0.07-BA6fpz/lib/Net/Async/IRC/Protocol.pm~	2013-05-20 11:00:59.000000000 -0500
++++ Net-Async-IRC-0.07-BA6fpz/lib/Net/Async/IRC/Protocol.pm	2013-07-24 11:29:22.940855289 -0500
+@@ -234,7 +234,7 @@
+ {
+    my $self = shift;
+    return 0 unless my $connect_f = $self->{connect_f};
+-   return $connect_f->is_ready and !$connect_f->failure;
++   return $connect_f->is_ready && !$connect_f->failure;
+ }
+ 
+ =head2 $loggedin = $irc->is_loggedin
+@@ -248,7 +248,7 @@
+ {
+    my $self = shift;
+    return 0 unless my $login_f = $self->{login_f};
+-   return $login_f->is_ready and !$login_f->failure;
++   return $login_f->is_ready && !$login_f->failure;
+ }
+ 
+ sub on_read

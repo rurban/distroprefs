@@ -1,0 +1,12 @@
+diff -bu Class-Scaffold-1.102280-8ZoD7Z/lib/Class/Scaffold/Log.pm~ Class-Scaffold-1.102280-8ZoD7Z/lib/Class/Scaffold/Log.pm
+--- Class-Scaffold-1.102280-8ZoD7Z/lib/Class/Scaffold/Log.pm~	2010-08-16 11:47:24.000000000 -0500
++++ Class-Scaffold-1.102280-8ZoD7Z/lib/Class/Scaffold/Log.pm	2013-07-24 11:25:10.987186256 -0500
+@@ -41,7 +41,7 @@
+     # in test mode, ignore what we're given - always log to STDOUT.
+     if ($self->delegate->test_mode) {
+         return $self->{handle} ||= IO::File->new(">&STDOUT")
+-          or die "can't open STDOUT: $!\n";
++          || die "can't open STDOUT: $!\n";
+     }
+     if (@_) {
+         $self->{handle} = shift;
