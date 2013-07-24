@@ -1,5 +1,5 @@
 ---
-comment: "wrong return precedence [cpan #87xxx]"
+comment: "wrong return precedence [cpan #87252]"
 match:
   distribution: "GBrowse-2\.55"
 patches:
