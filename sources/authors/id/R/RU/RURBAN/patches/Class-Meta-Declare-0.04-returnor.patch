@@ -1,0 +1,12 @@
+diff -bu Class-Meta-Declare-0.04-QtHANg/lib/Class/Meta/Declare.pm~ Class-Meta-Declare-0.04-QtHANg/lib/Class/Meta/Declare.pm
+--- Class-Meta-Declare-0.04-QtHANg/lib/Class/Meta/Declare.pm~	2006-08-20 04:41:37.000000000 -0500
++++ Class-Meta-Declare-0.04-QtHANg/lib/Class/Meta/Declare.pm	2013-07-24 10:52:01.329104215 -0500
+@@ -504,7 +504,7 @@
+         undef $call_pack if $call_pack->isa(__PACKAGE__);
+     }
+     return $call_pack
+-      or $self->_croak("Could not determine package");
++      || $self->_croak("Could not determine package");
+ }
+ 
+ sub _add_constructors {
