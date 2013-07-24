@@ -1,0 +1,12 @@
+diff -bu Curses-UI-0.9609-AeRnsY/lib/Curses/UI/Calendar.pm~ Curses-UI-0.9609-AeRnsY/lib/Curses/UI/Calendar.pm
+--- Curses-UI-0.9609-AeRnsY/lib/Curses/UI/Calendar.pm~	2011-08-31 21:07:49.000000000 -0500
++++ Curses-UI-0.9609-AeRnsY/lib/Curses/UI/Calendar.pm	2013-07-24 16:00:34.428012092 -0500
+@@ -563,7 +563,7 @@
+ sub is_julian ($$;)
+ {
+     my ($year, $month) = @_;
+-    return $year < 1752 or ($year == 1752 and $month <= 9);
++    return ($year < 1752 or ($year == 1752 and $month <= 9));
+ }
+ 
+ sub day_of_week($$$;)
