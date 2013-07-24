@@ -1,0 +1,12 @@
+diff -bu ./lib/DBICx/Modeler.pm~ ./lib/DBICx/Modeler.pm
+--- ./lib/DBICx/Modeler.pm~	2009-10-23 15:22:28.000000000 -0500
++++ ./lib/DBICx/Modeler.pm	2013-07-24 16:26:43.473159706 -0500
+@@ -329,7 +329,7 @@
+ sub model_source {
+     my $self = shift;
+     my $model_source = shift;
+-    return $self->_model_source( $model_source ) or croak "Couldn't find model source with key $model_source";
++    return $self->_model_source( $model_source ) || croak "Couldn't find model source with key $model_source";
+ }
+ 
+ sub model {
