@@ -1,0 +1,12 @@
+diff -bu ./Browse.pm~ ./Browse.pm
+--- ./Browse.pm~	2002-12-10 03:17:20.000000000 -0600
++++ ./Browse.pm	2013-07-24 16:30:31.490927800 -0500
+@@ -314,7 +314,7 @@
+     $self->debug("Prepare: ".$query."\n");
+ 
+     return $self->{dbh}->prepare($query)
+-	or $self->die();
++	|| $self->die();
+ }
+ 
+ #
