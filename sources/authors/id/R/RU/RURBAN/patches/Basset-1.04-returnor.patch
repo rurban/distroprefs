@@ -1,0 +1,12 @@
+diff -bu Basset-1.04-SzZs0v/lib/Basset/Machine.pm~ Basset-1.04-SzZs0v/lib/Basset/Machine.pm
+--- Basset-1.04-SzZs0v/lib/Basset/Machine.pm~	2006-04-27 16:21:43.000000000 -0500
++++ Basset-1.04-SzZs0v/lib/Basset/Machine.pm	2013-07-23 17:21:23.178008185 -0500
+@@ -485,7 +485,7 @@
+ 	my $self = shift;
+ 	my $extractor = $self->extractor or return $self->error("Cannot extract w/o extractor", "XXX");
+ 	
+-	return $extractor->extract(@_) or $self->error($extractor->errvals);
++	return $extractor->extract(@_) || $self->error($extractor->errvals);
+ }
+ 
+ =pod

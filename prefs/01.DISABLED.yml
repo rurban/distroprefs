@@ -257,5 +257,6 @@ match:
     |ZOFFIX/POE-Component-WWW-Google-PageRank-\d # hangs in 00-load with 34437
     |ZOFFIX/POE-Component-WebService-HtmlKitCom-FavIconFromImage-\d # hangs
     |ZSTEVENS/Alien-ActiveMQ-\d              # downloads 50MB and leaves them in /tmp/
+    |triceps-1\.0\.93			     # hangs
     )|
 disabled: 1

@@ -1,0 +1,12 @@
+diff -bu BatchSystem-SBS-0.41-oZekW0/lib/BatchSystem/SBS/Common.pm~ BatchSystem-SBS-0.41-oZekW0/lib/BatchSystem/SBS/Common.pm
+--- BatchSystem-SBS-0.41-oZekW0/lib/BatchSystem/SBS/Common.pm~	2008-03-13 08:18:53.000000000 -0500
++++ BatchSystem-SBS-0.41-oZekW0/lib/BatchSystem/SBS/Common.pm	2013-07-23 17:22:24.545411808 -0500
+@@ -86,7 +86,7 @@
+ sub lockFile{
+   my $f=shift or CORE::die  "must pass an argument to lockFile";
+   if($simpleLocker){
+-    return $simpleLocker->trylock($f) or CORE::die  "cannot lock [$f]: $!";
++    return $simpleLocker->trylock($f) || CORE::die  "cannot lock [$f]: $!";
+   }else{
+     File::Flock::lock("$f.flck", (($OSNAME=~/win/i)?'shared':'')) or CORE::die  "cannot lock ($f): $!";
+   }

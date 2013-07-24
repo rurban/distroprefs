@@ -1,0 +1,12 @@
+diff -bu Spark-Form-0.2102-jagdFj/lib/Spark/Form.pm~ Spark-Form-0.2102-jagdFj/lib/Spark/Form.pm
+--- Spark-Form-0.2102-jagdFj/lib/Spark/Form.pm~	2009-09-13 16:50:37.000000000 -0500
++++ Spark-Form-0.2102-jagdFj/lib/Spark/Form.pm	2013-07-23 17:24:41.324085096 -0500
+@@ -199,7 +199,7 @@
+     my ($self, $thing) = @_;
+     return eval {
+         $thing->isa('Spark::Form::Field')
+-    } or 0;
++    } || 0;
+ }
+ 
+ sub _add_custom_field {

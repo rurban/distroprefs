@@ -1,0 +1,21 @@
+diff -bu Finance-Currency-Convert-Yahoo-0.2-WO50ju/Yahoo.pm~ Finance-Currency-Convert-Yahoo-0.2-WO50ju/Yahoo.pm
+--- Finance-Currency-Convert-Yahoo-0.2-WO50ju/Yahoo.pm~	2013-07-23 17:15:58.997170750 -0500
++++ Finance-Currency-Convert-Yahoo-0.2-WO50ju/Yahoo.pm	2013-07-23 17:16:56.844604879 -0500
+@@ -208,7 +208,7 @@
+ 	warn "Attempting to access <$url> ...\n" if $CHAT;
+ 
+ 	# Format URL request
+-	my $req = new HTTP::Request ('GET',$url) or die "...could not GET.\n" and return undef;
++	my $req = new HTTP::Request ('GET',$url) or die "...could not GET.\n";
+ 	my $res = $ua->request($req);						# $res is the object UA returned
+ 	if (not $res->is_success()) {						# If successful
+ 		warn"...failed to retrieve currency document from Yahoo...\nTried: $url\n";
+@@ -250,7 +250,7 @@
+ 	warn "Attempting to access <$url> ...\n" if $CHAT;
+ 
+ 	# Format URL request
+-	my $req = new HTTP::Request ('GET',$url) or die "...could not GET.\n" and return undef;
++	my $req = new HTTP::Request ('GET',$url) or die "...could not GET.\n";
+ 	my $res = $ua->request($req);						# $res is the object UA returned
+ 	if (not $res->is_success()) {						# If successful
+ 		warn"...failed to retrieve currency document.\n" if $CHAT;

@@ -1,0 +1,12 @@
+diff -bu GBrowse-2.55-vnBghT/install_util/GBrowseInstall.pm~ GBrowse-2.55-vnBghT/install_util/GBrowseInstall.pm
+--- GBrowse-2.55-vnBghT/install_util/GBrowseInstall.pm~	2013-07-10 09:50:05.000000000 -0500
++++ GBrowse-2.55-vnBghT/install_util/GBrowseInstall.pm	2013-07-24 10:13:53.693624425 -0500
+@@ -992,7 +992,7 @@
+ 
+ sub perl5lib {
+     my $self = shift;
+-    return $self->added_to_INC or undef;
++    return $self->added_to_INC || undef;
+ }
+ 
+ sub scriptdir {

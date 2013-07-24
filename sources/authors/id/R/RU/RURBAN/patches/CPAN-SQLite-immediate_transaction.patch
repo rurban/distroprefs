@@ -1,0 +1,14 @@
+difforig CPAN-SQLite-0.203-MLv8Dn
+
+diff -u  CPAN-SQLite-0.203-MLv8Dn/lib/CPAN/SQLite/DBI.pm.orig
+--- CPAN-SQLite-0.203-MLv8Dn/lib/CPAN/SQLite/DBI.pm.orig	2013-06-29 15:15:33.000000000 -0500
++++ CPAN-SQLite-0.203-MLv8Dn/lib/CPAN/SQLite/DBI.pm	2013-07-17 11:05:26.819511075 -0500
+@@ -89,7 +89,7 @@
+   my $db_dir = $args{db_dir} || $args{CPAN};
+   my $db = File::Spec->catfile($db_dir, $args{db_name});
+   $dbh ||= DBI->connect("DBI:SQLite:$db", '', '',
+-                        {RaiseError => 1, AutoCommit => 0});
++    { RaiseError => 1, AutoCommit => 0, sqlite_use_immediate_transaction => 0});
+   die "Cannot connect to $db" unless $dbh;
+   $dbh->{AutoCommit} = 0;
+ 
