@@ -1,0 +1,26 @@
+diff -bu Rose-HTML-Objects-0.618-HlMvi3/lib/Rose/HTML/Form/Field/OnOff.pm~ Rose-HTML-Objects-0.618-HlMvi3/lib/Rose/HTML/Form/Field/OnOff.pm
+--- Rose-HTML-Objects-0.618-HlMvi3/lib/Rose/HTML/Form/Field/OnOff.pm~	2009-11-09 13:47:50.000000000 -0600
++++ Rose-HTML-Objects-0.618-HlMvi3/lib/Rose/HTML/Form/Field/OnOff.pm	2013-07-24 10:24:58.911633829 -0500
+@@ -32,7 +32,8 @@
+ {
+   my($self) = shift;
+   my $parent_group = $self->parent_group or return;
+-  return $parent_group->fq_name or return;
++  my $name = $parent_group->fq_name or return;
++  return $name;
+ }
+ 
+ sub fq_name
+diff -bu Rose-HTML-Objects-0.618-HlMvi3/lib/Rose/HTML/Form/Field.pm~ Rose-HTML-Objects-0.618-HlMvi3/lib/Rose/HTML/Form/Field.pm
+--- Rose-HTML-Objects-0.618-HlMvi3/lib/Rose/HTML/Form/Field.pm~	2013-07-24 10:23:59.116173215 -0500
++++ Rose-HTML-Objects-0.618-HlMvi3/lib/Rose/HTML/Form/Field.pm	2013-07-24 10:25:39.615266687 -0500
+@@ -225,7 +225,8 @@
+ {
+   my($self) = shift;
+   my $parent_field = $self->parent_field or return;
+-  return $parent_field->fq_name or return;
++  my $name = $parent_field->fq_name or return;
++  return $name;
+ }
+ 
+ sub is_flat_group { 0 }
