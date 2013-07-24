@@ -1,0 +1,12 @@
+diff -bu DBD-Fulcrum-0.20-3hlx44/Makefile.PL~ DBD-Fulcrum-0.20-3hlx44/Makefile.PL
+--- DBD-Fulcrum-0.20-3hlx44/Makefile.PL~	1998-12-16 09:14:59.000000000 -0600
++++ DBD-Fulcrum-0.20-3hlx44/Makefile.PL	2013-07-24 15:56:54.873965682 -0500
+@@ -106,7 +106,7 @@
+ 	printflush(STDOUT,"[$default] ") if $default;
+     my $value = <>;
+ 	chomp $value;
+-	return $value or $default;
++	return $value || $default;
+ }
+ 
+ sub MY::postamble {
