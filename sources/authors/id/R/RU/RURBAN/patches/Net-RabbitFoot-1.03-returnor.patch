@@ -1,0 +1,12 @@
+diff -bu Net-RabbitFoot-1.03-blfARF/lib/Net/RabbitFoot/Cmd/Role/Config.pm~ Net-RabbitFoot-1.03-blfARF/lib/Net/RabbitFoot/Cmd/Role/Config.pm
+--- Net-RabbitFoot-1.03-blfARF/lib/Net/RabbitFoot/Cmd/Role/Config.pm~	2010-05-29 09:48:27.000000000 -0500
++++ Net-RabbitFoot-1.03-blfARF/lib/Net/RabbitFoot/Cmd/Role/Config.pm	2013-07-25 12:34:29.791899815 -0500
+@@ -28,7 +28,7 @@
+         driver_args => {General => {-LowerCaseNames => 1}}
+     });
+ 
+-    return $config->[0]->{$file} or die "Could not load $file";
++    return $config->[0]->{$file} || die "Could not load $file";
+ }
+ 
+ 1;
