@@ -1,0 +1,129 @@
+diff -bu JSON-Pointer-0.01-q0Iw1F/lib/JSON/Pointer.pm~ JSON-Pointer-0.01-q0Iw1F/lib/JSON/Pointer.pm
+--- JSON-Pointer-0.01-q0Iw1F/lib/JSON/Pointer.pm~	2013-07-25 10:29:00.777705698 -0500
++++ JSON-Pointer-0.01-q0Iw1F/lib/JSON/Pointer.pm	2013-07-25 10:18:36.159326797 -0500
+@@ -296,13 +296,13 @@
+ sub _is_iv_or_nv {
+     my $value = shift;
+     my $flags = B::svref_2object(\$value)->FLAGS;
+-    return ($flags & ( B::SVp_IOK | B::SVp_NOK )) and !($flags & B::SVp_POK);
++    return (($flags & ( B::SVp_IOK | B::SVp_NOK )) and !($flags & B::SVp_POK));
+ }
+ 
+ sub _is_pv {
+     my $value = shift;
+     my $flags = B::svref_2object(\$value)->FLAGS;
+-    return !($flags & ( B::SVp_IOK | B::SVp_NOK )) and ($flags & B::SVp_POK);
++    return (!($flags & ( B::SVp_IOK | B::SVp_NOK )) and ($flags & B::SVp_POK));
+ }
+ 
+ 1;
+diff -bu JSON-Pointer-0.01-q0Iw1F/t/004_add.t~ JSON-Pointer-0.01-q0Iw1F/t/004_add.t
+--- JSON-Pointer-0.01-q0Iw1F/t/004_add.t~	2013-07-25 10:20:58.954046355 -0500
++++ JSON-Pointer-0.01-q0Iw1F/t/004_add.t	2013-07-25 10:25:54.619383967 -0500
+@@ -18,15 +18,15 @@
+         my $orig_document_encoded = encode_json($document);
+         my $patched_document = JSON::Pointer->add($document, $pointer, $value);
+         is_deeply(
+-            encode_json($patched_document), 
+-            encode_json($expect->{patched}), 
++            decode_json(encode_json($patched_document)), 
++            decode_json(encode_json($expect->{patched})), 
+             sprintf(
+                 "added document (actual: %s. expected: %s)", 
+                 encode_json($patched_document), 
+                 encode_json($expect->{patched})
+             )
+         );
+-        # is_deeply($document, $expect->{patched}, "patched");
++        is_deeply($patched_document, $expect->{patched}, "patched");
+     };
+ }
+ 
+diff -bu JSON-Pointer-0.01-q0Iw1F/t/005_remove.t~ JSON-Pointer-0.01-q0Iw1F/t/005_remove.t
+--- JSON-Pointer-0.01-q0Iw1F/t/005_remove.t~	2013-02-17 09:35:04.000000000 -0600
++++ JSON-Pointer-0.01-q0Iw1F/t/005_remove.t	2013-07-25 10:27:52.802318370 -0500
+@@ -14,18 +14,18 @@
+     subtest $desc => sub {
+         my ($document, $pointer) = @$input{qw/document pointer/};
+         my ($patched_document, $removed) = JSON::Pointer->remove($document, $pointer);
+-        is(
+-            $json->encode($patched_document), 
+-            $json->encode($expect->{document}), 
++        is_deeply(
++            $json->decode($json->encode($patched_document)), 
++            $json->decode($json->encode($expect->{document})), 
+             sprintf(
+                 "removed document (actual: %s. expect: %s)",
+                 $json->encode($patched_document),
+                 $json->encode($expect->{document}),
+             )
+         );
+-        is(
+-            $json->encode($removed), 
+-            $json->encode($expect->{removed}), 
++        is_deeply(
++            $json->decode($json->encode($removed)), 
++            $json->decode($json->encode($expect->{removed})), 
+             sprintf(
+                 "removed element (actual: %s. expect: %s)",
+                 $json->encode($removed),
+diff -bu JSON-Pointer-0.01-q0Iw1F/t/006_replace.t~ JSON-Pointer-0.01-q0Iw1F/t/006_replace.t
+--- JSON-Pointer-0.01-q0Iw1F/t/006_replace.t~	2013-02-17 09:35:04.000000000 -0600
++++ JSON-Pointer-0.01-q0Iw1F/t/006_replace.t	2013-07-25 10:27:11.266692818 -0500
+@@ -15,18 +15,18 @@
+         my ($document, $pointer, $value) = @$input{qw/document pointer value/};
+         my ($patched_document, $replaced) = JSON::Pointer->replace($document, $pointer, $value);
+ 
+-        is(
+-            $json->encode($patched_document), 
+-            $json->encode($expect->{document}), 
++        is_deeply(
++            $json->decode($json->encode($patched_document)), 
++            $json->decode($json->encode($expect->{document})), 
+             sprintf(
+                 "replaced document (actual: %s. expect: %s)",
+                 $json->encode($patched_document),
+                 $json->encode($expect->{document}),
+             )
+         );
+-        is(
+-            $json->encode($replaced), 
+-            $json->encode($expect->{replaced}), 
++        is_deeply(
++            $json->decode($json->encode($replaced)), 
++            $json->decode($json->encode($expect->{replaced})), 
+             sprintf(
+                 "replaced element (actual: %s. expect: %s)",
+                 $json->encode($replaced),
+diff -bu JSON-Pointer-0.01-q0Iw1F/t/007_copy.t~ JSON-Pointer-0.01-q0Iw1F/t/007_copy.t
+--- JSON-Pointer-0.01-q0Iw1F/t/007_copy.t~	2013-02-17 09:35:04.000000000 -0600
++++ JSON-Pointer-0.01-q0Iw1F/t/007_copy.t	2013-07-25 10:28:11.962145664 -0500
+@@ -14,9 +14,9 @@
+     subtest $desc => sub {
+         my ($document, $from_pointer, $to_pointer) = @$input{qw/document from path/};
+         my $patched_document = JSON::Pointer->copy($document, $from_pointer, $to_pointer);
+-        is(
+-            $json->encode($patched_document),
+-            $json->encode($expect->{patched}),
++        is_deeply(
++            $json->decode($json->encode($patched_document)),
++            $json->decode($json->encode($expect->{patched})),
+             sprintf(
+                 "copied document (actual: %s. expected: %s)",
+                 $json->encode($patched_document),
+diff -bu JSON-Pointer-0.01-q0Iw1F/t/008_move.t~ JSON-Pointer-0.01-q0Iw1F/t/008_move.t
+--- JSON-Pointer-0.01-q0Iw1F/t/008_move.t~	2013-02-17 09:35:04.000000000 -0600
++++ JSON-Pointer-0.01-q0Iw1F/t/008_move.t	2013-07-25 10:28:27.226008084 -0500
+@@ -14,9 +14,9 @@
+     subtest $desc => sub {
+         my ($document, $from_pointer, $to_pointer) = @$input{qw/document from path/};
+         my $patched_document = JSON::Pointer->move($document, $from_pointer, $to_pointer);
+-        is(
+-            $json->encode($patched_document),
+-            $json->encode($expect->{patched}),
++        is_deeply(
++            $json->decode($json->encode($patched_document)),
++            $json->decode($json->encode($expect->{patched})),
+             sprintf(
+                 "copied document (actual: %s. expected: %s)",
+                 $json->encode($patched_document),
