@@ -1,0 +1,12 @@
+diff -bu ./lib/Elastic/Model/Meta/Class/Doc.pm~ ./lib/Elastic/Model/Meta/Class/Doc.pm
+--- ./lib/Elastic/Model/Meta/Class/Doc.pm~	2013-05-08 14:30:06.000000000 -0500
++++ ./lib/Elastic/Model/Meta/Class/Doc.pm	2013-07-25 08:17:09.536402358 -0500
+@@ -91,7 +91,7 @@
+         . $self->_inline_generate_instance( '$instance',
+         '"' . $self->name . '"' )
+         . 'return $instance' . '}';
+-    return eval($src) or croak $@;
++    return eval($src) || croak $@;
+ }
+ 
+ #===================================
