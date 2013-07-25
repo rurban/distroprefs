@@ -1,0 +1,30 @@
+diff -bu ./t/UnexpandedSpecialLiteral.t~ ./t/UnexpandedSpecialLiteral.t
+--- ./t/UnexpandedSpecialLiteral.t~	2013-03-15 18:45:39.000000000 -0500
++++ ./t/UnexpandedSpecialLiteral.t	2013-07-25 09:27:20.838863482 -0500
+@@ -53,15 +53,26 @@
+   is_deeply (\@h, [ 'Foo__FILE__', 123 ],
+              'hash constructor literal on right of a . expression');
+ }
++# fat comma quoting fixed with 5.19.2 21791330af556dc
+ { my @array = (__PACKAGE__
+                => 123);
++  if ($] >= 5.019002) {
++    is_deeply (\@array, [ '__PACKAGE__', 123 ],
++               "fat comma quotes across newline");
++  } else {
+   is_deeply (\@array, [ 'main', 123 ],
+              "fat comma doesn't quote across newline");
++  }
+ }
+ { my @array = (__PACKAGE__  # and with a comment
+                => 123);
++  if ($] >= 5.019002) {
++    is_deeply (\@array, [ '__PACKAGE__', 123 ],
++               "fat comma quotes across newline");
++  } else {
+   is_deeply (\@array, [ 'main', 123 ],
+              "fat comma doesn't quote across comment and newline");
++  }
+ }
+ 
+ 
