@@ -1,0 +1,12 @@
+diff -bu ./Cursor.pm~ ./Cursor.pm
+--- ./Cursor.pm~	2002-09-09 15:59:04.000000000 -0500
++++ ./Cursor.pm	2013-07-25 10:07:23.589352378 -0500
+@@ -97,7 +97,7 @@
+   my $self = shift;
+   my $colname = shift;
+ 
+-  return $self->{type}{$colname} or croak ("column $colname not found");
++  return $self->{type}{$colname} || croak ("column $colname not found");
+ }
+ 
+ # ----------------------------------------------------------------------

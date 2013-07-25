@@ -1,0 +1,12 @@
+diff -bu ./lib/DBIx/DR/Iterator.pm~ ./lib/DBIx/DR/Iterator.pm
+--- ./lib/DBIx/DR/Iterator.pm~	2013-01-05 15:38:26.000000000 -0600
++++ ./lib/DBIx/DR/Iterator.pm	2013-07-25 10:11:13.227299395 -0500
+@@ -124,7 +124,7 @@
+         return 1;
+     }
+ 
+-    return exists($self->{fetch}{$name}) or 0;
++    return exists($self->{fetch}{$name}) || 0;
+ }
+ 
+ 
