@@ -1,0 +1,21 @@
+diff -bu ./lib/DJabberd/Connection.pm~ ./lib/DJabberd/Connection.pm
+--- ./lib/DJabberd/Connection.pm~	2011-06-13 17:19:51.000000000 -0500
++++ ./lib/DJabberd/Connection.pm	2013-07-25 09:21:06.634184660 -0500
+@@ -259,7 +259,7 @@
+ 
+ sub to_host {
+     my $self = shift;
+-    return $self->{to_host} or
++    return $self->{to_host} ||
+         die "To host accessed before it was set";
+ }
+ 
+@@ -270,7 +270,7 @@
+ 
+ sub version {
+     my $self = shift;
+-    return $self->{version} or
++    return $self->{version} ||
+         die "Version accessed before it was set";
+ }
+ 
