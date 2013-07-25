@@ -1,0 +1,12 @@
+diff -bu ./lib/Dist/Zilla/Role/ModuleIncluder.pm~ ./lib/Dist/Zilla/Role/ModuleIncluder.pm
+--- ./lib/Dist/Zilla/Role/ModuleIncluder.pm~	2012-03-31 10:42:54.000000000 -0500
++++ ./lib/Dist/Zilla/Role/ModuleIncluder.pm	2013-07-25 08:45:16.305408201 -0500
+@@ -27,7 +27,7 @@
+ ## no critic (Variables::ProhibitPackageVars)
+ sub _core_has {
+ 	my ($module, $wanted_version, $background_perl) = @_;
+-	return exists $version->{$background_perl}{$module} and $version->{$background_perl}{$module} >= $wanted_version || 0 >= $wanted_version;
++	return (exists $version->{$background_perl}{$module} and $version->{$background_perl}{$module} >= $wanted_version || 0 >= $wanted_version);
+ }
+ 
+ sub _get_reqs {

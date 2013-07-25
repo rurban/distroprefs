@@ -1,0 +1,12 @@
+diff -bu ./lib/Dotiac/DTL/Value.pm~ ./lib/Dotiac/DTL/Value.pm
+--- ./lib/Dotiac/DTL/Value.pm~	2009-02-05 15:40:13.000000000 -0600
++++ ./lib/Dotiac/DTL/Value.pm	2013-07-25 08:40:47.895798357 -0500
+@@ -78,7 +78,7 @@
+ }
+ 
+ sub scalar {
+-	return !$_[0]->[2] and defined $_[0]->[0];
++	return (!$_[0]->[2] and defined $_[0]->[0]);
+ }
+ 
+ sub true {
