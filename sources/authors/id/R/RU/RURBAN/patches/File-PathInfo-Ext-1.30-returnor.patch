@@ -1,0 +1,12 @@
+diff -bu ./lib/File/PathInfo/Ext.pm~ ./lib/File/PathInfo/Ext.pm
+--- ./lib/File/PathInfo/Ext.pm~	2009-11-24 09:35:21.000000000 -0600
++++ ./lib/File/PathInfo/Ext.pm	2013-07-25 10:47:44.283601037 -0500
+@@ -143,7 +143,7 @@
+ 
+       File::Copy::move( $abs_from, $abs_to) or confess("Cant move to $abs_to, $!");
+          
+-      return $self->set($abs_to) or confess("cant set() $abs_to");
++      return $self->set($abs_to) || confess("cant set() $abs_to");
+    }
+ 
+    
