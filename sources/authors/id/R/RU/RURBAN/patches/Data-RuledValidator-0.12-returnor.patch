@@ -1,0 +1,16 @@
+diff -bu Data-RuledValidator-0.12-4ruVND/lib/Data/RuledValidator/Plugin/Core.pm~ Data-RuledValidator-0.12-4ruVND/lib/Data/RuledValidator/Plugin/Core.pm
+--- Data-RuledValidator-0.12-4ruVND/lib/Data/RuledValidator/Plugin/Core.pm~	2010-06-14 19:53:17.000000000 -0500
++++ Data-RuledValidator-0.12-4ruVND/lib/Data/RuledValidator/Plugin/Core.pm	2013-07-25 08:12:37.050825895 -0500
+@@ -15,9 +15,9 @@
+    'alphanum' => sub{my($self, $v) = @_; return $v =~/^[a-zA-Z0-9]+$/},
+    'word'     => sub{my($self, $v) = @_; return $v =~/^\w+$/},
+    'words'    => sub{my($self, $v) = @_; return $v =~/^[\w\s]+$/},
+-   'any'      => sub{my($self, $v) = @_; return defined $v and $v ne ''},
+-   'not_null' => sub{my($self, $v) = @_; return defined $v and $v ne ''},
+-   'null'     => sub{my($self, $v) = @_; return not defined $v or $v eq ''},
++   'any'      => sub{my($self, $v) = @_; return (defined $v and $v ne '')},
++   'not_null' => sub{my($self, $v) = @_; return (defined $v and $v ne '')},
++   'null'     => sub{my($self, $v) = @_; return (not defined $v or $v eq '')},
+   );
+ 
+ 1;
