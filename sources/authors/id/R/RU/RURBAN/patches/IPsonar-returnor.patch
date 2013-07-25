@@ -1,0 +1,12 @@
+diff -bu lib/IPsonar.pm~ lib/IPsonar.pm
+--- lib/IPsonar.pm~	2011-12-03 20:58:47.000000000 -0600
++++ lib/IPsonar.pm	2013-07-25 08:04:11.071308992 -0500
+@@ -157,7 +157,7 @@
+         my $query  = shift;
+         my $params = shift;
+         my $path = _get_path( $query, $params );
+-        return $self->{pages}->{"$path"} or
++        return $self->{pages}->{"$path"} ||
+             croak "Couldn't find $path in file";
+     };
+     bless $self, $class;

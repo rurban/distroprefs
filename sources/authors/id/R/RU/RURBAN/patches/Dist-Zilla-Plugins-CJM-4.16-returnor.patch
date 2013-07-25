@@ -1,0 +1,12 @@
+diff -bu ./lib/Dist/Zilla/Role/ModuleInfo.pm~ ./lib/Dist/Zilla/Role/ModuleInfo.pm
+--- ./lib/Dist/Zilla/Role/ModuleInfo.pm~	2013-06-15 13:54:55.000000000 -0500
++++ ./lib/Dist/Zilla/Role/ModuleInfo.pm	2013-07-24 17:41:48.549798354 -0500
+@@ -52,7 +52,7 @@
+   close $temp;
+ 
+   return Module::Metadata->new_from_file("$tempname", @_)
+-      or die "Unable to get module info from " . $file->name . "\n";
++      || die "Unable to get module info from " . $file->name . "\n";
+ } # end get_module_info
+ 
+ no Moose::Role;
