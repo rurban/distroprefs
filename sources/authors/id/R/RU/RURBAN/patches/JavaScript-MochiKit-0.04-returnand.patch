@@ -1,0 +1,16 @@
+difforig 
+
+diff -u  ./lib/JavaScript/MochiKit/Module.pm.orig
+--- ./lib/JavaScript/MochiKit/Module.pm.orig	2013-07-25 09:49:17.799084826 -0500
++++ ./lib/JavaScript/MochiKit/Module.pm	2013-07-25 09:48:35.311466614 -0500
+@@ -6,8 +6,8 @@
+ __PACKAGE__->mk_accessors(qw[ name required javascript_definition ]);
+ 
+ sub javascript_loaded {
+-    return defined shift->javascript_definition
+-      and shift->javascript_definition ne '';
++    return (defined $_[0]->javascript_definition
++            and $_[0]->javascript_definition ne '');
+ }
+ 
+ 1;
