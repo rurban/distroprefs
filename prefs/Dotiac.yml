@@ -1,5 +1,5 @@
 ---
-comment: "wrong return precedence [cpan #87xxx]"
+comment: "wrong return precedence [cpan #87304]"
 match:
   distribution: "Dotiac-0\.8"
 patches:

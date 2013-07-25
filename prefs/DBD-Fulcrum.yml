@@ -1,5 +1,5 @@
 ---
-comment: "wrong return precedence [cpan #87xxx]"
+comment: "wrong return precedence [cpan #87308]"
 match:
   distribution: "DBD-Fulcrum-0\.20"
 patches:

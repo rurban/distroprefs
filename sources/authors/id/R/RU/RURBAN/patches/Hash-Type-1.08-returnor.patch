@@ -1,0 +1,12 @@
+diff -bu ./Type.pm~ ./Type.pm
+--- ./Type.pm~	2008-03-12 03:03:42.000000000 -0500
++++ ./Type.pm	2013-07-25 09:39:19.432469228 -0500
+@@ -326,7 +326,7 @@
+     }
+   }
+ 
+-  return  eval "sub {" . join(" || ", @cmp) . "}" or croak $@;
++  return (eval "sub {" . join(" || ", @cmp) . "}" or croak $@);
+ }
+ 
+ 
