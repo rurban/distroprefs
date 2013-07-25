@@ -3,4 +3,4 @@ comment: "wrong return precedence [cpan #87205]"
 match:
   distribution: "Database-Migrator-0\.08"
 patches:
-  - "RURBAN/patches/Database-Migrator-0.08-returnor.patch
+  - "RURBAN/patches/Database-Migrator-0.08-returnor.patch"
