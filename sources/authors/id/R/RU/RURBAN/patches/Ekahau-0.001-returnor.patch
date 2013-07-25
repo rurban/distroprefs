@@ -1,0 +1,21 @@
+diff -bu ./Ekahau.pm~ ./Ekahau.pm
+--- ./Ekahau.pm~	2005-06-10 15:32:18.000000000 -0500
++++ ./Ekahau.pm	2013-07-25 08:34:29.095163434 -0500
+@@ -428,7 +428,7 @@
+     my $e1 = $self->start_location_track(@_);
+     my $e2 = $self->start_area_track(@_);
+ 
+-    return $e1 and $e2;
++    return ($e1 and $e2);
+ }
+ 
+ =head3 stop_track ( $device_id )
+@@ -447,7 +447,7 @@
+     my $e1 = $self->stop_location_track(@_);
+     my $e2 = $self->stop_area_track(@_);
+ 
+-    return $e1 and $e2;
++    return ($e1 and $e2);
+ }
+ 
+ 
