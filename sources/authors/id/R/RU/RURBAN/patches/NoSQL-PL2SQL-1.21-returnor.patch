@@ -1,0 +1,14 @@
+diff -bu NoSQL-PL2SQL-1.21-7VYDNx/lib/NoSQL/PL2SQL.pm~ NoSQL-PL2SQL-1.21-7VYDNx/lib/NoSQL/PL2SQL.pm
+--- NoSQL-PL2SQL-1.21-7VYDNx/lib/NoSQL/PL2SQL.pm~	2013-04-27 13:37:19.000000000 -0500
++++ NoSQL-PL2SQL-1.21-7VYDNx/lib/NoSQL/PL2SQL.pm	2013-07-25 14:38:24.000806445 -0500
+@@ -106,8 +106,8 @@
+ 	return sqlcarp( $package, $errors[1], {}, @args, 
+ 			'Missing or invalid data source.' ) 
+ 			unless eval { $dsn->db } ;
+-	return sqlcarp( $package, $errors[2], {}, @args, 
+-			'Fetch requires an objectid.' ) or return undef
++	return (sqlcarp( $package, $errors[2], {}, @args, 
++			'Fetch requires an objectid.' ) || return undef)
+ 			unless defined $objectid || defined $object ;
+ 	return sqlcarp( $package, $errors[3], {}, @args, 
+ 			'SQLObject requires a connected database.' 
