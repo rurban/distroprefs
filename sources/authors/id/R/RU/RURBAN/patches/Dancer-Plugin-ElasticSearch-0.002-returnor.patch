@@ -1,0 +1,12 @@
+diff -bu Dancer-Plugin-ElasticSearch-0.002-3UgduD/lib/Dancer/Plugin/ElasticSearch.pm~ Dancer-Plugin-ElasticSearch-0.002-3UgduD/lib/Dancer/Plugin/ElasticSearch.pm
+--- Dancer-Plugin-ElasticSearch-0.002-3UgduD/lib/Dancer/Plugin/ElasticSearch.pm~	2011-09-02 06:58:46.000000000 -0500
++++ Dancer-Plugin-ElasticSearch-0.002-3UgduD/lib/Dancer/Plugin/ElasticSearch.pm	2013-07-26 09:49:35.276482873 -0500
+@@ -11,7 +11,7 @@
+ my $Connection;
+ 
+ register elsearch => sub {
+-    return $Connection or _create_connection();
++    return $Connection || _create_connection();
+ };
+ 
+ sub _create_connection {
