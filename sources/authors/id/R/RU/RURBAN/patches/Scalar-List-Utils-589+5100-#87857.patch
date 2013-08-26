@@ -1,0 +1,192 @@
+diff --git a/Changes b/Changes
+index d7088a1..f0a4663 100644
+--- a/Changes
++++ b/Changes
+@@ -1,3 +1,7 @@
++1.32 -- 
++
++  * Disable pairmap on 5.8.9 and 5.10.0, added with 1.28
++
+ 1.31 -- Wed Aug 14 20:38 UTC 2013
+ 
+   * Bugfix pairmap to return list length in scalar context
+diff --git a/ListUtil.xs b/ListUtil.xs
+index 7448a8f..8a140b1 100644
+--- a/ListUtil.xs
++++ b/ListUtil.xs
+@@ -529,7 +529,7 @@ PPCODE:
+     bgv = gv_fetchpv("b", GV_ADD, SVt_PV);
+     SAVESPTR(GvSV(agv));
+     SAVESPTR(GvSV(bgv));
+-#ifdef dMULTICALL
++#if defined(dMULTICALL) && PERL_BCDVERSION != 589 && PERL_BCDVERSION != 510
+     if(!CvISXSUB(cv)) {
+ 	// Since MULTICALL is about to move it
+ 	SV **stack = PL_stack_base + ax;
+diff --git a/lib/List/Util.pm b/lib/List/Util.pm
+index f01bff2..d18bc2d 100644
+--- a/lib/List/Util.pm
++++ b/lib/List/Util.pm
+@@ -12,8 +12,9 @@ use strict;
+ require Exporter;
+ 
+ our @ISA        = qw(Exporter);
+-our @EXPORT_OK  = qw(first min max minstr maxstr reduce sum sum0 shuffle pairmap pairgrep pairfirst pairs pairkeys pairvalues);
+-our $VERSION    = "1.31";
++our @EXPORT_OK  = qw(first min max minstr maxstr reduce sum sum0 shuffle pairgrep pairfirst pairs pairkeys pairvalues);
++push @EXPORT_OK, 'pairmap' if $] < 5.008009 or $] > 5.010000;
++our $VERSION    = "1.32";
+ our $XS_VERSION = $VERSION;
+ $VERSION    = eval $VERSION;
+ 
+@@ -220,7 +221,7 @@ Similar to C<grep>, C<pairfirst> aliases C<$a> and C<$b> to elements of the
+ given list. Any modifications of it by the code block will be visible to
+ the caller.
+ 
+-=head2 pairmap BLOCK KVLIST
++=head2 pairmap BLOCK KVLIST (disabled in 5.8.9 and 5.10.0)
+ 
+ Similar to perl's C<map> keyword, but interprets the given list as an
+ even-sized list of pairs. It invokes the BLOCK multiple times, in list
+@@ -237,6 +238,8 @@ Similar to C<map>, C<pairmap> aliases C<$a> and C<$b> to elements of the
+ given list. Any modifications of it by the code block will be visible to
+ the caller.
+ 
++C<pairmap> is not exported and does not work in perl 5.8.9 and 5.10.0.
++
+ =head2 pairs KVLIST
+ 
+ A convenient shortcut to operating on even-sized lists of pairs, this
+@@ -284,9 +287,11 @@ Returns the elements of LIST in a random order
+ 
+ =head1 KNOWN BUGS
+ 
+-With perl versions prior to 5.005 there are some cases where reduce
++With perl versions prior to 5.005 there are some cases where C<reduce>
+ will return an incorrect result. This will show up as test 7 of
+-reduce.t failing.
++F<t/reduce.t> failing.
++
++With perl versions 5.8.9 and 5.10.0 C<pairmap> is broken and not exported.
+ 
+ =head1 SUGGESTED ADDITIONS
+ 
+diff --git a/lib/List/Util/XS.pm b/lib/List/Util/XS.pm
+index bb38ab2..d9916bd 100644
+--- a/lib/List/Util/XS.pm
++++ b/lib/List/Util/XS.pm
+@@ -2,7 +2,7 @@ package List::Util::XS;
+ use strict;
+ use List::Util;
+ 
+-our $VERSION = "1.31";       # FIXUP
++our $VERSION = "1.32";       # FIXUP
+ $VERSION = eval $VERSION;    # FIXUP
+ 
+ 1;
+diff --git a/lib/Scalar/Util.pm b/lib/Scalar/Util.pm
+index d10bbaa..2a45584 100644
+--- a/lib/Scalar/Util.pm
++++ b/lib/Scalar/Util.pm
+@@ -26,7 +26,7 @@ our @EXPORT_OK = qw(
+   tainted
+   weaken
+ );
+-our $VERSION    = "1.31";
++our $VERSION    = "1.32";
+ $VERSION   = eval $VERSION;
+ 
+ our @EXPORT_FAIL;
+diff --git a/t/multicall-refcount.t b/t/multicall-refcount.t
+new file mode 100644
+index 0000000..1d6fb59
+--- /dev/null
++++ b/t/multicall-refcount.t
+@@ -0,0 +1,21 @@
++use Test::More tests => 1;
++
++use List::Util 'first';
++
++our $comparison;
++
++sub foo {
++   if( $comparison ) {
++      return 1;
++   }
++   else {
++      local $comparison = 1;
++      first \&foo, 1,2,3;
++   }
++}
++
++for(1,2){
++   foo();
++}
++
++ok( "Didn't crash calling recursively" );
+diff --git a/t/pair.t b/t/pair.t
+index 46e0534..206e0cd 100644
+--- a/t/pair.t
++++ b/t/pair.t
+@@ -2,7 +2,8 @@
+ 
+ use strict;
+ use Test::More tests => 20;
+-use List::Util qw(pairgrep pairfirst pairmap pairs pairkeys pairvalues);
++use List::Util qw(pairgrep pairfirst pairs pairkeys pairvalues);
++List::Util->import('pairmap') if $] < 5.008009 or $] > 5.010000;
+ 
+ no warnings 'misc'; # avoid "Odd number of elements" warnings most of the time
+ 
+@@ -52,34 +53,39 @@ is( scalar( pairfirst { length $a == 5 } one => 1, two => 2, three => 3 ),
+ ok( !scalar( pairfirst { length $a == 4 } one => 1, two => 2, three => 3 ),
+     'pairfirst scalar false' );
+ 
+-is_deeply( [ pairmap { uc $a => $b } one => 1, two => 2, three => 3 ],
++SKIP: {
++  skip "pairmap broken on 5.8.9 and 5.10.0", 6 if $] > 5.008008 and $] < 5.010001;
++
++  is_deeply( [ pairmap { uc $a => $b } one => 1, two => 2, three => 3 ],
+            [ ONE => 1, TWO => 2, THREE => 3 ],
+            'pairmap list' );
+ 
+-is( scalar( pairmap { qw( a b c ) } one => 1, two => 2 ),
++  is( scalar( pairmap { qw( a b c ) } one => 1, two => 2 ),
+     6,
+     'pairmap scalar' );
+ 
+-is_deeply( [ pairmap { $a => @$b } one => [1,1,1], two => [2,2,2], three => [3,3,3] ],
++  is_deeply( [ pairmap { $a => @$b } one => [1,1,1], two => [2,2,2], three => [3,3,3] ],
+            [ one => 1, 1, 1, two => 2, 2, 2, three => 3, 3, 3 ],
+            'pairmap list returning >2 items' );
+ 
+-is_deeply( [ pairmap { $b } one => 1, two => 2, three => ],
++  is_deeply( [ pairmap { $b } one => 1, two => 2, three => ],
+            [ 1, 2, undef ],
+            'pairmap pads with undef' );
+ 
+-{
+-  my @kvlist = ( one => 1, two => 2 );
+-  pairmap { $b++ } @kvlist;
+-  is_deeply( \@kvlist, [ one => 2, two => 3 ], 'pairmap aliases elements' );
+-}
++  {
++    my @kvlist = ( one => 1, two => 2 );
++    pairmap { $b++ } @kvlist;
++    is_deeply( \@kvlist, [ one => 2, two => 3 ], 'pairmap aliases elements' );
++  }
+ 
+-# Calculating a 1000-element list should hopefully cause the stack to move
+-# underneath pairmap
+-is_deeply( [ pairmap { my @l = (1) x 1000; "$a=$b" } one => 1, two => 2, three => 3 ],
++  # Calculating a 1000-element list should hopefully cause the stack to move
++  # underneath pairmap
++  is_deeply( [ pairmap { my @l = (1) x 1000; "$a=$b" } one => 1, two => 2, three => 3 ],
+            [ "one=1", "two=2", "three=3" ],
+            'pairmap copes with stack movement' );
+ 
++}
++
+ is_deeply( [ pairs one => 1, two => 2, three => 3 ],
+            [ [ one => 1 ], [ two => 2 ], [ three => 3 ] ],
+            'pairs' );
