@@ -1,0 +1,14 @@
+https://rt.cpan.org/Public/Bug/Display.html?id=91403
+
+diff -bu Data-RuledValidator-0.13-DJVEIu/lib/Data/RuledValidator.pm~ Data-RuledValidator-0.13-DJVEIu/lib/Data/RuledValidator.pm
+--- Data-RuledValidator-0.13-DJVEIu/lib/Data/RuledValidator.pm~	2013-07-30 12:05:14.000000000 -0500
++++ Data-RuledValidator-0.13-DJVEIu/lib/Data/RuledValidator.pm	2013-12-13 13:38:13.895511305 -0600
+@@ -313,7 +313,7 @@
+     }else{
+       @value = @{$self->_get_value_with_filter($key, $filter, $filter->{'*'}, $here_filter)};
+     }
+-    carp::croak('cannot define same combination of key/alias and operator twice.') if exists $result->{$alias . '_' . $op};
++    Carp::croak('cannot define same combination of key/alias and operator twice.') if exists $result->{$alias . '_' . $op};
+     my $required_valid = $self->required_alias_name . '_valid';
+     $alias ||= $key;
+     my $r = undef;
