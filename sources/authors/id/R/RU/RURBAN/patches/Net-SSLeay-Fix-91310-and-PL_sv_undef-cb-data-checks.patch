@@ -1,0 +1,40 @@
+From c78d63e428d3041e2253c90cdd218c3865921a91 Mon Sep 17 00:00:00 2001
+From: Reini Urban <rurban@cpanel.net>
+Date: Mon, 30 Dec 2013 12:11:50 -0600
+Subject: [PATCH] Fix #91310 and &PL_sv_undef cb->data checks
+
+You mixed up PUTBACK with SPAGAIN in ssleay_RSA_generate_key_cb_invoke()
+A final PUTBACK is needed here.
+
+cb->data defaults to &PL_sv_undef but throughout the code you do not check against
+&PL_sv_undef, just NULL. To avoid passing the 3rd optional arg at all, do not create it.
+This fixes all the cb->data checks and wrong refcounts on &PL_sv_undef.
+---
+ SSLeay.xs | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/SSLeay.xs b/SSLeay.xs
+index fa51e22..2ed8508 100644
+--- a/SSLeay.xs
++++ b/SSLeay.xs
+@@ -424,7 +424,7 @@ simple_cb_data_t* simple_cb_data_new(SV* func, SV* data)
+         SvREFCNT_inc(func);
+         SvREFCNT_inc(data);
+         cb->func = func;
+-        cb->data = data;
++        cb->data = (data == &PL_sv_undef) ? NULL : data;
+     }
+     return cb;
+ }
+@@ -955,7 +955,7 @@ void ssleay_RSA_generate_key_cb_invoke(int i, int n, void* data)
+             croak ("Net::SSLeay: ssleay_RSA_generate_key_cb_invoke "
+                    "perl function did return something in void context.\n");
+ 
+-        PUTBACK;
++        SPAGAIN;
+         FREETMPS;
+         LEAVE;
+     }
+-- 
+1.8.5.2
+
