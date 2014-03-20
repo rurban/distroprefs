@@ -1,0 +1,44 @@
+Invalid compile-time use constant encoding for perlcc
+
+RT #94069
+https://rt.cpan.org/Public/Bug/Display.html?id=94069
+
+diff -bu Net-DNS-0.74-RJ8GaG/lib/Net/DNS/Domain.pm~ Net-DNS-0.74-RJ8GaG/lib/Net/DNS/Domain.pm
+--- Net-DNS-0.74-RJ8GaG/lib/Net/DNS/Domain.pm~	2014-01-16 03:48:52.000000000 -0600
++++ Net-DNS-0.74-RJ8GaG/lib/Net/DNS/Domain.pm	2014-03-20 16:44:32.763915278 -0500
+@@ -40,21 +40,28 @@
+ use integer;
+ use Carp;
+ 
+-
+-use constant ASCII => eval {
++INIT {
++  sub ASCII {
++    eval {
+ 	require Encode;
+ 	Encode::find_encoding('ASCII');				# return encoding object
+-} || 0;
++    } || 0;
++  }
+ 
+-use constant UTF8 => eval {
++  sub UTF8 { 
++    eval {
+ 	die if Encode::decode_utf8( chr(91) ) ne '[';		# not UTF-EBCDIC  [see UTR#16 3.6]
+ 	Encode::find_encoding('UTF8');				# return encoding object
+-} || 0;
++    } || 0;
++  }
+ 
+-use constant LIBIDN => eval {
++  sub LIBIDN { 
++    eval {
+ 	require Net::LibIDN;					# tested and working
+ 	UTF8 && Net::LibIDN::idn_to_ascii( pack( 'U*', 20013, 22269 ), 'utf-8' ) eq 'xn--fiqs8s';
+-} || 0;
++    } || 0;
++  }
++}
+ 
+ 
+ =head1 METHODS
