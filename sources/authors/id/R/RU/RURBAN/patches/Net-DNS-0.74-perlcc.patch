@@ -42,3 +42,15 @@ diff -bu Net-DNS-0.74-RJ8GaG/lib/Net/DNS/Domain.pm~ Net-DNS-0.74-RJ8GaG/lib/Net/
  
  
  =head1 METHODS
+diff -bu Net-DNS-0.74-RJ8GaG/lib/Net/DNS.pm~ Net-DNS-0.74-RJ8GaG/lib/Net/DNS.pm
+--- Net-DNS-0.74-RJ8GaG/lib/Net/DNS.pm~	2014-01-16 03:48:52.000000000 -0600
++++ Net-DNS-0.74-RJ8GaG/lib/Net/DNS.pm	2014-03-25 13:09:00.808073300 -0500
+@@ -6,7 +6,7 @@
+ use vars qw($SVNVERSION $VERSION);
+ BEGIN {
+ 	$SVNVERSION = (qw$LastChangedRevision: 1164 $)[1];
+-	$VERSION = '0.74';
++	$VERSION = '0.74_01';
+ }
+ 
+ 
