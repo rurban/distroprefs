@@ -1,0 +1,19 @@
+diff -bu Digest-BLAKE2-0.01-7N4L0h/in/src/BLAKE2x.xs~ Digest-BLAKE2-0.01-7N4L0h/in/src/BLAKE2x.xs
+--- Digest-BLAKE2-0.01-7N4L0h/in/src/BLAKE2x.xs~	2013-02-09 21:47:42.000000000 -0600
++++ Digest-BLAKE2-0.01-7N4L0h/in/src/BLAKE2x.xs	2014-03-22 14:40:25.000000000 -0500
+@@ -24,7 +24,7 @@
+ };
+ 
+ inline static SV *
+-encode_string(const char *src, enum encode_type type) {
++encode_string(pTHX_ const char *src, enum encode_type type) {
+     int encoded_len;
+ 
+     switch (type) {
+@@ -154,5 +154,5 @@
+     }
+     blake2x_final(state, out, BLAKE2x_OUTBYTES);
+     Safefree(state);
+-    ST(0) = encode_string((char *)out, ix);
++    ST(0) = encode_string(aTHX_ (char *)out, ix);
+     XSRETURN(1);
