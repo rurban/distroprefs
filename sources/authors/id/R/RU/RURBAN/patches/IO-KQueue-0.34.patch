@@ -1,0 +1,15 @@
+diff -bu IO-KQueue-0.34-D7iomA/Makefile.PL~ IO-KQueue-0.34-D7iomA/Makefile.PL
+--- IO-KQueue-0.34-D7iomA/Makefile.PL~	2015-05-03 20:17:37.557993399 +0200
++++ IO-KQueue-0.34-D7iomA/Makefile.PL	2015-05-03 20:16:36.130563572 +0200
+@@ -9,9 +9,10 @@
+ 
+ my $kq = eval { syscall($SYS_kqueue) };
+ 
+-if ($@) {
++if ($@ or $kq == -1) {
+     print <<EOT;
+ No kqueue() available on this platform.
++Only on BSD and darwin.      
+ 
+ EOT
+     exit;
