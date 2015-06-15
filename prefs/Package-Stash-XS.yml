@@ -1,0 +1,6 @@
+---
+comment: "allow coretypes and Module::Runtime override (PR)"
+match:
+  distribution: "Package-Stash-XS-0\.28"
+patches:
+  - "RURBAN/patches/Package-Stash-XS-0.28-modulename.patch"

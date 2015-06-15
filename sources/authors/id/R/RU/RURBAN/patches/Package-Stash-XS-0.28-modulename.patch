@@ -1,0 +1,12 @@
+diff -bu Package-Stash-XS-0.28-SEiQH4/XS.xs~ Package-Stash-XS-0.28-SEiQH4/XS.xs
+--- Package-Stash-XS-0.28-SEiQH4/XS.xs~	2013-07-16 10:17:11.000000000 -0600
++++ Package-Stash-XS-0.28-SEiQH4/XS.xs	2015-06-07 15:51:24.000000000 -0600
+@@ -969,7 +969,7 @@
+ 
+ BOOT:
+     {
+-        const char *vmre = "\\A[0-9A-Z_a-z]+(?:::[0-9A-Z_a-z]+)*\\z";
++        const char *vmre = "\\A[0-9A-Z_a-z]+(?:::[0-9A-Z_a-z]+)*\\??\\z";
+ #if (PERL_VERSION < 9) || ((PERL_VERSION == 9) && (PERL_SUBVERSION < 5))
+         PMOP fakepmop;
+ 
