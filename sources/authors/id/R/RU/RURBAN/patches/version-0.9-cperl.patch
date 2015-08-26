@@ -1,0 +1,56 @@
+diff -bu version-0.9912-eLffkD/vutil/vutil.c~ version-0.9912-eLffkD/vutil/vutil.c
+--- version-0.9912-eLffkD/vutil/vutil.c~	2015-01-21 03:39:01.000000000 +0100
++++ version-0.9912-eLffkD/vutil/vutil.c	2015-08-26 14:58:01.000000000 +0200
+@@ -18,6 +18,8 @@
+ #define VERSION_MAX 0x7FFFFFFF
+ 
+ /*
++=head1 Versioning
++
+ =for apidoc prescan_version
+ 
+ Validate that a given string can be parsed as a version object, but doesn't
+@@ -158,6 +160,9 @@
+ 	    /* found just an integer */
+ 	    goto version_prescan_finish;
+ 	}
++#ifdef USE_CPERL
++	else if ( *d == 'c' && !*(d+1)) { goto version_prescan_finish; }
++#endif
+ 	else if ( d == s ) {
+ 	    /* didn't find either integer or period */
+ 	    BADVERSION(s,errstr,"Invalid version format (non-numeric data)");
+@@ -221,6 +226,9 @@
+ 	d++;
+ 
+     if (!isDIGIT(*d) && (! (!*d || *d == ';' || *d == '{' || *d == '}') )) {
++#ifdef USE_CPERL
++	if ( *d != 'c' )
++#endif
+ 	/* trailing non-numeric data */
+ 	BADVERSION(s,errstr,"Invalid version format (non-numeric data)");
+     }
+@@ -395,6 +403,12 @@
+ 		s = ++pos;
+ 	    else if ( isDIGIT(*pos) )
+ 		s = pos;
++#ifdef USE_CPERL
++	    else if ( *pos == 'c' && !*(pos+1) ) {
++		s = ++pos;
++		break;
++            }
++#endif
+ 	    else {
+ 		s = pos;
+ 		break;
+@@ -727,6 +741,10 @@
+     }
+ 
+     s = SCAN_VERSION(version, ver, qv);
++#ifdef USE_CPERL
++    if ( *s == 'c' && !*(s+1) )
++        return ver;
++#endif
+     if ( *s != '\0' ) 
+ 	Perl_ck_warner(aTHX_ packWARN(WARN_MISC), 
+ 		       "Version string '%s' contains invalid data; "

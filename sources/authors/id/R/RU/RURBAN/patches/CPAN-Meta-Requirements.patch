@@ -1,0 +1,13 @@
+difforig /usr/src/perl/blead/cperl/lib/CPAN/Meta/Requirements.pm
+
+diff -u /usr/src/perl/blead/cperl/lib/CPAN/Meta/Requirements.pm.orig /usr/src/perl/blead/cperl/lib/CPAN/Meta/Requirements.pm
+--- /usr/src/perl/blead/cperl/lib/CPAN/Meta/Requirements.pm.orig	2015-06-05 12:27:35.000000000 -0500
++++ /usr/src/perl/blead/cperl/lib/CPAN/Meta/Requirements.pm	2015-06-05 12:30:39.000000000 -0500
+@@ -135,6 +135,7 @@
+     my $hook = $self->{bad_version_hook};
+     $vobj = eval { $hook->($version, $module) }
+       if ref $hook eq 'CODE';
++    $vobj = version->new($version) unless $vobj;
+     unless (eval { $vobj->isa("version") }) {
+       $err =~ s{ at .* line \d+.*$}{};
+       die "Can't convert '$version': $err";

@@ -1,0 +1,11 @@
+diff -bu Variable-Magic-0.58-Y1rv3w/t/18-opinfo.t~ Variable-Magic-0.58-Y1rv3w/t/18-opinfo.t
+--- Variable-Magic-0.58-Y1rv3w/t/18-opinfo.t~	2015-07-20 20:00:45.000000000 +0200
++++ Variable-Magic-0.58-Y1rv3w/t/18-opinfo.t	2015-08-26 15:08:03.000000000 +0200
+@@ -118,6 +118,6 @@
+   local $SIG{__WARN__} = sub { die @_ };
+   wizard op_info => "hlagh";
+  };
+- like $@, qr/^Argument "hlagh" isn't numeric in subroutine entry at \Q$0\E/,
++ like $@, qr/^Argument "hlagh" isn't numeric in (?:XS )?subroutine entry at \Q$0\E/,
+       'wizard(op_info => "text") throws numeric warnings';
+ }
