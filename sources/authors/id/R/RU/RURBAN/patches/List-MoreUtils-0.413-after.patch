@@ -1,0 +1,13 @@
+diff -bu List-MoreUtils-0.413-g5_yS3/MoreUtils.xs~ List-MoreUtils-0.413-g5_yS3/MoreUtils.xs
+--- List-MoreUtils-0.413-g5_yS3/MoreUtils.xs~	2015-06-10 13:01:07.000000000 +0200
++++ List-MoreUtils-0.413-g5_yS3/MoreUtils.xs	2015-08-27 13:31:47.000000000 +0200
+@@ -897,7 +897,8 @@
+     for (j = i + 1; j < items; ++j)
+ 	args[j-i-1] = args[j];
+ 
+-    XSRETURN(items-i-1);
++    j = items-i-1;
++    XSRETURN(j > 0 ? j : 0);
+ }
+ 
+ void
