@@ -1,0 +1,57 @@
+diff -bu Coro-6.47-t1iQeZ/Coro/State.xs~ Coro-6.47-t1iQeZ/Coro/State.xs
+--- Coro-6.47-t1iQeZ/Coro/State.xs~	2015-10-05 19:13:33.000000000 +0200
++++ Coro-6.47-t1iQeZ/Coro/State.xs	2015-10-05 19:35:56.000000000 +0200
+@@ -1820,12 +1820,30 @@
+   return 0;
+ }
+ 
++/* get set len clear free copy dup local */
++static MGVTBL coro_sigelem_vtbl = {
++  coro_sigelem_get,
++  coro_sigelem_set,
++  0,
++  coro_sigelem_clr,
++  0, 0,
++#ifdef MGf_DUP
++  0
++#endif
++#ifdef MGf_LOCAL
++  ,0
++#endif
++};
++
+ static MGVTBL coro_state_vtbl = {
+   0, 0, 0, 0,
+   coro_state_free,
+   0,
+ #ifdef MGf_DUP
+   coro_state_dup,
++# ifdef MGf_LOCAL
++  0
++# endif
+ #else
+ # define MGf_DUP 0
+ #endif
+@@ -3608,11 +3626,18 @@
+         irsgv    = gv_fetchpv ("/"     , GV_ADD|GV_NOTQUAL, SVt_PV);
+         stdoutgv = gv_fetchpv ("STDOUT", GV_ADD|GV_NOTQUAL, SVt_PVIO);
+ 
+-        orig_sigelem_get = PL_vtbl_sigelem.svt_get;   PL_vtbl_sigelem.svt_get   = coro_sigelem_get;
+-        orig_sigelem_set = PL_vtbl_sigelem.svt_set;   PL_vtbl_sigelem.svt_set   = coro_sigelem_set;
+-        orig_sigelem_clr = PL_vtbl_sigelem.svt_clear; PL_vtbl_sigelem.svt_clear = coro_sigelem_clr;
+-
++        orig_sigelem_get = PL_vtbl_sigelem.svt_get;
++        orig_sigelem_set = PL_vtbl_sigelem.svt_set;
++        orig_sigelem_clr = PL_vtbl_sigelem.svt_clear;
+         hv_sig      = coro_get_hv (aTHX_ "SIG", TRUE);
++#if (PERL_VERSION < 22)
++        PL_vtbl_sigelem.svt_get   = coro_sigelem_get;
++        PL_vtbl_sigelem.svt_set   = coro_sigelem_set;
++        PL_vtbl_sigelem.svt_clear = coro_sigelem_clr;
++#else
++        /* not allowed to override the default anymore, attach it to %SIG */
++        sv_magicext ((SV *)hv_sig, 0, PERL_MAGIC_sigelem, &coro_sigelem_vtbl, NULL, 0);
++#endif
+         rv_diehook  = newRV_inc ((SV *)gv_fetchpv ("Coro::State::diehook" , 0, SVt_PVCV));
+         rv_warnhook = newRV_inc ((SV *)gv_fetchpv ("Coro::State::warnhook", 0, SVt_PVCV));
+ 

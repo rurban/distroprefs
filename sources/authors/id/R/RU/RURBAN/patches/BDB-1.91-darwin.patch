@@ -1,0 +1,14 @@
+diff -bu BDB-1.91-QNb2hg/Makefile.PL~ BDB-1.91-QNb2hg/Makefile.PL
+--- BDB-1.91-QNb2hg/Makefile.PL~	2015-10-15 16:00:45.000000000 +0200
++++ BDB-1.91-QNb2hg/Makefile.PL	2015-10-15 16:04:27.000000000 +0200
+@@ -14,8 +14,8 @@
+    $INC  = "-I/Perl/lib/CORE -I/sdk/include -I/vc98/include -I/gtk/include -I/gtk/include/pango-1.0 -I/gtk/include/glib-2.0 -I/gtk/lib/glib-2.0/include/ -I/gtk/include/freetype2";
+    $LIBS = ["-L/gtk/lib -ldb45 -lpthreadVC2"];
+ } else {
+-   $INC = '-L/opt/local/include/db53';
+-   $LIBS = ['-L/opt/local/lib/db53', '-lpthread -ldb'],
++   $INC = '-I/opt/local/include/db53';
++   $LIBS = ['-L/opt/local/lib/db53 -lpthread -ldb-5'],
+ }
+ 
+ if ($^O =~ /linux/ && $Config{usemymalloc} eq "y") {
