@@ -5,4 +5,4 @@ match:
   perlconfig:
     os: "darwin"
 patches:
-  - "RURBAN/patches/BDB-1.91-darwin.patch
+  - "RURBAN/patches/BDB-1.91-darwin.patch"
