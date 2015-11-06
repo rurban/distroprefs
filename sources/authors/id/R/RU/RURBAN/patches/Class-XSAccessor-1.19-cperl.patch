@@ -1,0 +1,15 @@
+difforig Class-XSAccessor-1.19-dLSpax
+
+diff -u  Class-XSAccessor-1.19-dLSpax/XSAccessor.xs.orig
+--- Class-XSAccessor-1.19-dLSpax/XSAccessor.xs.orig	2015-11-06 11:30:49.000000000 +0100
++++ Class-XSAccessor-1.19-dLSpax/XSAccessor.xs	2015-11-06 11:29:52.000000000 +0100
+@@ -172,6 +172,9 @@
+ #if (PERL_BCDVERSION >= 0x5010000)
+ #define CXA_ENABLE_ENTERSUB_OPTIMIZATION
+ #endif
++#ifdef USE_CPERL
++#undef CXA_ENABLE_ENTERSUB_OPTIMIZATION
++#endif
+ 
+ #ifdef CXA_ENABLE_ENTERSUB_OPTIMIZATION
+ 

@@ -1,0 +1,9 @@
+---
+comment: "disable ENTERSUB_OPTIMIZATION on cperl"
+match:
+  distribution: "Class-XSAccessor-1\.19"
+  perlconfig:
+    version: "^5\.2"
+    usecperl: "define"
+patches:
+  - "RURBAN/patches/Class-XSAccessor-1.19-cperl.patch"
