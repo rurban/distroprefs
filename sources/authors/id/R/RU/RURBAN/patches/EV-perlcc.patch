@@ -1,0 +1,15 @@
+diff -bu EV/EV.pm~ EV/EV.pm
+--- EV/EV.pm~	2015-07-13 21:44:49.000000000 +0200
++++ EV/EV.pm	2015-11-11 17:39:47.844125612 +0100
+@@ -1215,8 +1215,10 @@
+    warn "EV: error in callback (ignoring): $@";
+ };
+ 
+-default_loop
++INIT {
++  default_loop
+    or die 'EV: cannot initialise libev backend. bad $ENV{LIBEV_FLAGS}?';
++}
+ 
+ 1;
+ 

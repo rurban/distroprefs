@@ -1,0 +1,6 @@
+---
+comment: "EV perlcc fixes. see [rurban/perl-compiler #196] "
+match:
+  distribution: "EV-"
+patches:
+  - "RURBAN/patches/EV-perlcc.patch"
