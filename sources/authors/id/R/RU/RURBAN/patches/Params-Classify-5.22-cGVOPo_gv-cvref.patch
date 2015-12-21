@@ -1,0 +1,49 @@
+From cf81f795060a1c402874f2b0d55ff6d1ffc84f10 Mon Sep 17 00:00:00 2001
+From: Reini Urban <rurban@cpanel.net>
+Date: Mon, 21 Dec 2015 23:11:01 +0100
+Subject: [PATCH] Fix for 5.22 cGVOPo_gv cvref
+
+---
+ lib/Params/Classify.xs | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
+
+diff --git lib/Params/Classify.xs lib/Params/Classify.xs
+index 4d95771..15a5ad5 100644
+--- lib/Params/Classify.xs
++++ lib/Params/Classify.xs
+@@ -603,16 +603,22 @@ static void THX_xsfunc_check_blessed(pTHX_ CV *cv)
+ #endif /* !PERL_ARGS_ASSERT_CROAK_XS_USAGE */
+ 
+ #define rvop_cv(rvop) THX_rvop_cv(aTHX_ rvop)
+-static CV *THX_rvop_cv(pTHX_ OP *rvop)
+-{
+-	switch(rvop->op_type) {
+-		case OP_CONST: {
+-			SV *rv = cSVOPx_sv(rvop);
+-			return SvROK(rv) ? (CV*)SvRV(rv) : NULL;
+-		} break;
+-		case OP_GV: return GvCV(cGVOPx_gv(rvop));
+-		default: return NULL;
+-	}
++static CV *THX_rvop_cv(pTHX_ OP *o)
++{
++  switch(o->op_type) {
++  case OP_CONST: {
++    SV *rv = cSVOPo_sv;
++    return SvROK(rv) ? (CV*)SvRV(rv) : NULL;
++  } break;
++  case OP_GV: {
++    SV *rv = (SV*)cGVOPo_gv;
++    if (rv && isGV(rv))
++      return GvCV(rv);
++    else if (rv && SvROK(rv))
++      return (CV*)SvRV(rv);
++  } break;
++  default: return NULL;
++  }
+ }
+ 
+ static PTR_TBL_t *ppmap;
+-- 
+2.6.3
+

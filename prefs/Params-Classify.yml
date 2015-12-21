@@ -1,0 +1,8 @@
+---
+comment: "Fix for 5.22 cGVOPo_gv cvref [RT #110496]"
+match:
+  distribution: "Params-Classify-0\.013"
+  perlconfig:
+    version: "^5\.22"
+patches:
+  - "RURBAN/patches/Params-Classify-5.22-cGVOPo_gv-cvref.patch"
