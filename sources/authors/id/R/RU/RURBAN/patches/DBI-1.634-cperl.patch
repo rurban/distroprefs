@@ -1,0 +1,18 @@
+diff -bu ./t/49dbd_file.t~ ./t/49dbd_file.t
+--- ./t/49dbd_file.t~	2015-05-26 17:20:06.000000000 +0200
++++ ./t/49dbd_file.t	2016-01-11 22:27:29.000000000 +0100
+@@ -80,12 +80,12 @@
+     my $tbl2 = $tbl . "2";
+ 
+     my $tbl2_file1 = File::Spec->catfile ($dir, "$tbl2.txt");
+-    open  $fh, ">", $tbl2_file1 or skip;
++    open  $fh, ">", $tbl2_file1 or skip "$tbl2_file1";
+     print $fh "You cannot read this anyway ...";
+     close $fh;
+ 
+     my $tbl2_file2 = File::Spec->catfile ($dir, "$tbl2");
+-    open  $fh, ">", $tbl2_file2 or skip;
++    open  $fh, ">", $tbl2_file2 or skip "$tbl2_file2";
+     print $fh "Neither that";
+     close $fh;
+ 
