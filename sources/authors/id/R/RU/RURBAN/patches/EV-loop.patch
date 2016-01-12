@@ -1,0 +1,18 @@
+diff -bu ./EV.xs~ ./EV.xs
+--- ./EV.xs~	2015-07-13 21:46:06.000000000 +0200
++++ ./EV.xs	2016-01-12 13:23:29.000000000 +0100
+@@ -150,7 +150,13 @@
+   w = (ev_watcher *)SvPVX (self);
+ 
+   ev_init (w, cv ? e_cb : 0);
+-
++  if (!loop) {
++    if (!default_loop_sv) {
++      evapi.default_loop = ev_default_loop(0);
++      default_loop_sv = sv_bless (newRV_noinc (newSViv (PTR2IV (evapi.default_loop))), stash_loop);
++    }
++    loop = default_loop_sv;
++  }
+   w->loop    = SvREFCNT_inc (SvRV (loop));
+   w->e_flags = WFLAG_KEEPALIVE;
+   w->data    = 0;
