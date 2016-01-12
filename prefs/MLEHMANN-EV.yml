@@ -1,5 +1,5 @@
 ---
-comment: "EV perlcc fixes. see [rurban/perl-compiler #196] "
+comment: "EV perlcc INIT default loop. see [rurban/perl-compiler #196] "
 match:
   distribution: "EV-4\.22"
 patches:
