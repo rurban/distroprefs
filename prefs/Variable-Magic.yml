@@ -1,7 +1,7 @@
 ---
 comment: "cperl fixes"
 match:
-  distribution: "Variable-Magic-0\.58"
+  distribution: "Variable-Magic-0\.5[89]"
   perlconfig:
     version: "^5\.2"
     usecperl: "define"
