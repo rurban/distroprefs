@@ -1,14 +1,44 @@
---- CPAN-Reporter-1.2015/t/06_prompt_text.t~	2015-08-21 23:53:46.000000000 +0200
-+++ CPAN-Reporter-1.2015/t/06_prompt_text.t	2016-02-28 11:00:08.000000000 +0100
-@@ -19,7 +19,10 @@
+diff --git t/06_prompt_text.t t/06_prompt_text.t
+index 4eb6790..bda3c69 100644
+--- t/06_prompt_text.t
++++ t/06_prompt_text.t
+@@ -19,7 +19,8 @@ use Config;
  
  BEGIN {
      BEGIN { if (not $] < 5.006 ) { warnings->unimport('redefine') } }
 -    *Config::STORE = sub { $_[0]->{$_[1]} = $_[2] }
-+    if ($Config{usecperl}) {
-+      plan skip_all => "cperl Config is readonly";
-+    }
++    plan skip_all => "XSConfig is readonly" if $Config{usecperl} or exists &Config::KEYS;
 +    *Config::STORE = sub { $_[0]->{$_[1]} = $_[2] };
  }
  
  # For these tests, hide perl_patchlevel so all prompts are tested
+@@ -41,7 +42,7 @@ my $mock_dist = t::MockCPANDist->new(
+     author_id       => "JOHNQP",
+     author_fullname => "John Q. Public",
+ );
+-    
++
+ my $case = {
+     label => "t-Fail",
+     name => "t-Fail",
+@@ -88,7 +89,7 @@ plan tests => 2 + ( scalar keys %prompts ) + $config_plus_dispatch
+ require_ok('CPAN::Reporter');
+ require_ok('CPAN::Reporter::History');
+ 
+-test_fake_config( 
++test_fake_config(
+         edit_report => "ask/no",
+         send_report => "ask/yes",
+         send_duplicates => "ask/yes",
+diff --git t/65_skipfile.t t/65_skipfile.t
+index 5809378..cc09afc 100644
+--- t/65_skipfile.t
++++ t/65_skipfile.t
+@@ -20,6 +20,7 @@ use Config;
+ 
+ BEGIN {
+     BEGIN { if (not $] < 5.006 ) { warnings->unimport('redefine') } }
++    plan skip_all => "XSConfig is readonly" if $Config{usecperl} or exists &Config::KEYS;
+     *Config::STORE = sub { $_[0]->{$_[1]} = $_[2] }
+ }
+ 
