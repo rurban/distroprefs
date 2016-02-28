@@ -1,0 +1,9 @@
+---
+comment: "cperl Config is readonly. disable a wrong mock test"
+match:
+  distribution: "CPAN-Reporter-1\."
+  perlconfig:
+    version: "^5\.2"
+    usecperl: "define"
+patches:
+  - "RURBAN/patches/CPAN-Reporter-1.2015-cperl.patch"
