@@ -1,7 +1,7 @@
 ---
-comment: "cperl Config is readonly. disable a wrong mock test. See https://github.com/cpan-testers/CPAN-Reporter/pull/32 for a full solution"
+comment: "cperl Config is readonly. disable a wrong mock test. Fixed with 1.2017"
 match:
-  distribution: "CPAN-Reporter-1\."
+  distribution: "CPAN-Reporter-1\.2015"
   perlconfig:
     version: "^5\.2"
     usecperl: "define"
