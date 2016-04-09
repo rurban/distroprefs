@@ -1,0 +1,79 @@
+diff --git Build.PL Build.PL
+index 398ae77..1534a7f 100644
+--- Build.PL
++++ Build.PL
+@@ -8,6 +8,7 @@ use 5.008_001;
+ use strict;
+ use warnings;
+ use utf8;
++use lib '.';
+ 
+ use builder::MyBuilder;
+ use File::Basename;
+diff --git mouse.h mouse.h
+index 629ea80..2e190d3 100644
+--- mouse.h
++++ mouse.h
+@@ -110,6 +110,7 @@ SV* mouse_av_at_safe(pTHX_ AV* const mi, I32 const ix);
+ static inline MAGIC *MOUSE_get_magic(pTHX_ CV *cv, MGVTBL *vtbl)
+ {
+ #ifndef MULTIPLICITY
++    PERL_UNUSED_ARG(vtbl);
+     return (MAGIC*)(CvXSUBANY(cv).any_ptr);
+ #else
+     return mg_findext((SV*)cv, PERL_MAGIC_ext, vtbl);
+diff --git tool/generate-mouse-tiny.pl tool/generate-mouse-tiny.pl
+index cd9389a..25bcb50 100644
+--- tool/generate-mouse-tiny.pl
++++ tool/generate-mouse-tiny.pl
+@@ -3,6 +3,7 @@ use strict;
+ use warnings;
+ use File::Find;
+ use Fatal qw(open close);
++use lib ('.', 'lib');
+ #use File::Slurp 'slurp';
+ #use List::MoreUtils 'uniq';
+ #use autodie;
+@@ -19,7 +20,7 @@ sub uniq{
+     return grep{ !$seen{$_}++ } @_;
+ }
+ 
+-require 'lib/Mouse/Spec.pm';
++require Mouse::Spec;
+ 
+ my $MouseTinyFile = shift || 'lib/Mouse/Tiny.pm';
+ 
+diff --git xs-src/MouseAccessor.xs xs-src/MouseAccessor.xs
+index 4607704..f60a254 100644
+--- xs-src/MouseAccessor.xs
++++ xs-src/MouseAccessor.xs
+@@ -254,7 +254,7 @@ mouse_attr_set(pTHX_ SV* const self, MAGIC* const mg, SV* value){
+         call_sv_safe(trigger, G_VOID | G_DISCARD);
+         /* need not SPAGAIN */
+ 
+-        assert(SvTYPE(value) != SVTYPEMASK);
++        /* wrong assert(SvFLAGS(value) > SVTYPEMASK); can be undef/SVt_NULL */
+     }
+ 
+     mouse_push_value(aTHX_ value, flags);
+diff --git xs-src/MouseTypeConstraints.xs xs-src/MouseTypeConstraints.xs
+index c7c60e8..b6cbe7b 100644
+--- xs-src/MouseTypeConstraints.xs
++++ xs-src/MouseTypeConstraints.xs
+@@ -1,6 +1,6 @@
+ /*
+  * TypeConstraint stuff
+- *  - Mouse::Util::TypeConstraints (including OptimizedConstraionts)
++ *  - Mouse::Util::TypeConstraints (including OptimizedConstraints)
+  *  - Mouse::Meta::TypeConstraint
+  */
+ 
+@@ -506,7 +506,7 @@ mouse_tc_generate(pTHX_ const char* const name, check_fptr_t const fptr, SV* con
+     CV* xsub;
+     MAGIC* mg;
+ 
+-    xsub = newXS(name, XS_Mouse_constraint_check, __FILE__);
++    xsub = newXS((const char*)name, XS_Mouse_constraint_check, __FILE__);
+     mg = sv_magicext(
+         (SV*)xsub,
+         param,       /* mg_obj: refcnt will be increased */
