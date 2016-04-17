@@ -1,0 +1,6 @@
+---
+comment: "add . to MyBuilder @INC"
+match:
+  distribution: "Module-Build-0\.42"
+patches:
+  - "RURBAN/patches/Module-Build-INC.patch"
