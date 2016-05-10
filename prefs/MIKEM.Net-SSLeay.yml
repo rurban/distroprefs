@@ -12,8 +12,8 @@ patches:
 comment: "fix tests for typed cperl"
 match:
   perlconfig:
-    version: "^5\.22"
+    version: "^5\.24"
     usecperl: "define"
-  distribution: "Net-SSLeay-1\.72"
+  distribution: "Net-SSLeay-1\.7[234]"
 patches:
   - "RURBAN/patches/Net-SSLeay-1.72-cperl.patch"
