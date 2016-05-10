@@ -1,0 +1,56 @@
+diff -bu ./t/external/usable_ca.t~ ./t/external/usable_ca.t
+--- ./t/external/usable_ca.t~	2016-05-10 10:41:00.000000000 +0200
++++ ./t/external/usable_ca.t	2016-05-10 10:39:07.000000000 +0200
+@@ -1,3 +1,4 @@
++%int::;
+ use strict;
+ use warnings;
+ use Test::More;
+@@ -59,7 +60,8 @@
+ 
+ my @cap = ('SSL_verifycn_name');
+ push @cap, 'SSL_hostname' if IO::Socket::SSL->can_client_sni();
+-plan tests => (1+@cap)*(@tests/3);
++my int $caps = 1+@cap;
++plan tests => ($caps)*(@tests/3);
+ 
+ while ( @tests ) {
+     my ($host,$fp,$ca_hash) = splice(@tests,0,3);
+@@ -67,7 +69,7 @@
+     SKIP: {
+ 
+ 	# first check if we have the CA in store
+-	skip "no root CA $ca_hash for $host in store",1+@cap
++	skip "no root CA $ca_hash for $host in store",$caps
+ 	    if ! $have_ca{$ca_hash};
+ 	diag("have root CA for $host in store");
+ 
+@@ -104,7 +106,7 @@
+ 		}
+ 	    }
+ 
+-	    skip "cannot connect to $host:443 with $ipclass: $!",1+@cap
++	    skip "cannot connect to $host:443 with $ipclass: $!",$caps
+ 		if ! $cl;
+ 	    push @cl,$cl;
+ 	}
+@@ -113,16 +115,16 @@
+ 
+ 	# check if we have SSL interception by comparing the fingerprint we get
+ 	my $cl = shift(@cl);
+-	skip "ssl upgrade failed even without verification",1+@cap
++	skip "ssl upgrade failed even without verification",$caps
+ 	    if ! IO::Socket::SSL->start_SSL($cl, SSL_verify_mode => 0 );
+-	skip "fingerprint mismatch - probably SSL interception",1+@cap
++	skip "fingerprint mismatch - probably SSL interception",$caps
+ 	    if $cl->get_fingerprint('sha1') ne $fp;
+ 	diag("fingerprint $host matches");
+ 
+ 	# check if it can verify against builtin CA store
+ 	$cl = shift(@cl);
+ 	if ( ! IO::Socket::SSL->start_SSL($cl)) {
+-	    skip "ssl upgrade failed with builtin CA store",1+@cap;
++	    skip "ssl upgrade failed with builtin CA store",$caps;
+ 	}
+ 	diag("check $host against builtin CA store ok");
+ 
