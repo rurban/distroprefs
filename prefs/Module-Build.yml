@@ -4,3 +4,12 @@ match:
   distribution: "Module-Build-0\.42"
 patches:
   - "RURBAN/patches/Module-Build-INC.patch"
+---
+comment: "wrong tests (typed cperl only) PR #68"
+match:
+  perlconfig:
+    version: "^5\.24"
+    usecperl: "define"
+  distribution: "Module-Build-0\.42"
+patches:
+  - "RURBAN/patches/Module-Build-typed-tests.patch"
