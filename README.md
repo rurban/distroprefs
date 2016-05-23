@@ -29,6 +29,19 @@ extra informations and recipes in YAML files to either
 See the YAML files that come with the `CPAN` distribution in the
 `distroprefs/` directory for examples.
 
+Install
+=======
+
+    cd ~
+    git clone https://github.com/rurban/distroprefs
+    mv distroprefs/* ~/.cpan/
+    mv distroprefs/.git* ~/.cpan/
+
+Optionally:
+
+    cd ~/.cpan
+    ln -s sources/authors/id/R/RU/RURBAN/patches patches
+
 Policy
 ======
 * Keep patches as subdir of authors. E.g. `sources/authors/id/R/RU/RURBAN/patches`
