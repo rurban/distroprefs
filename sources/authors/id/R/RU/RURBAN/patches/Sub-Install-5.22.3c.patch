@@ -1,0 +1,27 @@
+difforig Sub-Install-0.928-3bp6ct
+
+diff -u  Sub-Install-0.928-3bp6ct/t/install.t.orig
+--- Sub-Install-0.928-3bp6ct/t/install.t.orig	2016-05-31 10:31:27.000000000 +0200
++++ Sub-Install-0.928-3bp6ct/t/install.t	2016-05-31 11:48:09.000000000 +0200
+@@ -22,10 +22,8 @@
+     skip "can't run this test without Test::Output", 1 unless $to_avail;
+     Sub::Install::install_sub({ code => \&ok, as => 'tmp_ok' });
+ 
+-    my $expected_warning = <<'END_WARNING';
+-Subroutine main::tmp_ok redefined at t/install.t line 31
+-Prototype mismatch: sub main::tmp_ok ($;$) vs ($$;$) at t/install.t line 31
+-END_WARNING
++    my $expected_warning = qr/Subroutine main::tmp_ok redefined.* at t\/install\.t line 29\n
++Prototype mismatch: sub main::tmp_ok \(\$;\$\) vs \(\$\$;\$\) at t\/install\.t line 29/;
+ 
+     my $stderr = Test::Output::stderr_from(
+       sub { Sub::Install::install_sub({ code => \&is, as => 'tmp_ok' }) }
+@@ -33,7 +31,7 @@
+ 
+     $stderr =~ s!\.$!!gm;
+     $stderr =~ s!\\!/!g;
+-    is(
++    like(
+       $stderr,
+       $expected_warning,
+       "got expected warning",
