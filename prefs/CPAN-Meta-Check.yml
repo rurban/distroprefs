@@ -5,4 +5,4 @@ match:
   perlconfig:
     usecperl: "define"
 patches:
-  - "RURBAN/patches/prefs/CPAN-Meta-Check-0.012-cperl.patch"
+  - "RURBAN/patches/CPAN-Meta-Check-0.012-cperl.patch"
