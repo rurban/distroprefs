@@ -1,0 +1,113 @@
+difforig Module-Path-0.19-FKo4Lx
+
+diff -u  Module-Path-0.19-FKo4Lx/t/02-module-path.t.orig
+--- Module-Path-0.19-FKo4Lx/t/02-module-path.t.orig	2016-06-10 01:15:56.000000000 +0200
++++ Module-Path-0.19-FKo4Lx/t/02-module-path.t	2016-06-10 01:15:20.000000000 +0200
+@@ -10,15 +10,16 @@
+ 
+ my $expected_path;
+ 
+-# This test does "use strict", so %INC should include the path where
+-# strict.pm was found, and module_path should find the same
+-eval { $expected_path = abs_path($INC{'strict.pm'}); };
+-ok(!$@ && module_path('strict') eq $expected_path,
+-   "check 'strict' matches \%INC") || do {
++# This test did "use strict", so %INC should include the path where
++# strict.pm was found, and module_path should find the same.
++# Since cperl strict can be a builtin, so rather use vars.pm
++eval { $expected_path = abs_path($INC{'vars.pm'}); };
++ok(!$@ && module_path('vars') eq $expected_path,
++   "check 'vars' matches \%INC") || do {
+     warn "\n",
+-         "    \%INC          : $INC{'strict.pm'}\n",
++         "    \%INC          : $INC{'vars.pm'}\n",
+          "    expected path : $expected_path\n",
+-         "    module_path   : ", (module_path('strict') || 'undef'), "\n",
++         "    module_path   : ", (module_path('vars') || 'undef'), "\n",
+          ($@ ? "    \$\@            : $@\n" : ''),
+          "    \$^O           : $^O\n";
+ };
+diff -u  Module-Path-0.19-FKo4Lx/t/03-mpath.t.orig
+--- Module-Path-0.19-FKo4Lx/t/03-mpath.t.orig	2016-06-10 01:16:27.000000000 +0200
++++ Module-Path-0.19-FKo4Lx/t/03-mpath.t	2016-06-10 01:18:48.000000000 +0200
+@@ -20,63 +20,63 @@
+ #   #!/usr/bin/env perl
+ #
+ # This can result in it being run with a different perl than being used to run
+-# this test. So the path to strict may be different. So we use $^X to run
++# this test. So the path to vars may be different. So we use $^X to run
+ # mpath with the same perl binary being used to run this test.
+ # Instead of explicitly using $^X, we use Devel::FindPerl to get the
+ # path to perl
+ #
+-chomp($path = `"$PERL" "$MPATH" strict 2>&1`);
++chomp($path = `"$PERL" -Mblib "$MPATH" vars 2>&1`);
+ 
+-# This test does "use strict", so %INC should include the path where
+-# strict.pm was found, and module_path should find the same
+-$expected_path = abs_path($INC{'strict.pm'});
++# This test does "use vars", so %INC should include the path where
++# vars.pm was found, and module_path should find the same
++$expected_path = abs_path($INC{'vars.pm'});
+ ok($? == 0 && defined($path) && $path eq $expected_path,
+-   "check 'mpath strict' matches \%INC") || do {
++   "check 'mpath vars' matches \%INC") || do {
+     warn "\n",
+-         "    \%INC          : $INC{'strict.pm'}\n",
++         "    \%INC          : $INC{'vars.pm'}\n",
+          "    expected_path : $expected_path\n",
+          "    module_path   : $path\n",
+          "    \$^O           : $^O\n";
+ };
+ 
+ # module_path() returns undef if module not found in @INC
+-chomp($path = `"$PERL" "$MPATH" No::Such::Module 2>&1`);
++chomp($path = `"$PERL" -Mblib "$MPATH" No::Such::Module 2>&1`);
+ ok($? != 0 && defined($path) && $path eq 'No::Such::Module not found',
+    "non-existent module should result in failure");
+ 
+-chomp($path = `"$PERL" "$MPATH" strict warnings 2>&1`);
++chomp($path = `"$PERL" -Mblib "$MPATH" vars warnings 2>&1`);
+ 
+ ok($? == 0, 'exit status is 0');
+-ok(defined($path), 'path for both strict.pm and warnings.pm are defined');
+-is($path, abs_path($INC{'strict.pm'}).$/.abs_path($INC{'warnings.pm'}), 'and they match %INC');
++ok(defined($path), 'path for both vars.pm and warnings.pm are defined');
++is($path, abs_path($INC{'vars.pm'}).$/.abs_path($INC{'warnings.pm'}), 'and they match %INC');
+ 
+-chomp($path = `"$PERL" "$MPATH" strict warnings No::Such::Module 2>&1`);
++chomp($path = `"$PERL" -Mblib "$MPATH" vars warnings No::Such::Module 2>&1`);
+ 
+ ok($? != 0,        'exit status is not zero');
+ ok(defined($path), 'path is defined');
+ is(
+     $path,
+-    abs_path($INC{'strict.pm'}).$/.abs_path($INC{'warnings.pm'})."$/No::Such::Module not found",
++    abs_path($INC{'vars.pm'}).$/.abs_path($INC{'warnings.pm'})."$/No::Such::Module not found",
+     'got expected output'
+ );
+ 
+-chomp($path = `"$PERL" "$MPATH" --quiet strict warnings No::Such::Module 2>&1`);
++chomp($path = `"$PERL" -Mblib "$MPATH" --quiet vars warnings No::Such::Module 2>&1`);
+ 
+ ok($? != 0,        'exit status is not zero');
+ ok(defined($path), 'path is defined');
+ is(
+     $path,
+-    abs_path($INC{'strict.pm'}).$/.abs_path($INC{'warnings.pm'}),
++    abs_path($INC{'vars.pm'}).$/.abs_path($INC{'warnings.pm'}),
+     "error message should not be printed when the option --quiet is specified"
+ );
+ 
+-chomp($path = `"$PERL" "$MPATH" --full strict warnings 2>&1`);
++chomp($path = `"$PERL" -Mblib "$MPATH" --full vars warnings 2>&1`);
+ 
+ ok($? == 0,        'exit status is zero');
+ ok(defined($path), 'path is defined');
+ is(
+     $path,
+-    "strict ".abs_path($INC{'strict.pm'})."$/warnings ".abs_path($INC{'warnings.pm'}),
++    "vars ".abs_path($INC{'vars.pm'})."$/warnings ".abs_path($INC{'warnings.pm'}),
+     "module name should be printed right before its path if the option --full is specified"
+ );
+ 
