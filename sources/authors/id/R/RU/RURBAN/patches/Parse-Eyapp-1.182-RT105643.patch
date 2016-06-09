@@ -1,0 +1,65 @@
+From 62b6490a72f589521bc90029fc674c92e696a41a Mon Sep 17 00:00:00 2001
+From: Slaven Rezic <slaven@rezic.de>
+Date: Wed, 8 Jun 2016 21:47:03 +0200
+Subject: [PATCH] fix "Unescaped left brace in regexp" errors with perl 5.25.1
+
+Fixes RT #105643
+---
+ lib/Parse/Eyapp/Parse.pm      | 6 +++---
+ lib/Parse/Eyapp/Treeregexp.pm | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/lib/Parse/Eyapp/Parse.pm b/lib/Parse/Eyapp/Parse.pm
+index 0c0bd1a..6a9f2f5 100644
+--- a/lib/Parse/Eyapp/Parse.pm
++++ b/lib/Parse/Eyapp/Parse.pm
+@@ -3230,13 +3230,13 @@ sub _Lexer {
+         return($1, [ $1, $lineno[0] ]);
+     };
+ 
+-        $$input=~/\G\s*{/gc and return ('CODE', &slurp_perl_code());  # }
++        $$input=~/\G\s*\{/gc and return ('CODE', &slurp_perl_code());  # }
+ 
+     if($lexlevel == 0) {# In head section
+ 
+         $$input=~/\G%(left|right|nonassoc)/gc and return('ASSOC',[ uc($1), $lineno[0] ]);
+ 
+-            $$input=~/\G%{/gc
++            $$input=~/\G%\{/gc
+         and do {
+             my($code);
+ 
+@@ -3312,7 +3312,7 @@ sub _Lexer {
+     #       $$input=~/\G($LABEL)/gc
+     #   and return('LABEL',[ $1, $lineno[0] ]);
+ 
+-            $$input=~/\G%begin\s*{/gc  # }
++            $$input=~/\G%begin\s*\{/gc  # }
+         and return ('BEGINCODE', &slurp_perl_code());
+ 
+         #********** research *************#
+diff --git a/lib/Parse/Eyapp/Treeregexp.pm b/lib/Parse/Eyapp/Treeregexp.pm
+index e72c5b2..44a04a7 100644
+--- a/lib/Parse/Eyapp/Treeregexp.pm
++++ b/lib/Parse/Eyapp/Treeregexp.pm
+@@ -1335,7 +1335,7 @@ sub _Lexer {
+ 
+         return('REGEXP', [$string, $tokenbegin, $options]);
+     };
+-        $input=~/\G%{/gc
++        $input=~/\G%\{/gc
+     and do {
+         my($code);
+ 
+@@ -1347,7 +1347,7 @@ sub _Lexer {
+         return('Parse::Eyapp::Treeregexp::GLOBALCODE', [$code, $tokenbegin]);
+     };
+ 
+-        $input=~/\G{/gc
++        $input=~/\G\{/gc
+     and do {
+         my($level,$from,$code);
+ 
+-- 
+2.1.4
+
