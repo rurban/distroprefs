@@ -1,5 +1,9 @@
 ---
-comment: "allow coretypes and Module::Runtime override (PR)"
+comment: |
+  allow coretypes and Module::Runtime override (PR)
+  https://github.com/doy/package-stash-xs/pull/6
+  not fixed since June 2015
+
 match:
   distribution: "Package-Stash-XS-0\.28"
 patches:
