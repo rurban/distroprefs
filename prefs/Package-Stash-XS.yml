@@ -4,3 +4,9 @@ match:
   distribution: "Package-Stash-XS-0\.28"
 patches:
   - "RURBAN/patches/Package-Stash-XS-0.28-modulename.patch"
+---
+comment: "fix t/00-compile.t"
+match:
+  distribution: "Package-Stash-XS-0\.28"
+patches:
+  - "RURBAN/patches/Package-Stash-XS-0.28-Mblib.patch"
