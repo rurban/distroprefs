@@ -1,10 +1,14 @@
 distroprefs
 ===========
 
-Various of my and Andy Koenig's perl CPAN yml and patches.
+Various of my and Andy Koenig's perl CPAN yml and patches. srezic and
+Steffen Schwigon also collect some.
 This belongs into `~/.cpan/`
 
-See `perldoc CPAN`
+See [`perldoc CPAN`](https://p3rl.org/CPAN#Configuration-for-individual-distributions-Distroprefs) for more details.
+
+Lot of these patches contain fixes for wrong returnop parsing, 
+-Dfortify_inc fixes and for cperl-specific types with Test::More.
 
 ---
 
@@ -47,7 +51,7 @@ Policy
 * Keep patches as subdir of authors. E.g. `sources/authors/id/R/RU/RURBAN/patches`
   * Keep them for older releases
 * yml name: `<AUTHOR>.<DISTRO>.yml`
-  * Delete outdated ymls
+  * Delete outdated ymls. The AUTHOR part is questionable.
 * No way yet to handle and merge distroprefs from multiple sources.
   git fork and merge?
 * Either the patch or the yml should keep the CPAN RT ticket number,
