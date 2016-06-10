@@ -2,15 +2,11 @@
 comment: |
   allow coretypes and Module::Runtime override (PR)
   https://github.com/doy/package-stash-xs/pull/6
-  not fixed since June 2015
+  not fixed since June 2015.
+  The 2nd patch fixes 2 tests.
 
 match:
   distribution: "Package-Stash-XS-0\.28"
 patches:
   - "RURBAN/patches/Package-Stash-XS-0.28-modulename.patch"
----
-comment: "fix t/00-compile.t"
-match:
-  distribution: "Package-Stash-XS-0\.28"
-patches:
   - "RURBAN/patches/Package-Stash-XS-0.28-Mblib.patch"

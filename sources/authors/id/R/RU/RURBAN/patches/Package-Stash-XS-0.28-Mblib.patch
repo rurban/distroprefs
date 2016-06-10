@@ -1,26 +1,26 @@
-difforig Package-Stash-XS-0.28-b0FyT6
+difforig Package-Stash-XS-0.28-Kokl6r
 
-diff -u  Package-Stash-XS-0.28-b0FyT6/t/00-compile.t.orig
---- Package-Stash-XS-0.28-b0FyT6/t/00-compile.t.orig	2016-06-09 11:41:49.000000000 +0200
-+++ Package-Stash-XS-0.28-b0FyT6/t/00-compile.t	2016-06-09 11:40:49.000000000 +0200
+diff -u  Package-Stash-XS-0.28-Kokl6r/t/00-compile.t.orig
+--- Package-Stash-XS-0.28-Kokl6r/t/00-compile.t.orig	2013-07-16 18:17:11.000000000 +0200
++++ Package-Stash-XS-0.28-Kokl6r/t/00-compile.t	2016-06-10 09:34:14.000000000 +0200
 @@ -58,7 +58,7 @@
      # fake home for cpan-testers
      # no fake requested ## local $ENV{HOME} = tempdir( CLEANUP => 1 );
  
--    like( qx{ $^X -Mlib -e "require $_; print '$_ ok'" }, qr/^\s*$_ ok/s, "$_ loaded ok" )
+-    like( qx{ $^X -Ilib -e "require $_; print '$_ ok'" }, qr/^\s*$_ ok/s, "$_ loaded ok" )
 +    like( qx{ $^X -Mblib -e "require $_; print '$_ ok'" }, qr/^\s*$_ ok/s, "$_ loaded ok" )
          for sort @modules;
  
      SKIP: {
-diff -u  Package-Stash-XS-0.28-b0FyT6/t/addsub.t.orig
---- Package-Stash-XS-0.28-b0FyT6/t/addsub.t.orig	2013-07-16 18:17:11.000000000 +0200
-+++ Package-Stash-XS-0.28-b0FyT6/t/addsub.t	2016-06-09 11:45:46.000000000 +0200
-@@ -40,7 +40,7 @@
-     last_line_num  => 199
- );
+diff -u  Package-Stash-XS-0.28-Kokl6r/t/addsub.t.orig
+--- Package-Stash-XS-0.28-Kokl6r/t/addsub.t.orig	2016-06-10 09:33:29.000000000 +0200
++++ Package-Stash-XS-0.28-Kokl6r/t/addsub.t	2016-06-10 09:33:50.000000000 +0200
+@@ -30,7 +30,7 @@
+ is((Foo->funk())[0], 'Foo::funk', '... got the right value from the function');
  
--is $DB::sub{'Foo::dunk'}, sprintf "%s:%d-%d", "FileName", 100, 199,
-+is $DB::sub{'Foo::dunk'}, sprintf("%s:%d-%d", "FileName", 100, 199),
-     '... got the right %DB::sub value for dunk with specified args';
+ my $line = (Foo->funk())[1];
+-is $DB::sub{'Foo::funk'}, sprintf "%s:%d-%d", __FILE__, $line, $line,
++is $DB::sub{'Foo::funk'}, sprintf("%s:%d-%d", __FILE__, $line, $line),
+     '... got the right %DB::sub value for funk default args';
  
- done_testing;
+ $foo_stash->add_symbol(
