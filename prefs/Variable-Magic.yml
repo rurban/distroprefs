@@ -1,5 +1,5 @@
 ---
-comment: "cperl fixes"
+comment: "cperl fixes. 5.22.1c is broken, you need to upgrade."
 match:
   distribution: "Variable-Magic-0\.5[89]"
   perlconfig:
