@@ -1,0 +1,14 @@
+diff -bu IO-All-0.86-YpGHx0/t/pipe.t~ IO-All-0.86-YpGHx0/t/pipe.t
+--- IO-All-0.86-YpGHx0/t/pipe.t~	2015-01-02 03:44:47.000000000 +0100
++++ IO-All-0.86-YpGHx0/t/pipe.t	2016-06-14 15:28:57.000000000 +0200
+@@ -4,8 +4,8 @@
+ 
+ my $perl_version < io("$^X -v|");
+ ok($perl_version =~ /Larry Wall/);
+-ok($perl_version =~ /This is perl/);
++ok($perl_version =~ /This is c?perl/);
+ 
+ io("$^X -v|") > $perl_version;
+ ok($perl_version =~ /Larry Wall/);
+-ok($perl_version =~ /This is p(erl|onie)/);
++ok($perl_version =~ /This is c?p(erl|onie)/);
