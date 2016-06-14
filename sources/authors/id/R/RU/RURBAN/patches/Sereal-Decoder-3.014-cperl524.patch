@@ -1,0 +1,31 @@
+diff -bu Sereal-Decoder-3.014-uRUx3u/t/300_overload.t~ Sereal-Decoder-3.014-uRUx3u/t/300_overload.t
+--- Sereal-Decoder-3.014-uRUx3u/t/300_overload.t~	2014-12-24 15:20:02.000000000 +0100
++++ Sereal-Decoder-3.014-uRUx3u/t/300_overload.t	2016-06-14 15:45:22.000000000 +0200
+@@ -33,14 +33,14 @@
+ });
+ 
+ # encode before any overload is known
+-my $s = $encoder->encode(bless({foo => "123"} => "Str"));
++my $s = $encoder->encode(bless({foo => "123"} => "String"));
+ 
+ my $decoder = Sereal::Decoder->new();
+ 
+ 
+ # "load" the object's class
+ eval <<'HERE';
+-package Str;
++package String;
+ use vars '$Called';
+ $Called = 0;
+ use overload '""' => sub {
+@@ -60,8 +60,8 @@
+ 
+ # see if overload magic is on object
+ is("$obj", 123, "Deserialized object serializes fine");
+-$Str::Called = $Str::Called; # silence warning
+-is($Str::Called, 1, "overload invoked once");
++$String::Called = $String::Called; # silence warning
++is($String::Called, 1, "overload invoked once");
+ 
+ 
+ # Second try at breaking things

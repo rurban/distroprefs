@@ -1,0 +1,9 @@
+---
+comment: "protected Str:: namespace"
+match:
+  distribution: "Sereal-3\.014"
+  perlconfig:
+    version: "^5\.24"
+    usecperl: "define"
+patches:
+  - "RURBAN/patches/Sereal-Decoder-3.014-cperl524.patch"
