@@ -1,0 +1,36 @@
+diff -bu MooseX-Types-Structured-0.35-nNQuAc/t/02-tuple.t~ MooseX-Types-Structured-0.35-nNQuAc/t/02-tuple.t
+--- MooseX-Types-Structured-0.35-nNQuAc/t/02-tuple.t~	2015-12-27 01:32:57.000000000 +0100
++++ MooseX-Types-Structured-0.35-nNQuAc/t/02-tuple.t	2016-06-14 13:53:27.000000000 +0200
+@@ -102,7 +102,7 @@
+ } => undef, 'Set tuple attribute without error skipping optional parameter');
+ 
+ SKIP: {
+-    skip 'Core Maybe incorrectly allows null.', 1, 1;
++    skip 'Core Maybe incorrectly allows null.', 1;
+     like( exception {
+         $record->tuple_with_maybe2([1,'hello']);
+     }, qr/Attribute \(tuple_with_maybe2\) does not pass the type constraint/
+diff -bu MooseX-Types-Structured-0.35-nNQuAc/t/07-coerce.t~ MooseX-Types-Structured-0.35-nNQuAc/t/07-coerce.t
+--- MooseX-Types-Structured-0.35-nNQuAc/t/07-coerce.t~	2015-12-27 01:32:57.000000000 +0100
++++ MooseX-Types-Structured-0.35-nNQuAc/t/07-coerce.t	2016-06-14 13:53:42.000000000 +0200
+@@ -85,7 +85,7 @@
+ is_deeply $person->stuff, {name=>"frank herbert1",age=>85}, 'Correct set';
+ 
+ SKIP: {
+-    skip 'deep coercions not yet supported', 2, 1;
++    skip 'deep coercions not yet supported', 2;
+ 
+     ok $person->stuff({fullname=>["frank", "herbert2"],dob_epoch=>86}),
+      '{fullname=>["frank", "herbert2"],dob_epoch=>86}';
+diff -bu MooseX-Types-Structured-0.35-nNQuAc/t/bug-incorrect-message.t~ MooseX-Types-Structured-0.35-nNQuAc/t/bug-incorrect-message.t
+--- MooseX-Types-Structured-0.35-nNQuAc/t/bug-incorrect-message.t~	2015-12-27 01:32:57.000000000 +0100
++++ MooseX-Types-Structured-0.35-nNQuAc/t/bug-incorrect-message.t	2016-06-14 13:53:53.000000000 +0200
+@@ -32,7 +32,7 @@
+ );
+ 
+ SKIP: {
+-  skip 'Deeper Error Messges not yet supported', 1,1;
++  skip 'Deeper Error Messges not yet supported', 1;
+ 
+   ok(
+     Test::MooseX::Types::Structured::IncorrectMessage->new(%init_args),

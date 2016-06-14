@@ -1,0 +1,9 @@
+---
+comment: "Wrong skip arity, not 3 args"
+match:
+  distribution: "MooseX-Types-Structured-0\.35"
+  perlconfig:
+    version: "^5\.24"
+    usecperl: "define"
+patches:
+  - "RURBAN/patches/MooseX-Types-Structured-0.35-cperl524.patch"
