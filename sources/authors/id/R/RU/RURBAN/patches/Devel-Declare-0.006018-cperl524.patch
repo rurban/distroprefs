@@ -1,0 +1,12 @@
+diff -bu Devel-Declare-0.006018-VfEn5D/t/debug.t~ Devel-Declare-0.006018-VfEn5D/t/debug.t
+--- Devel-Declare-0.006018-VfEn5D/t/debug.t~	2015-03-08 09:07:51.000000000 +0100
++++ Devel-Declare-0.006018-VfEn5D/t/debug.t	2016-06-14 14:19:27.000000000 +0200
+@@ -14,7 +14,7 @@
+ 
+ $ENV{PERLDB_OPTS} = "NonStop";
+ $ENV{DD_DEBUG} = 1;
+-cwd("$Bin/..");
++#cwd("$Bin/..");
+ 
+ # Write a .perldb file so we make sure we dont use the users one
+ umask 077;
