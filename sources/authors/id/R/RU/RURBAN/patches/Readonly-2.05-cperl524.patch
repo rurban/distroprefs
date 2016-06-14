@@ -1,0 +1,24 @@
+diff -bu Readonly-2.05-C8NYTN/t/bugs/007_implicit_undef.t~ Readonly-2.05-C8NYTN/t/bugs/007_implicit_undef.t
+--- Readonly-2.05-C8NYTN/t/bugs/007_implicit_undef.t~	2016-06-10 19:03:44.000000000 +0200
++++ Readonly-2.05-C8NYTN/t/bugs/007_implicit_undef.t	2016-06-14 13:08:26.000000000 +0200
+@@ -15,7 +15,7 @@
+     is $@ => '', 'Simple API allows for implicit undef values';
+ }
+ eval q'Readonly::Scalar my $scalar;';
+-like $@ => qr[Not enough arguments for Readonly::Scalar],
++like $@ => qr[Not enough arguments for .*Readonly::Scalar],
+     'Readonly::Scalar does not allow implicit undef values';
+ #
+ done_testing;
+diff -bu Readonly-2.05-C8NYTN/t/general/scalar.t~ Readonly-2.05-C8NYTN/t/general/scalar.t
+--- Readonly-2.05-C8NYTN/t/general/scalar.t~	2016-06-10 19:03:45.000000000 +0200
++++ Readonly-2.05-C8NYTN/t/general/scalar.t	2016-06-14 13:08:10.000000000 +0200
+@@ -26,7 +26,7 @@
+ eval {Readonly::Scalar $s2 => undef};
+ is $@ => '', 'Create an undef global scalar';
+ eval 'Readonly::Scalar $ms2';    # must be eval string because it's a compile-time error
+-like $@ => qr/^Not enough arguments for Readonly::Scalar/, 'Try w/o args';
++like $@ => qr/^Not enough arguments for .*Readonly::Scalar/, 'Try w/o args';
+ 
+ # fetching (4 tests)
+ is $s1  => 13, 'Fetch global';
