@@ -1,0 +1,77 @@
+difforig XML-SAX-0.99-6RthvH
+
+diff -u  XML-SAX-0.99-6RthvH/SAX/PurePerl.pm.orig
+--- XML-SAX-0.99-6RthvH/SAX/PurePerl.pm.orig	2016-06-10 10:06:25.000000000 +0200
++++ XML-SAX-0.99-6RthvH/SAX/PurePerl.pm	2016-06-10 10:05:48.000000000 +0200
+@@ -96,7 +96,7 @@
+         $reader->set_encoding($self->{ParseOptions}{Source}{Encoding});
+     }
+     else {
+-        $self->encoding_detect($reader);
++        $self->encoding_detect_nowarn($reader);
+     }
+     
+     # parse a document
+@@ -412,7 +412,7 @@
+             if ($self->_is_external($name)) {
+                 my $value = $self->_get_entity($name);
+                 my $ent_reader = XML::SAX::PurePerl::Reader::URI->new($value);
+-                $self->encoding_detect($ent_reader);
++                $self->encoding_detect_nowarn($ent_reader);
+                 $self->extParsedEnt($ent_reader);
+             }
+             else {
+diff -u  XML-SAX-0.99-6RthvH/SAX/PurePerl/EncodingDetect.pm.orig
+--- XML-SAX-0.99-6RthvH/SAX/PurePerl/EncodingDetect.pm.orig	2009-10-10 23:16:30.000000000 +0200
++++ XML-SAX-0.99-6RthvH/SAX/PurePerl/EncodingDetect.pm	2016-06-10 12:01:16.000000000 +0200
+@@ -5,11 +5,16 @@
+ use strict;
+ 
+ sub encoding_detect {
++    my $warn =  encoding_detect_nowarn(@_);
++    warn "$warn\n" if $warn;
++}
++
++sub encoding_detect_nowarn {
+     my ($parser, $reader) = @_;
+     
+     my $error = "Invalid byte sequence at start of file";
+     
+-    my $data = $reader->data;
++    my $data = $reader->data();
+     if ($data =~ /^\x00\x00\xFE\xFF/) {
+         # BO-UCS4-be
+         $reader->move_along(4);
+@@ -96,9 +101,16 @@
+         $reader->set_encoding('EBCDIC');
+         return;
+     }
+-    
+-    warn("Unable to recognise encoding of this document");
+-    return;
++    elsif ($data =~ /^<\?xml [^>]+encoding="(\w+)"\?>/) {
++        $reader->set_encoding($1);
++        return;
++    }
++
++    # $parser->parser_error($error, $reader);
++
++    my $doc = $parser->{Source}{SystemId};
++    $doc = "this document" unless $doc;
++    return "No BOM, unable to recognise encoding of $doc";
+ }
+ 
+ 1;
+diff -u  XML-SAX-0.99-6RthvH/SAX/PurePerl/Reader.pm.orig
+--- XML-SAX-0.99-6RthvH/SAX/PurePerl/Reader.pm.orig	2016-06-10 10:41:46.000000000 +0200
++++ XML-SAX-0.99-6RthvH/SAX/PurePerl/Reader.pm	2016-06-10 10:41:21.000000000 +0200
+@@ -78,7 +78,8 @@
+ }
+ 
+ sub data {
+-    my ($self, $min_length) = (@_, 1);
++    my $self = shift;
++    my $min_length = 1;
+     if (length($self->[BUFFER]) < $min_length) {
+         $self->read_more;
+     }
