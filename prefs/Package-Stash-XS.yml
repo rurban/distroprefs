@@ -10,3 +10,4 @@ match:
 patches:
   - "RURBAN/patches/Package-Stash-XS-0.28-modulename.patch"
   - "RURBAN/patches/Package-Stash-XS-0.28-Mblib.patch"
+  - "RURBAN/patches/Package-Stash-XS-0.28-compile_script_skip.patch"

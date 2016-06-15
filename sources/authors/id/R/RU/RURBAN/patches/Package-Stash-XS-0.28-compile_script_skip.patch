@@ -1,0 +1,21 @@
+diff --git a/t/00-compile.t b/t/00-compile.t
+index f1e647e..3ea3dad 100644
+--- a/t/00-compile.t
++++ b/t/00-compile.t
+@@ -61,7 +61,7 @@ $plan ? (plan tests => $plan) : (plan skip_all => "no tests to run");
+     like( qx{ $^X -Mblib -e "require $_; print '$_ ok'" }, qr/^\s*$_ ok/s, "$_ loaded ok" )
+         for sort @modules;
+ 
+-    SKIP: {
++    SKIP: { if (@scripts) {
+         eval "use Test::Script 1.05; 1;";
+         skip "Test::Script needed to test script compilation", scalar(@scripts) if $@;
+         foreach my $file ( @scripts ) {
+@@ -69,6 +69,6 @@ $plan ? (plan tests => $plan) : (plan skip_all => "no tests to run");
+             $script =~ s!.*/!!;
+             script_compiles( $file, "$script script compiles" );
+         }
+-    }
++    } }
+ 
+ }
