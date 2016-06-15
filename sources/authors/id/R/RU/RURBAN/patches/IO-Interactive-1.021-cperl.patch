@@ -1,0 +1,12 @@
+diff -bu IO-Interactive-1.021-oDSvaS/lib/IO/Interactive.pm~ IO-Interactive-1.021-oDSvaS/lib/IO/Interactive.pm
+--- IO-Interactive-1.021-oDSvaS/lib/IO/Interactive.pm~	2016-01-27 21:30:37.000000000 +0100
++++ IO-Interactive-1.021-oDSvaS/lib/IO/Interactive.pm	2016-06-15 17:47:49.000000000 +0200
+@@ -120,7 +120,7 @@
+         no strict 'refs';
+         my $impl = *{$package.'::'.$request}{CODE};
+         require Carp;
+-        Carp::croak "Unknown subroutine ($request()) requested"
++        Carp::croak("Unknown subroutine (".$request."()) requested")
+             if !$impl || $request =~ m/\A _/xms;
+         *{$caller.'::'.$request} = $impl;
+     }
