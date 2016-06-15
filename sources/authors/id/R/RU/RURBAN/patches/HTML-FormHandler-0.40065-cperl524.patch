@@ -1,0 +1,17 @@
+diff -bu HTML-FormHandler-0.40065-SDUNQ2/t/fields/fields.t~ HTML-FormHandler-0.40065-SDUNQ2/t/fields/fields.t
+--- HTML-FormHandler-0.40065-SDUNQ2/t/fields/fields.t~	2016-03-20 04:19:41.000000000 +0100
++++ HTML-FormHandler-0.40065-SDUNQ2/t/fields/fields.t	2016-06-15 18:06:35.000000000 +0200
+@@ -319,11 +319,11 @@
+ $field->_set_input( [1] );
+ $field->validate_field;
+ ok( !$field->has_errors, 'Test for errors 2' );
+-ok( eq_array( $field->value, [1], 'test array' ), 'Check [1]');
++ok( eq_array( $field->value, [1] ), 'Check [1]');
+ $field->_set_input( [1,2] );
+ $field->validate_field;
+ ok( !$field->has_errors, 'Test for errors 3' );
+-ok( eq_array( $field->value, [1,2], 'test array' ), 'Check [1,2]');
++ok( eq_array( $field->value, [1,2] ), 'Check [1,2]');
+ $field->_set_input( [1,2,4] );
+ $field->validate_field;
+ ok( $field->has_errors, 'Test for errors 4' );
