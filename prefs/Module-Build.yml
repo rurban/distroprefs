@@ -1,15 +1,13 @@
 ---
-comment: "add . to MyBuilder @INC"
-match:
-  distribution: "Module-Build-0\.42"
-patches:
-  - "RURBAN/patches/Module-Build-INC.patch"
----
-comment: "wrong tests (typed cperl only) PR #68"
+comment: |
+    wrong tests (typed cperl only) PR #68
+    add . to MyBuilder @INC (-Dfortify_inc or cperl)
+
 match:
   perlconfig:
     version: "^5\.24"
     usecperl: "define"
   distribution: "Module-Build-0\.42"
 patches:
+  - "RURBAN/patches/Module-Build-INC.patch"
   - "RURBAN/patches/Module-Build-typed-tests.patch"
