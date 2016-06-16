@@ -1,0 +1,14 @@
+diff -bu HTTP-Daemon-SSL-1.04-jD9ULS/t/testmodule.t~ HTTP-Daemon-SSL-1.04-jD9ULS/t/testmodule.t
+--- HTTP-Daemon-SSL-1.04-jD9ULS/t/testmodule.t~	2016-06-16 09:18:56.000000000 +0200
++++ HTTP-Daemon-SSL-1.04-jD9ULS/t/testmodule.t	2016-06-16 09:19:42.000000000 +0200
+@@ -4,8 +4,8 @@
+ 
+ use HTTP::Daemon::SSL;
+ use HTTP::Status;
+-eval {require "t/ssl_settings.req";} ||
+-eval {require "ssl_settings.req";};
++eval {require "./t/ssl_settings.req";} ||
++eval {require "./ssl_settings.req";};
+ 
+ $numtests = 9;
+ $|=1;
