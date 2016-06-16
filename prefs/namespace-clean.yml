@@ -1,0 +1,8 @@
+---
+comment: "missing . in @INC: -Dfortify_inc or cperl"
+match:
+  perlconfig:
+    version: "^5\.2[45]"
+  distribution: "namespace-clean-0\.26"
+patches:
+  - "RURBAN/patches/namespace-clean-0.26-inc.patch"

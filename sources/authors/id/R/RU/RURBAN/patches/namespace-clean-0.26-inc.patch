@@ -1,0 +1,12 @@
+diff -bu namespace-clean-0.26-TU132G/Makefile.PL~ namespace-clean-0.26-TU132G/Makefile.PL
+--- namespace-clean-0.26-TU132G/Makefile.PL~	2015-10-01 05:54:37.000000000 +0200
++++ namespace-clean-0.26-TU132G/Makefile.PL	2016-06-16 09:24:05.000000000 +0200
+@@ -53,7 +53,7 @@
+ 
+ my %MM_ARGS = ( (
+   # a sub-namer is needed if using the debugger on some perls
+-  require 'lib/namespace/clean/_Util.pm'
++  require './lib/namespace/clean/_Util.pm'
+     and
+   namespace::clean::_Util::DEBUGGER_NEEDS_CV_RENAME()
+     and
