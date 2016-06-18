@@ -1,0 +1,35 @@
+From 296dff895a9bd3090904361671d2e32c233506a9 Mon Sep 17 00:00:00 2001
+From: Reini Urban <rurban@cpanel.net>
+Date: Sat, 18 Jun 2016 10:18:34 +0200
+Subject: [PATCH] skip t/90_csv.t parse without headers on cperl
+
+cperl uses a different hash strategy: move-to-front
+which is not stable across reads. Thus parse without headers cannot be
+used at all with the current Text-CSV_XS implementation.
+---
+ t/90_csv.t | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git t/90_csv.t t/90_csv.t
+index 3b3e8fc..a308e1f 100644
+--- t/90_csv.t
++++ t/90_csv.t
+@@ -76,9 +76,12 @@ ok (csv (in => $aoh, out => $tfn, headers => "auto"), "AOH out file");
+ is_deeply (csv (in => $tfn, headers => "auto"), $aoh, "AOH parse out");
+ 
+ ok (csv (in => $aoh, out => $tfn, headers => "skip"), "AOH out file no header");
+-is_deeply (csv (in => $tfn, headers => [keys %{$aoh->[0]}]),
+-    $aoh, "AOH parse out no header");
+-
++SKIP: {
++   skip "parse without headers is unstable with unusual hash strategy", 1
++     if $Config{usecperl};
++   is_deeply (csv (in => $tfn, headers => \@hdr),
++              $aoh, "AOH parse out no header");
++}
+ my $idx = 0;
+ sub getrowa { return $aoa->[$idx++]; }
+ sub getrowh { return $aoh->[$idx++]; }
+-- 
+2.8.3
+
