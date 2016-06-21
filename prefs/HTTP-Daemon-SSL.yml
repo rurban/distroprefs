@@ -5,4 +5,4 @@ match:
     version: "^5\.2[45]"
   distribution: "HTTP-Daemon-SSL-1\.04"
 patches:
-  - "RURBAN/patchesHTTP-Daemon-SSL-1.04-inc.patch"
+  - "RURBAN/patches/HTTP-Daemon-SSL-1.04-inc.patch"
