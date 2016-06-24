@@ -1,0 +1,9 @@
+---
+comment: |
+  handle libxml2-2.9.4 schema regression
+  https://github.com/shlomif/perl-XML-LibXML/pull/1
+
+match:
+  distribution: "XML-LibXML-2\.0125"
+patches:
+  - "RURBAN/patches/XML-LibXML-294schema.patch"

@@ -1,0 +1,80 @@
+diff -bu XML-LibXML-2.0125-3geEta/LibXML.xs~ XML-LibXML-2.0125-3geEta/LibXML.xs
+--- XML-LibXML-2.0125-3geEta/LibXML.xs~	2016-05-30 11:01:59.000000000 +0200
++++ XML-LibXML-2.0125-3geEta/LibXML.xs	2016-06-24 11:06:26.000000000 +0200
+@@ -1616,6 +1616,10 @@
+     CODE:
+ #ifdef HAVE_SCHEMAS
+         RETVAL = 1;
++# if LIBXML_VERSION == 20904
++        /* exists but broken https://github.com/shlomif/libxml2-2.9.4-reader-schema-regression */
++        RETVAL = 0;
++# endif
+ #else
+         RETVAL = 0;
+ #endif
+diff -bu XML-LibXML-2.0125-3geEta/Makefile.PL~ XML-LibXML-2.0125-3geEta/Makefile.PL
+--- XML-LibXML-2.0125-3geEta/Makefile.PL~	2016-05-30 11:19:35.000000000 +0200
++++ XML-LibXML-2.0125-3geEta/Makefile.PL	2016-06-24 11:07:10.000000000 +0200
+@@ -186,6 +186,7 @@
+                      [2,7,1,0], # broken release, broken utf-16
+                      [2,7,6,1], # tested, ok
+                      [2,7,8,1], # tested, ok
++                     [2,9,4,0], # schema regression
+                     );
+     my $xml2cfg = "xml2-config";
+     my $libprefix = $ENV{XMLPREFIX} || $config{XMLPREFIX};
+@@ -206,14 +207,19 @@
+ 
+         if ( $@ ) {
+             if ( $@ =~ /^VERSION|^FORCED/ ) {
+-                print STDERR "The installed version of libxml2 not compatible with XML::LibXML (and probably buggy)!\n\n".
++                my $libxml2_version;
++                print STDERR "The installed version of libxml2 $@ is not compatible with XML::LibXML (and probably buggy)!\n\n".
+                     "You may continue at your own risk using 'perl Makefile.PL FORCE=1', but:\n\n".
+                     "  - don't expect XML::LibXML to build or work correctly!\n".
+                     "  - don't report errors!\n".
+                     "  - don't send patches!\n\n".
+                     "Check the README file for more information on versions\n".
+                     "that are tested with XML::LibXML\n\n";
+-            exit 0 unless $FORCE; # 0 recommended by http://cpantest.grango.org (Notes for CPAN Authors)
++                if ($@ =~ /^VERSION (\S+)/) {
++                    $libxml2_version = $1;
++                }
++                # 0 recommended by http://cpantest.grango.org (Notes for CPAN Authors)
++                exit 0 if !$FORCE and $libxml2_version ne "2.9.4";
+             }
+             if ( $@ =~ /^UNTESTED (\S*)/ ) {
+                 warn "Note: libxml2 $1 was not tested with this XML::LibXML version.\n"
+@@ -245,6 +251,7 @@
+         }
+     }
+ }
++
+ # -------------------------------------------------------------------------- #
+ 
+ # -------------------------------------------------------------------------- #
+diff -bu XML-LibXML-2.0125-3geEta/t/40reader.t~ XML-LibXML-2.0125-3geEta/t/40reader.t
+--- XML-LibXML-2.0125-3geEta/t/40reader.t~	2016-05-30 11:01:59.000000000 +0200
++++ XML-LibXML-2.0125-3geEta/t/40reader.t	2016-06-24 11:01:55.000000000 +0200
+@@ -239,7 +239,9 @@
+   }
+ }
+ 
+-{
++SKIP: {
++  skip "https://github.com/shlomif/libxml2-2.9.4-reader-schema-regression", 4
++    if !XML::LibXML::HAVE_SCHEMAS or XML::LibXML::LIBXML_DOTTED_VERSION eq '2.9.4';
+   my $xsd = "test/schema/schema.xsd";
+   for my $XSD ($xsd, XML::LibXML::Schema->new(location => $xsd)) {
+     {
+@@ -257,9 +259,9 @@
+       eval { $reader->finish };
+       ok($@, "catch validation error for ".(ref($XSD) ? 'XML::LibXML::Schema' : 'Schema file'));
+     }
+-
+   }
+ }
++
+ # Patterns
+ {
+   my ($node1,$node2, $node3);
