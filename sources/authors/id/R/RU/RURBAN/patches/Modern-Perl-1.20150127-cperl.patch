@@ -1,0 +1,79 @@
+diff -bu Modern-Perl-1.20150127-GiykQx/t/year_imports.t~ Modern-Perl-1.20150127-GiykQx/t/year_imports.t
+--- Modern-Perl-1.20150127-GiykQx/t/year_imports.t~	2015-01-27 08:21:54.000000000 +0100
++++ Modern-Perl-1.20150127-GiykQx/t/year_imports.t	2016-07-05 22:49:13.000000000 +0200
+@@ -3,6 +3,7 @@
+ use Test::More 0.98;
+ 
+ use Modern::Perl ();
++use Config;
+ 
+ $SIG{__WARN__} = sub
+ {
+@@ -99,9 +100,21 @@
+             q|use Modern::Perl '2013' disables array_base|;
+         eval 'fc("tschüß") eq fc("TSCHÜSS")';
+         is $@, '', q|use Modern::Perl '2013' enables fc|;
++    };
++    is $@, '', 'this block should succeed';
++    if ($Config{usecperl}) {
++      eval q{
++        use Modern::Perl '2013';
++        eval 'my sub foo {}';
++        is $@, '', q|use Modern::Perl '2013' with cperl does enable lexical subs|;
++      };
++    } else {
++      eval q{
++        use Modern::Perl '2013';
+         eval 'my sub foo {}';
+         isnt $@, '', q|use Modern::Perl '2013' should not enable lexical subs|;
+     };
++    }
+     is $@, '', 'this block should succeed';
+ }
+ 
+@@ -125,9 +138,21 @@
+             q|use Modern::Perl '2014' disables array_base|;
+         eval 'fc("tschüß") eq fc("TSCHÜSS")';
+         is $@, '', q|use Modern::Perl '2014' enables fc|;
++    };
++    is $@, '', 'this block should succeed';
++    if ($Config{usecperl}) {
++      eval q{
++        use Modern::Perl '2014';
+         eval 'my sub foo {}';
+-        isnt $@, '', q|use Modern::Perl '2014' does not enable lexical subs|;
++        is $@, '', q|use Modern::Perl '2014' with cperl does enable lexical subs|;
+     };
++    } else {
++      eval q{
++        use Modern::Perl '2014';
++        eval 'my sub foo {}';
++        isnt $@, '', q|use Modern::Perl '2014' should not enable lexical subs|;
++      };
++    }
+     is $@, '', 'this block should succeed';
+ }
+ 
+@@ -151,9 +176,21 @@
+             q|use Modern::Perl '2015' disables array_base|;
+         eval 'fc("tschü¼Ã")eq fc("TSCHÃS")';
+         is $@, '', q|use Modern::Perl '2015' enables fc|;
++    };
++    is $@, '', 'this block should succeed';
++    if ($Config{usecperl}) {
++      eval q{
++        use Modern::Perl '2015';
++        eval 'my sub foo {}';
++        is $@, '', q|use Modern::Perl '2015' with cperl does enable lexical subs|;
++      };
++    } else {
++      eval q{
++        use Modern::Perl '2015';
+         eval 'my sub foo {}';
+-        isnt $@, '', q|use Modern::Perl '2015' does not enable lexical subs|;
++        isnt $@, '', q|use Modern::Perl '2015' should not enable lexical subs|;
+     };
++    }
+     is $@, '', 'this block should succeed';
+ }
+ 
