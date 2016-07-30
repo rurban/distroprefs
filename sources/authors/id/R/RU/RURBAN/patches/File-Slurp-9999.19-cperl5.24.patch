@@ -1,0 +1,50 @@
+diff -bu ./lib/File/Slurp.pm~ ./lib/File/Slurp.pm
+--- ./lib/File/Slurp.pm~	2011-05-30 21:58:53.000000000 +0200
++++ ./lib/File/Slurp.pm	2016-07-30 15:14:22.000000000 +0200
+@@ -196,7 +196,9 @@
+ 		}
+ 
+ 		if ( my $binmode = $opts->{'binmode'} ) {
+-			binmode( $read_fh, $binmode ) ;
++                        # TODO sysread with :utf8 is deprecated since 5.24
++                	binmode( $read_fh, $binmode );
++                        #  unless $] > 5.023 && $binmode eq ':utf8';
+ 		}
+ 
+ # get the size of the file for use in the read loop
+diff -bu ./t/binmode.t~ ./t/binmode.t
+--- ./t/binmode.t~	2011-03-15 06:18:07.000000000 +0100
++++ ./t/binmode.t	2016-07-30 15:02:18.000000000 +0200
+@@ -12,7 +12,7 @@
+ 
+ plan tests => 2 ;
+ 
+-my $suf = 'utf8' ;
++my $suf = 'utf8' ; # invalid for sysread with 5.24
+ my $mode = ":$suf" ;
+ 
+ my $is_win32 = $^O =~ /win32/i ;
+diff -bu ./t/file_object.t~ ./t/file_object.t
+--- ./t/file_object.t~	2011-03-13 09:20:08.000000000 +0100
++++ ./t/file_object.t	2016-07-30 15:12:13.000000000 +0200
+@@ -46,7 +46,7 @@
+ 
+ SKIP: {
+     # write something to that file
+-    open(FILE, ">$obj") or skip 4, "can't write to '$path': $!";
++    open(FILE, ">$obj") or skip "can't write to '$path': $!", 4;
+     print FILE $data;
+     close(FILE);
+ 
+diff -bu ./t/tainted.t~ ./t/tainted.t
+--- ./t/tainted.t~	2011-03-20 18:06:02.000000000 +0100
++++ ./t/tainted.t	2016-07-30 15:11:50.000000000 +0200
+@@ -14,7 +14,7 @@
+ 
+ SKIP: {
+     # write something to that file
+-    open(FILE, ">$path") or skip 4, "can't write to '$path': $!";
++    open(FILE, ">$path") or skip "can't write to '$path': $!", 4;
+     print FILE $data;
+     close(FILE);
+ 
