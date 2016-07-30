@@ -4,3 +4,4 @@ match:
   distribution: "^CHANSEN/Mac-SystemDirectory-0.06\.tar\.gz$"
 patches:
   - "RURBAN/patches/Mac-SystemDirectory-0.06-m.patch"
+  - "RURBAN/patches/Mac-SystemDirectory-cc.patch"

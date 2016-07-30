@@ -1,0 +1,11 @@
+diff -bu Mac-SystemDirectory-0.06-I35SJC/Makefile.PL~ Mac-SystemDirectory-0.06-I35SJC/Makefile.PL
+--- Mac-SystemDirectory-0.06-I35SJC/Makefile.PL~	2016-07-30 14:46:19.000000000 +0200
++++ Mac-SystemDirectory-0.06-I35SJC/Makefile.PL	2016-07-30 14:54:03.000000000 +0200
+@@ -14,6 +14,7 @@
+    "VERSION_FROM" => "lib/Mac/SystemDirectory.pm",
+    "AUTHOR" => "Reini Urban <rurban\@cpanel.net>",
+    "LICENSE" => "perl",
++   "CC"      => "cc",
+    "PREREQ_PM" =>  {
+ 		    'Test::More'   => "0.86",
+ 		   },
