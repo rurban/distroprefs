@@ -3,7 +3,7 @@ comment: "Support cperl extended redefined warnings [cperl #113]"
 match:
   distribution: "Sub-Install-0\.9"
   perlconfig:
-    version: "^(5\.22\.[23]|5\.24)"
+    version: "^5\.2(2\.[23]|[45])"
     usecperl: "define"
 patches:
   - "RURBAN/patches/Sub-Install-5.22.3c.patch"

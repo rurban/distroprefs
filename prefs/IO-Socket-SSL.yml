@@ -13,7 +13,7 @@ patches:
 comment: "typed cperl strictness"
 match:
   perlconfig:
-    version: "^5\.24"
+    version: "^5\.2[45]"
     usecperl: "define"
   distribution: "SULLR/IO-Socket-SSL-2\.0"
 patches:
