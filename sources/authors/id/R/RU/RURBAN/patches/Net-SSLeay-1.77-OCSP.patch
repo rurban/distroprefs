@@ -2,6 +2,15 @@ Index: SSLeay.xs
 ===================================================================
 --- SSLeay.xs	(revision 477)
 +++ SSLeay.xs	(working copy)
+@@ -5916,7 +5916,7 @@
+ 	    if (X509_check_issued(cert,cert) == X509_V_OK)
+ 		croak("no OCSP request for self-signed certificate");
+ 	    if (!(issuer = find_issuer(cert,store,chain)))
+-		croak("cannot find issuer to certificate");
++		croak("cannot find issuer certificate");
+ 	    if (!(id = OCSP_cert_to_id(EVP_sha1(),cert,issuer)))
+ 		croak("out of memory for generating OCSO certid");
+ 	    if (!(len = i2d_OCSP_CERTID(id,NULL)))
 @@ -6011,7 +6011,7 @@
  		X509 *issuer;
  		X509 *last = sk_X509_value(chain,sk_X509_num(chain)-1);
@@ -39,21 +48,26 @@ Index: t/external/ocsp.t
 ===================================================================
 --- t/external/ocsp.t	(revision 477)
 +++ t/external/ocsp.t	(working copy)
-@@ -16,7 +16,7 @@
+@@ -14,17 +14,17 @@
+ my @tests = (
+     {
  	# this should give us OCSP stapling
- 	host => 'www.live.com',
+-	host => 'www.live.com',
++	host => 'www.microsoft.com',
  	port => 443,
 -	fingerprint => '10c56ee9e2acaf2e77caeb7072bf6522dd7422b8',
-+	fingerprint => '0e37dc9b320d2526e93e360a26c824b202d1f3af',
++	fingerprint => '5f0b37e633840ca02468552ea3b1197e5e118f7b',
  	ocsp_staple => 1,
  	expect_status => Net::SSLeay::V_OCSP_CERTSTATUS_GOOD(),
      },
-@@ -24,7 +24,7 @@
- 	# no OCSP stapling yet
- 	host => 'www.google.com',
+     {
+-	# no OCSP stapling yet
+-	host => 'www.google.com',
++	# no OCSP stapling 
++	host => 'www.spiegel.de',
  	port => 443,
 -	fingerprint => '007a5ab302f14446e2ea24d3a829de22ba1bf950',
-+	fingerprint => '89380c438a076d9d5fac228a8f680ff452487f30',
++	fingerprint => 'ad737048455485d8c817b7d0f7403553a7b9f65b',
  	expect_status => Net::SSLeay::V_OCSP_CERTSTATUS_GOOD(),
      },
      {
@@ -68,41 +82,52 @@ Index: t/external/ocsp.t
  );
  
 -plan tests => 0+@tests;
-+my $release_tests = $ENV{RELEASE_TESTING} && 1;
++my $release_tests = $ENV{RELEASE_TESTING} ? 1:0;
 +plan tests => $release_tests + @tests;
  
  
  my $timeout = 10; # used to TCP connect and SSL connect
-@@ -50,6 +51,12 @@
+@@ -48,8 +49,9 @@
+ Net::SSLeay::SSLeay_add_ssl_algorithms();
+ my $sha1 = Net::SSLeay::EVP_get_digestbyname('sha1');
  
- TEST:
- 
-+my $skipped = 0;
-+sub skip_unless_release {
-+    $skipped++ if $release_tests;
-+    goto &skip;
-+}
 +
++my @fp_mismatch;
+ TEST:
+-
  for my $test (@tests) {
      my $cleanup = __cleanup__->new;
      SKIP: {
-@@ -114,8 +121,9 @@
+@@ -114,8 +116,11 @@
  	my $fp = $leaf_cert
  	    && unpack("H*",Net::SSLeay::X509_digest($leaf_cert,$sha1));
  	skip "could not get fingerprint",1 if !$fp;
 -	skip "bad fingerprint $fp for $test->{host}:$test->{port}",1
 -	    if $fp ne $test->{fingerprint};
-+	skip_unless_release(
-+	    "bad fingerprint $fp for $test->{host}:$test->{port} - expected $test->{fingerprint}, got $fp",
-+	    1) if $fp ne $test->{fingerprint};
++	if ($fp ne $test->{fingerprint}) {
++	    push @fp_mismatch, [ $fp,$test ];
++	    skip("bad fingerprint for $test->{host}:$test->{port} -".
++		" expected $test->{fingerprint}, got $fp",1) 
++	}
  	diag("fingerprint matches");
  
  	if ( $test->{ocsp_staple} && ! $stapled_response ) {
-@@ -225,6 +233,8 @@
+@@ -225,6 +230,19 @@
      }
  }
  
-+is($skipped,0,"skipped critical tests for release") if $release_tests;
++if ($release_tests) {
++    if (!@fp_mismatch) {
++	pass("all fingerprints matched");
++    } else {
++	for(@fp_mismatch) {
++	    my ($fp,$test) = @$_;
++	    diag("fingerprint mismatch for $test->{host}:$test->{port} -".
++		" expected $test->{fingerprint}, got $fp") 
++	}
++	fail("some fingerprints did not matched - please adjust test");
++    }
++}
 +
  {
      # cleanup stuff when going out of scope
