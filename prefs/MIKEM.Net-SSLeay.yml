@@ -17,3 +17,9 @@ match:
   distribution: "Net-SSLeay-1\.7[234]"
 patches:
   - "RURBAN/patches/Net-SSLeay-1.72-cperl.patch"
+---
+comment: "fix OCSP (critical) RT #116795"
+match:
+  distribution: "Net-SSLeay-1\.7[567]"
+patches:
+  - "RURBAN/patches/Net-SSLeay-1.77-OCSP.patch"
