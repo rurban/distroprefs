@@ -10,4 +10,3 @@ match:
   distribution: "Module-Build-0\.42"
 patches:
   - "RURBAN/patches/Module-Build-INC.patch"
-  - "RURBAN/patches/Module-Build-typed-tests.patch"
