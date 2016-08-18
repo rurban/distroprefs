@@ -1,0 +1,53 @@
+diff -bu ./lib/Apache2/Build.pm~ ./lib/Apache2/Build.pm
+--- ./lib/Apache2/Build.pm~	2015-06-18 22:13:53.000000000 +0200
++++ ./lib/Apache2/Build.pm	2016-08-18 15:45:27.000000000 +0200
+@@ -517,18 +517,19 @@
+ sub ldopts {
+     my ($self) = @_;
+ 
+-    my $config = tied %Config;
+-    my $ldflags = $config->{ldflags};
+-
++    my $ldflags = $Config{ldflags};
+     if (WIN32) {
+-        $config->{ldflags} = ''; #same as lddlflags
++        require Mock::Config;
++        Mock::Config->import(ldflags => ''); # same as lddlflags
+     }
+     elsif (DARWIN) {
++        require Mock::Config;
+         #not sure how this can happen, but it shouldn't
+         my @bogus_flags = ('flat_namespace', 'bundle', 'undefined suppress');
+         for my $flag (@bogus_flags) {
+-            $config->{ldflags} =~ s/-$flag\s*//;
++            $ldflags =~ s/-$flag\s*//;
+         }
++        Mock::Config->import(ldflags => $ldflags);
+     }
+ 
+     my $ldopts = ExtUtils::Embed::ldopts();
+@@ -547,8 +548,9 @@
+     if ($self->{MP_USE_GTOP}) {
+         $ldopts .= $self->gtop_ldopts;
+     }
+-
+-    $config->{ldflags} = $ldflags; #reset
++    if (DARWIN || WIN32) {
++        Mock::Config->unimport; # reset ldflags
++    }
+ 
+     # on Irix mod_perl.so needs to see the libperl.so symbols, which
+     # requires the -exports option immediately before -lperl.
+diff -bu ./lib/ModPerl/BuildMM.pm~ ./lib/ModPerl/BuildMM.pm
+--- ./lib/ModPerl/BuildMM.pm~	2015-06-18 22:13:53.000000000 +0200
++++ ./lib/ModPerl/BuildMM.pm	2016-08-18 15:54:21.000000000 +0200
+@@ -134,6 +134,9 @@
+         LIBS        => $libs,
+         dynamic_lib => \%dynamic_lib,
+     );
++    if (WIN32 || $^O eq 'darwin') {
++        push @opts, 'BUILD_REQUIRES' => { 'Mock::Config' => 0.03 };
++    }
+ 
+     my @typemaps;
+     push @typemaps, $args{TYPEMAPS} if $args{TYPEMAPS};
