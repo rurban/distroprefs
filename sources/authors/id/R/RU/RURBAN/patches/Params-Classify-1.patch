@@ -1,0 +1,18 @@
+diff -bu Params-Classify-0.013-i4hqel/lib/Params/Classify.xs~ Params-Classify-0.013-i4hqel/lib/Params/Classify.xs
+--- Params-Classify-0.013-i4hqel/lib/Params/Classify.xs~	2010-11-16 21:35:47.000000000 +0100
++++ Params-Classify-0.013-i4hqel/lib/Params/Classify.xs	2016-09-27 23:19:29.000000000 +0200
+@@ -610,7 +610,13 @@
+ 			SV *rv = cSVOPx_sv(rvop);
+ 			return SvROK(rv) ? (CV*)SvRV(rv) : NULL;
+ 		} break;
+-		case OP_GV: return GvCV(cGVOPx_gv(rvop));
++        case OP_GV: {
++          SV *cv = cSVOPx_sv(rvop);
++          return (SvTYPE(cv) == SVt_PVCV)
++            ? (CV*)cv
++            : (SvROK(cv)
++               ? (CV*)SvRV(cv) : GvCV((GV*)cv));
++        }
+ 		default: return NULL;
+ 	}
+ }
