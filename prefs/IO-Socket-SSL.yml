@@ -15,6 +15,6 @@ match:
   perlconfig:
     version: "^5\.2[45]"
     usecperl: "define"
-  distribution: "SULLR/IO-Socket-SSL-2\.0"
+  distribution: "SULLR/IO-Socket-SSL-2\.037"
 patches:
   - "RURBAN/patches/IO-Socket-SSL-2.027-typedcperl.patch"
