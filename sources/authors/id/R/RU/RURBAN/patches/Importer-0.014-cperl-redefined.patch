@@ -1,0 +1,12 @@
+diff -bu Importer-0.014-w5SbtC/t/units.t~ Importer-0.014-w5SbtC/t/units.t
+--- Importer-0.014-w5SbtC/t/units.t~	2016-07-13 06:53:32.000000000 +0200
++++ Importer-0.014-w5SbtC/t/units.t	2016-09-28 00:35:48.000000000 +0200
+@@ -966,7 +966,7 @@
+     *FDestD::foo = sub { 'xyz' };
+     like(
+         warns { $optimal->('Fake::ForOptimal::A', 'FDestD', ['F', 'F.pm', 4], 'foo') },
+-        qr/Subroutine FDestD::foo redefined at F\.pm line 4/,
++        qr/Subroutine FDestD::foo redefined.* at F\.pm line 4/,
+         "Got redefine warning"
+     );
+ 

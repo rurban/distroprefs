@@ -1,0 +1,8 @@
+---
+comment: cperl changed redefined warning
+match:
+  distribution: "Importer-0.014"
+  perlconfig:
+    usecperl: "define"
+patches:
+  - "RURBAN/patches/Importer-0.014-cperl-redefined.patch"
