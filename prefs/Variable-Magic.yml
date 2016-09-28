@@ -1,7 +1,7 @@
 ---
 comment: "cperl fixes. 5.22.1c is broken, you need to upgrade."
 match:
-  distribution: "Variable-Magic-0\.5[89]"
+  distribution: "Variable-Magic-0\.[56]"
   perlconfig:
     version: "^5\.2"
     usecperl: "define"
