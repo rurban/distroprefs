@@ -1,0 +1,41 @@
+diff -bu ./t/50reentrant_goto_sigsegv.t~ ./t/50reentrant_goto_sigsegv.t
+--- ./t/50reentrant_goto_sigsegv.t~	2010-10-31 12:32:26.000000000 +0100
++++ ./t/50reentrant_goto_sigsegv.t	2016-10-16 22:48:06.000000000 +0200
+@@ -6,7 +6,8 @@
+ use warnings;
+ 
+ use Class::XSAccessor;
+-use Test::More tests => 14;
++use Test::More tests => 28;
++use Config;
+ 
+ my $shim_calls;
+ 
+@@ -33,9 +34,10 @@
+ }
+ 
+ TODO: {
+-    todo_skip 'bug in perls < 5.8.9', 14, $] < 5.008009;
++    todo_skip 'bug in perls < 5.8.9', 28 if $] < 5.008009;
+ 
+     for my $name (qw/bar baz/) {
++      my $excname = "Foo::$name";
+       for my $pass (1..2) {
+ 
+         $shim_calls = 0;
+@@ -48,11 +50,13 @@
+         is ($shim_calls, 1, "Shim called ($name pass $pass)" );
+ 
+         eval { $obj->$name ('ack!') };
+-        ok ($@ =~ /Usage\: $name\(self\)/, "Exception from R/O accessor thrown ($name pass $pass)" );
++        ok ($@ =~ /Usage\: $excname\(self\)/,
++            "Exception from R/O accessor thrown ($name pass $pass)" ) or diag $@;
+         is ($shim_calls, 2, "Shim called anyway ($name pass $pass)" );
+ 
+         eval { $obj->$name ('ick!') };
+-        ok ($@ =~ /Usage\: $name\(self\)/, "Exception from R/O accessor thrown once again ($name pass $pass)" );
++        ok ($@ =~ /Usage\: $excname\(self\)/,
++            "Exception from R/O accessor thrown once again ($name pass $pass)" ) or diag $@;
+         is ($shim_calls, 3, "Shim called again ($name pass $pass)" );
+       }
+     }

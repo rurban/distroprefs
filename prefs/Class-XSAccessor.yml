@@ -7,3 +7,9 @@ match:
     usecperl: "define"
 patches:
   - "RURBAN/patches/Class-XSAccessor-1.19-cperl.patch"
+---
+comment: "fix broken test"
+match:
+  distribution: "Class-XSAccessor-1\.19"
+patches:
+  - "RURBAN/patches/Class-XSAccessor-50t.patch"
