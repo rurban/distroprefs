@@ -1,0 +1,12 @@
+diff -bu SQL-Statement-1.410-2/t/02execute.t~ SQL-Statement-1.410-2/t/02execute.t
+--- SQL-Statement-1.410-2/t/02execute.t~	2016-02-28 16:19:25.000000000 +0100
++++ SQL-Statement-1.410-2/t/02execute.t	2016-11-11 19:39:19.000000000 +0100
+@@ -184,7 +184,7 @@
+     SKIP: {
+ 	-e 'Bar.pm' and unlink 'Bar.pm';
+ 	my $fh;
+-	open( $fh, '>Bar.pm' ) or skip(1, $!);
++	open( $fh, '>Bar.pm' ) or skip($!, 1);
+ 	print $fh "package Bar; sub SQL_FUNCTION_BAR{77};1;";
+ 	close $fh;
+ 	$dbh->do("LOAD Bar");
