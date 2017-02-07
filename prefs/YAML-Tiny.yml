@@ -1,7 +1,7 @@
 ---
 comment: "cperl: type the 1st skip arg as Str"
 match:
-  distribution: "YAML-Tiny-1\.69"
+  distribution: "YAML-Tiny-1\.(69|70)"
   perlconfig:
     usecperl: "define"
 patches:
