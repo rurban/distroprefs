@@ -1,0 +1,65 @@
+From c3039f18fe809b5eda403baf26c5b919b5f9b5dd Mon Sep 17 00:00:00 2001
+From: Reini Urban <rurban@cpan.org>
+Date: Tue, 14 Feb 2017 13:40:32 +0100
+Subject: [PATCH] Fix for c3 mro failures
+
+use mro dfs explicitly, until the ISAs can be fixed.
+With c3 as default mro the following failures appear:
+
+Inconsistent hierarchy during C3 merge of class CPAN::SQLite::DBI::Search:
+current merge results [
+	CPAN::SQLite::DBI::Search,
+]
+merging failed on CPAN::SQLite::DBI at /usr/local/lib/cperl/5.25.3/parent.pm line 22.
+BEGIN failed--compilation aborted at lib/CPAN/SQLite/DBI/Search.pm line 35.
+Compilation failed in require at -e line 1.
+---
+ lib/CPAN/SQLite/DBI/Search.pm | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git lib/CPAN/SQLite/DBI/Search.pm lib/CPAN/SQLite/DBI/Search.pm
+index d90fd19..7a05773 100644
+--- lib/CPAN/SQLite/DBI/Search.pm
++++ lib/CPAN/SQLite/DBI/Search.pm
+@@ -14,31 +14,38 @@ BEGIN {
+   $CPAN::SQLite::DBI::Search::auths::VERSION = $VERSION;
+ }
+ 
++use mro 'dfs';
+ use parent 'CPAN::SQLite::DBI';
+ use CPAN::SQLite::DBI qw($tables $dbh);
+ use CPAN::SQLite::Util qw($full_id);
+ 
+ package CPAN::SQLite::DBI::Search::info;
++use mro 'dfs';
+ use parent 'CPAN::SQLite::DBI::Search';
+ use CPAN::SQLite::DBI qw($dbh);
+ 
+ package CPAN::SQLite::DBI::Search::chaps;
++use mro 'dfs';
+ use parent 'CPAN::SQLite::DBI::Search';
+ use CPAN::SQLite::DBI qw($dbh);
+ 
+ package CPAN::SQLite::DBI::Search::mods;
++use mro 'dfs';
+ use parent 'CPAN::SQLite::DBI::Search';
+ use CPAN::SQLite::DBI qw($dbh);
+ 
+ package CPAN::SQLite::DBI::Search::dists;
++use mro 'dfs';
+ use parent 'CPAN::SQLite::DBI::Search';
+ use CPAN::SQLite::DBI qw($dbh);
+ 
+ package CPAN::SQLite::DBI::Search::auths;
++use mro 'dfs';
+ use parent 'CPAN::SQLite::DBI::Search';
+ use CPAN::SQLite::DBI qw($dbh);
+ 
+ package CPAN::SQLite::DBI::Search;
++use mro 'dfs';
+ use parent 'CPAN::SQLite::DBI';
+ use CPAN::SQLite::DBI qw($tables $dbh);
+ use CPAN::SQLite::Util qw($full_id expand_dslip download %chaps);
+-- 
+2.11.1
+
