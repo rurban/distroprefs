@@ -1,8 +1,5 @@
 ---
-comment: |
-
-  Fix for 5.22 cGVOPo_gv cvref [RT #110496]
-
+comment: Fix for 5.22 cGVOPo_gv cvref [RT #110496]
 match:
   distribution: "ZEFRAM/Params-Classify-0\.013\.tar\.gz"
   perlconfig:
@@ -22,15 +19,10 @@ match:
 patches:
   - "RURBAN/patches/Params-Classify-fortify_inc.patch"
 ---
-comment: |
-
-  Fix for 5.25 or -DPERL_OP_PARENT [RT #114490]
-
+comment: Fix for 5.25 or -DPERL_OP_PARENT [RT #114490]
 match:
   distribution: "ZEFRAM/Params-Classify-0\.013\.tar\.gz"
   perlconfig:
     version: "^5\.2[56]"
 patches:
   - "RURBAN/patches/Params-Classify-5.25-op_parent.patch"
-
-  
