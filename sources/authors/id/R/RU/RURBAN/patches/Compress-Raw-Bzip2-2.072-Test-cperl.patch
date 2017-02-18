@@ -1,0 +1,14 @@
+diff -bu Compress-Raw-Bzip2-2.072-14/Makefile.PL~ Compress-Raw-Bzip2-2.072-14/Makefile.PL
+--- Compress-Raw-Bzip2-2.072-14/Makefile.PL~	2017-02-04 19:25:34.000000000 +0100
++++ Compress-Raw-Bzip2-2.072-14/Makefile.PL	2017-02-18 12:10:42.000000000 +0100
+@@ -16,6 +16,10 @@
+ my $BZIP2_LIB = defined($ENV{BZIP2_LIB}) ? $ENV{BZIP2_LIB} : 'bzip2-src';
+ my $BZIP2_INCLUDE = defined($ENV{BZIP2_INCLUDE}) ? $ENV{BZIP2_INCLUDE} : '.';
+ 
++if ($] > 5.010) {
++    rename 't/Test', 't/Test~';
++}
++
+ #ParseCONFIG() ;
+ 
+ UpDowngrade(getPerlFiles('MANIFEST')) 
