@@ -1,0 +1,27 @@
+commit ec8940d8381cb1406c50a02c70f1293de4c8fbeb
+Author: Reini Urban <rurban@cpan.org>
+Date:   Sun Feb 19 13:36:53 2017 +0100
+
+    cperl: disable inc/Test/More on cperl
+    
+    it clashes with the cperl modernized variant
+
+diff --git Makefile.PL Makefile.PL
+index 667b201..e996c1a 100644
+--- Makefile.PL
++++ Makefile.PL
+@@ -1,5 +1,6 @@
+ use strict;
+ use lib '.';
++use Config;
+ use inc::Module::Install;
+ 
+ my $bad;
+@@ -37,6 +38,7 @@ cc_files        (glob("*.c"), (-e 'Syck.c' ? () : 'Syck.c'));
+ 
+ can_cc or die "This module requires a C compiler";
+ 
++rename("inc/Test", "inc/Test~") if $Config{usecperl};
+ include_deps    'Test::More';
+ build_requires  'Devel::Leak' if defined $ENV{'AUTOMATED_TESTING'};
+ homepage        'http://search.cpan.org/dist/YAML-Syck';
