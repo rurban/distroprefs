@@ -6,4 +6,5 @@ match:
     usecperl: "define"
   distribution: "Test-Script-1\.15"
 patches:
+  - "RURBAN/patches/Test-Script-524.patch"
   - "RURBAN/patches/Test-Script-cperl.patch"
