@@ -1,0 +1,21 @@
+commit d779139859cb0fd1635ac702652acf54afe09b1a
+Author: Reini Urban <rurban@cpan.org>
+Date:   Sun Feb 19 09:35:12 2017 +0100
+
+    avoid plan twice on cperl
+    
+    cperl sets Have_Plan on invalid plan args. upstream bug
+
+diff --git lib/Test/Script.pm lib/Test/Script.pm
+index fc4690f..4fa921b 100644
+--- lib/Test/Script.pm
++++ lib/Test/Script.pm
+@@ -68,7 +68,7 @@ sub import {
+   my $pack = caller;
+   my $test = Test::Builder->new;
+   $test->exported_to($pack);
+-  $test->plan(@_) if @_;
++  $test->plan(@_) if grep /^tests$/, @_;
+   foreach ( @EXPORT ) {
+     $self->export_to_level(1, $self, $_);
+   }

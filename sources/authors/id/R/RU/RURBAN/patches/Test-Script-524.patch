@@ -1,0 +1,63 @@
+commit 2e296b9a46ca33906b41fd189eb637f49c8af1b2
+Author: Reini Urban <rurban@cpan.org>
+Date:   Sun Feb 19 09:22:29 2017 +0100
+
+    Fixes for 5.24 lexical clash
+    
+    move the lexicals outside
+
+diff --git lib/Test/Script.pm lib/Test/Script.pm
+index 40c59f1..fc4690f 100644
+--- lib/Test/Script.pm
++++ lib/Test/Script.pm
+@@ -68,7 +68,7 @@ sub import {
+   my $pack = caller;
+   my $test = Test::Builder->new;
+   $test->exported_to($pack);
+-  $test->plan(@_);
++  $test->plan(@_) if @_;
+   foreach ( @EXPORT ) {
+     $self->export_to_level(1, $self, $_);
+   }
+diff --git t/06_exception.t t/06_exception.t
+index 5205147..b578192 100644
+--- t/06_exception.t
++++ t/06_exception.t
+@@ -7,30 +7,27 @@ use IPC::Run3 ();
+ 
+ do { no warnings; sub IPC::Run3::run3 { die "an exception" } };
+ 
+-subtest script_compiles => sub {
++my ($res1, $res2);
++subtest 'script_compiles' => sub {
+ 
+-  my(undef, $result) = check_test( sub {
++  (undef, $res1) = check_test( sub {
+       script_compiles( 't/bin/missing.pl' );
+     }, {
+       ok   => 0,
+       name => 'Script t/bin/missing.pl compiles',
+     },
+   );
+-
+-  note $result->{diag};
+-
++  note($res1->{diag});
+ };
+ 
+-subtest script_runs => sub {
++subtest 'script_runs' => sub {
+ 
+-  my(undef, $result) = check_test( sub {
++  (undef, $res2) = check_test( sub {
+       script_runs( 't/bin/missing.pl' );
+     }, {
+       ok   => 0,
+       name => 'Script t/bin/missing.pl runs',
+     },
+   );
+-  
+-  note $result->{diag};
+-
++  note($res2->{diag});
+ };
