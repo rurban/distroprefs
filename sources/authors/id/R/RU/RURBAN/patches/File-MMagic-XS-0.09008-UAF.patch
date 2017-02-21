@@ -1,0 +1,39 @@
+diff -bu File-MMagic-XS-0.09008-18/src/perl-mmagic-xs.c~ File-MMagic-XS-0.09008-18/src/perl-mmagic-xs.c
+--- File-MMagic-XS-0.09008-18/src/perl-mmagic-xs.c~	2014-04-10 05:43:10.000000000 +0200
++++ File-MMagic-XS-0.09008-18/src/perl-mmagic-xs.c	2017-02-21 14:17:20.000000000 +0100
+@@ -429,17 +429,14 @@
+ static int
+ fmm_mget(PerlFMM *state, union VALUETYPE *p, unsigned char *s, fmmagic *m, size_t nbytes)
+ {
+-    long offset = m->offset;
++    size_t offset = (size_t)m->offset;
+ 
+-    if (offset + sizeof(union VALUETYPE) > nbytes) {
++    if (offset + sizeof(union VALUETYPE) > nbytes)
+         return 0;
+-    }
+-
+     memcpy(p, s + offset, sizeof(union VALUETYPE));
+ 
+-    if (!fmm_mconvert(state, p, m)) {
++    if (!fmm_mconvert(state, p, m))
+         return 0;
+-    }
+ 
+     if (m->flag & INDIR) {
+         switch (m->in.type) {
+@@ -456,13 +453,11 @@
+     
+         if (offset + sizeof(union VALUETYPE) > nbytes)
+               return 0;
+-    
+         memcpy(p, s + offset, sizeof(union VALUETYPE));
+     
+-        if (!fmm_mconvert(state, p, m)) {
++        if (!fmm_mconvert(state, p, m))
+             return 0;
+         }
+-    }
+ 
+     return 1;
+ }
