@@ -1,15 +1,6 @@
 ---
-comment: "disable ENTERSUB_OPTIMIZATION on cperl"
+comment: "disable ENTERSUB_OPTIMIZATION on cperl. fix broken test"
 match:
   distribution: "Class-XSAccessor-1\.19"
-  perlconfig:
-    version: "^5\.2"
-    usecperl: "define"
 patches:
   - "RURBAN/patches/Class-XSAccessor-1.19-cperl.patch"
----
-comment: "fix broken test"
-match:
-  distribution: "Class-XSAccessor-1\.19"
-patches:
-  - "RURBAN/patches/Class-XSAccessor-50t.patch"
