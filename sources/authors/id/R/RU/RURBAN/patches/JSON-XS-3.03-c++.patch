@@ -1,0 +1,57 @@
+diff -bu ./XS.xs~ ./XS.xs
+--- ./XS.xs~	2016-11-16 20:16:28.000000000 +0100
++++ ./XS.xs	2017-03-01 23:11:37.000000000 +0100
+@@ -204,7 +204,7 @@
+ ptr_to_index (SV *sv, char *offset)
+ {
+   return SvUTF8 (sv)
+-         ? utf8_distance (offset, SvPVX (sv))
++         ? utf8_distance ((U8*)offset, (U8*)SvPVX (sv))
+          : offset - SvPVX (sv);
+ }
+ 
+@@ -426,7 +426,7 @@
+ 
+                   if (is_utf8)
+                     {
+-                      uch = decode_utf8 (str, end - str, &clen);
++                      uch = decode_utf8 ((U8*)str, end - str, &clen);
+                       if (clen == (STRLEN)-1)
+                         croak ("malformed or illegal unicode character in string [%.11s], cannot convert to JSON", str);
+                     }
+@@ -479,7 +479,7 @@
+                   else
+                     {
+                       need (enc, len += UTF8_MAXBYTES - 1); // never more than 11 bytes needed
+-                      enc->cur = encode_utf8 (enc->cur, uch);
++                      enc->cur = (char*)encode_utf8 ((U8*)enc->cur, uch);
+                       ++str;
+                     }
+                 }
+@@ -1118,7 +1118,7 @@
+                         {
+                           utf8 = 1;
+ 
+-                          cur = encode_utf8 (cur, hi);
++                          cur = (char*)encode_utf8 ((U8*)cur, hi);
+                         }
+                       else
+                         *cur++ = hi;
+@@ -1138,7 +1138,7 @@
+ 
+               --dec_cur;
+ 
+-              decode_utf8 (dec_cur, dec->end - dec_cur, &clen);
++              decode_utf8 ((U8*)dec_cur, dec->end - dec_cur, &clen);
+               if (clen == (STRLEN)-1)
+                 ERR ("malformed UTF-8 character in JSON string");
+ 
+@@ -1778,7 +1778,7 @@
+       ENTER;
+       SAVEVPTR (PL_curcop);
+       PL_curcop = &cop;
+-      pv_uni_display (uni, dec.cur, dec.end - dec.cur, 20, UNI_DISPLAY_QQ);
++      pv_uni_display (uni, (const U8*)dec.cur, dec.end - dec.cur, 20, UNI_DISPLAY_QQ);
+       LEAVE;
+ 
+       croak ("%s, at character offset %d (before \"%s\")",
