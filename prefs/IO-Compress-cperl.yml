@@ -1,7 +1,7 @@
 ---
 comment: "disable t/Test/More"
 match:
-  distribution: "PMQS/IO-Compress-2\.072\.tar\.gz"
+  distribution: "PMQS/IO-Compress-2\.0"
   perlconfig:
     version: "^5\.2[456]"
     usecperl: "define"
