@@ -1,0 +1,43 @@
+diff -bu ./lib/Parse/Eyapp/Parse.pm~ ./lib/Parse/Eyapp/Parse.pm
+--- ./lib/Parse/Eyapp/Parse.pm~	2012-03-23 14:53:21.000000000 +0100
++++ ./lib/Parse/Eyapp/Parse.pm	2017-03-01 23:34:24.000000000 +0100
+@@ -3236,11 +3236,11 @@
+ 
+         $$input=~/\G%(left|right|nonassoc)/gc and return('ASSOC',[ uc($1), $lineno[0] ]);
+ 
+-            $$input=~/\G%{/gc
++            $$input=~/\G%\{/gc
+         and do {
+             my($code);
+ 
+-            $$input=~/\G(.*?)%}/sgc or  _SyntaxError(2,"Unmatched %{ opened line $lineno[0]",-1);
++            $$input=~/\G(.*?)%\}/sgc or  _SyntaxError(2,"Unmatched %{ opened line $lineno[0]",-1);
+ 
+             $code=$1;
+             $lineno[1]+= $code=~tr/\n//;
+diff -bu ./lib/Parse/Eyapp/Treeregexp.pm~ ./lib/Parse/Eyapp/Treeregexp.pm
+--- ./lib/Parse/Eyapp/Treeregexp.pm~	2017-03-01 23:34:51.000000000 +0100
++++ ./lib/Parse/Eyapp/Treeregexp.pm	2017-03-01 23:35:16.000000000 +0100
+@@ -1347,7 +1347,7 @@
+         return('Parse::Eyapp::Treeregexp::GLOBALCODE', [$code, $tokenbegin]);
+     };
+ 
+-        $input=~/\G{/gc
++        $input=~/\G\{/gc
+     and do {
+         my($level,$from,$code);
+ 
+diff -bu ./t/11ts_simplify_codes.t~ ./t/11ts_simplify_codes.t
+--- ./t/11ts_simplify_codes.t~	2017-03-01 23:35:53.000000000 +0100
++++ ./t/11ts_simplify_codes.t	2017-03-01 23:36:18.000000000 +0100
+@@ -71,8 +71,8 @@
+ sub is_syntactic_terminal {
+   my $self = shift;
+ 
+-  return ((ref($self) eq 'TERMINAL') and exists($self->{token}) and exists($self->{attr})
+-  and ($self->{token} eq $self->{attr}));
++  return (ref($self) eq 'TERMINAL') and exists($self->{token}) and exists($self->{attr})
++  and ($self->{token} eq $self->{attr});
+ }
+ 
+ Parse::Eyapp->new_grammar(
