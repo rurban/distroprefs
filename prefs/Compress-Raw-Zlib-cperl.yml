@@ -1,9 +1,9 @@
 ---
 comment: "disable t/Test/More"
 match:
-  distribution: "PMQS/Compress-Raw-ZLib-2"
+  distribution: "PMQS/Compress-Raw-Zlib-2"
   perlconfig:
     version: "^5\.2[456]"
     usecperl: "define"
 patches:
-  - "patches/Compress-Raw-Zlib-2.074-cperl.patch"
+  - "RURBAN/patches/Compress-Raw-Zlib-2.074-cperl.patch"
