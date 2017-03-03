@@ -1,0 +1,11 @@
+diff -bu Class-C3-0.32-4/t/20_reinitialize.t~ Class-C3-0.32-4/t/20_reinitialize.t
+--- Class-C3-0.32-4/t/20_reinitialize.t~	2014-01-17 03:29:00.000000000 +0100
++++ Class-C3-0.32-4/t/20_reinitialize.t	2017-03-03 09:33:56.000000000 +0100
+@@ -66,6 +66,7 @@
+ 
+ {
+     no strict 'refs';
++    Internals::SvREADONLY(@{"Diamond_B::ISA"}, 0) if "$^V" =~ /c$/;
+     unshift @{"Diamond_B::ISA"} => 'Diamond_E';
+ }
+ 
