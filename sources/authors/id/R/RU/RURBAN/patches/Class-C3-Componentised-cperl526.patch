@@ -1,0 +1,18 @@
+diff -bu Class-C3-Componentised-1.001000-2/lib/Class/C3/Componentised.pm~ Class-C3-Componentised-1.001000-2/lib/Class/C3/Componentised.pm
+--- Class-C3-Componentised-1.001000-2/lib/Class/C3/Componentised.pm~	2011-08-09 05:27:52.000000000 +0200
++++ Class-C3-Componentised-1.001000-2/lib/Class/C3/Componentised.pm	2017-03-06 17:22:59.000000000 +0100
+@@ -196,7 +196,13 @@
+   for my $comp (reverse @_) {
+     my $apply = do {
+       no strict 'refs';
+-      sub { unshift ( @{"${target}::ISA"}, $comp ) };
++      sub {
++        my $ro = Internals::SvREADONLY(@{"${target}::ISA"});
++        Internals::SvREADONLY(@{"${target}::ISA"}, 0) if $ro;
++        my @ret = unshift ( @{"${target}::ISA"}, $comp );
++        Internals::SvREADONLY(@{"${target}::ISA"}, 1) if $ro;
++        @ret
++      };
+     };
+     unless ($target eq $comp || $target->isa($comp)) {
+       our %APPLICATOR_FOR;

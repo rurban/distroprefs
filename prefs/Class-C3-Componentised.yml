@@ -1,0 +1,9 @@
+---
+comment: "protected @ISA"
+match:
+  distribution: "Class-C3-Componentised-1\.001000"
+  perlconfig:
+    version: "^5\.26"
+    usecperl: "define"
+patches:
+  - "RURBAN/patches/Class-C3-Componentised-cperl526.patch"
