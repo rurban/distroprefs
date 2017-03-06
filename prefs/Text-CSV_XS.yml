@@ -4,6 +4,6 @@ match:
   perlconfig:
     version: "^5\.2[456]"
     usecperl: "define"
-  distribution: "Text-CSV_XS-1.2[2-6]"
+  distribution: "Text-CSV_XS-1.2"
 patches:
   - "RURBAN/patches/Text-CSV_XS-cperl.patch"
