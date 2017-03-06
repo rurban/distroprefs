@@ -1,0 +1,12 @@
+diff -bu Test-Time-0.04-2/Makefile.PL~ Test-Time-0.04-2/Makefile.PL
+--- Test-Time-0.04-2/Makefile.PL~	2012-06-14 12:08:39.000000000 +0200
++++ Test-Time-0.04-2/Makefile.PL	2017-03-06 11:52:17.000000000 +0100
+@@ -28,6 +28,8 @@
+ build_requires 'Test::More';
+ build_requires 'Test::Name::FromLine';
+ 
++rename 'inc/Test', 'inc/Test~' if $] >= 5.010;
++
+ # Module::Install::AuthorTests
+ author_tests('xt');
+ 
