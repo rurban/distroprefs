@@ -1,5 +1,5 @@
 ---
-comment: "protected @ISA"
+comment: "protected @ISA [cpan #120529]"
 match:
   distribution: "Class-C3-Componentised-1\.001000"
   perlconfig:

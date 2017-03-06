@@ -1,5 +1,5 @@
 ---
-comment: "readonly ISA"
+comment: "readonly ISA [cpan #120530]"
 match:
   distribution: "Class-C3-0\.3"
   perlconfig:
