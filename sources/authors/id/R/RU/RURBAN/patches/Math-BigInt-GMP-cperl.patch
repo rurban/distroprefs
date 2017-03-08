@@ -1,0 +1,13 @@
+diff -bu Math-BigInt-GMP-1.6004-7/t/mbimbf.t~ Math-BigInt-GMP-1.6004-7/t/mbimbf.t
+--- Math-BigInt-GMP-1.6004-7/t/mbimbf.t~	2017-01-04 14:52:55.000000000 +0100
++++ Math-BigInt-GMP-1.6004-7/t/mbimbf.t	2017-03-08 10:58:04.000000000 +0100
+@@ -7,7 +7,8 @@
+ use warnings;
+ 
+ use Test::More tests => 712             # tests in require'd file
+-                        + 26;           # tests in this file
++                       + 26            # tests in this file
++                       - ("$^V" =~ /v5\.2[56]\..c$/ ? 12 : 0);
+ 
+ use Math::BigInt only => 'GMP';
+ use Math::BigFloat;
