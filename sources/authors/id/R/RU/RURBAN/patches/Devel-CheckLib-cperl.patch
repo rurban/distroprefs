@@ -1,0 +1,82 @@
+diff --git Makefile.PL Makefile.PL
+index 2c9c778..2ab83cc 100644
+--- Makefile.PL
++++ Makefile.PL
+@@ -23,6 +23,7 @@ WriteMakefile1(
+     BUILD_REQUIRES => {
+         'Test::More'        => 0.62,  # too high? but API changed here
+         'IO::CaptureOutput' => 1.0801,
++        'Mock::Config'      => 0.02,
+     },
+     LICENSE => 'perl',
+     EXE_FILES    => [qw(
+diff --git t/bad-single-word-compiler.t t/bad-single-word-compiler.t
+index 60dc642..3abb96f 100644
+--- t/bad-single-word-compiler.t
++++ t/bad-single-word-compiler.t
+@@ -9,13 +9,21 @@ plan tests => 1;
+ 
+ use Config;
+ BEGIN {
+-    BEGIN { if (not $] < 5.006 ) { warnings->unimport('redefine') } }
+-    unless(defined($ActivePerl::VERSION) && $Config{cc} =~ /\bgcc\b/) {
+-      *Config::STORE = sub { $_[0]->{$_[1]} = $_[2] }
++    eval 'use Mock::Config;';
++    warnings->unimport('redefine') if $] >= 5.006;
++    unless (defined($ActivePerl::VERSION) && $Config{cc} =~ /\bgcc\b/) {
++        if (!$Mock::Config::VERSION) {
++            plan skip_all => "XSConfig is readonly"
++                if $Config{usecperl} or exists &Config::KEYS;
++            *Config::STORE = sub { $_[0]->{$_[1]} = $_[2] }
++        }
+     }
+ }
+ 
+-if(defined($ActivePerl::VERSION) && $Config{cc} =~ /\bgcc\b/) {
++if ($Mock::Config::VERSION) {
++    Mock::Config->import(cc => "flibbertigibbet");
++}
++elsif (defined($ActivePerl::VERSION) && $Config{cc} =~ /\bgcc\b/) {
+     my $obj = tied %Config::Config;
+     $obj->{cc} = "flibbertigibbet";
+ }
+diff --git t/multi-word-compiler.t t/multi-word-compiler.t
+index 926ccd0..1fe415a 100644
+--- t/multi-word-compiler.t
++++ t/multi-word-compiler.t
+@@ -9,21 +9,28 @@ plan tests => 1;
+ 
+ use Config;
+ BEGIN {
+-    BEGIN { if (not $] < 5.006 ) { warnings->unimport('redefine') } }
++    eval 'use Mock::Config;';
++    warnings->unimport('redefine') if $] >= 5.006;
+     unless(defined($ActivePerl::VERSION) && $Config{cc} =~ /\bgcc\b/) {
+-      *Config::STORE = sub { $_[0]->{$_[1]} = $_[2] }
++        if (!$Mock::Config::VERSION) {
++            plan skip_all => "XSConfig is readonly"
++                if $Config{usecperl} or exists &Config::KEYS;
++            *Config::STORE = sub { $_[0]->{$_[1]} = $_[2] }
++        }
+     }
+ }
+ 
+-if(defined($ActivePerl::VERSION) && $Config{cc} =~ /\bgcc\b/) {
+-   my $obj = tied %Config::Config;
+-   $obj->{cc} = "$^X $Config{cc}";
++if ($Mock::Config::VERSION) {
++    Mock::Config->import(cc => "$^X $Config{cc}");
++}
++elsif (defined($ActivePerl::VERSION) && $Config{cc} =~ /\bgcc\b/) {
++    my $obj = tied %Config::Config;
++    $obj->{cc} = "$^X $Config{cc}";
+ }
+ else {
+-  $Config{cc} = "$^X $Config{cc}";
++    eval { $Config{cc} = "$^X $Config{cc}"; }
+ }
+ 
+-eval { $Config{cc} = "$^X $Config{cc}" };
+ SKIP: {
+     skip "Couldn't update %Config", 1 if $@ =~ /%Config::Config is read-only/;
+     eval "use Devel::CheckLib";
