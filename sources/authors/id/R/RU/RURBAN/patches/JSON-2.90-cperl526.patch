@@ -1,0 +1,11 @@
+diff -bu JSON-2.90-5/lib/JSON.pm~ JSON-2.90-5/lib/JSON.pm
+--- JSON-2.90-5/lib/JSON.pm~	2013-10-31 11:36:05.000000000 +0100
++++ JSON-2.90-5/lib/JSON.pm	2017-04-16 22:01:20.000000000 +0200
+@@ -321,6 +321,7 @@
+     $JSON::true  = ${"$module\::true"};
+     $JSON::false = ${"$module\::false"};
+ 
++    Internals::SvREADONLY(@JSON::ISA, 0) if "$^V" =~ /c$/;
+     push @JSON::ISA, $module;
+     if ( JSON->is_xs and JSON->backend->VERSION < 3 ) {
+         eval 'package JSON::PP::Boolean';
