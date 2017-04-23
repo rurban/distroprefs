@@ -1,0 +1,12 @@
+diff -bu GD-Dashboard-0.04-VB_fyj/test.pl~ GD-Dashboard-0.04-VB_fyj/test.pl
+--- GD-Dashboard-0.04-VB_fyj/test.pl~	2002-01-18 22:36:52.000000000 +0100
++++ GD-Dashboard-0.04-VB_fyj/test.pl	2017-04-23 16:14:17.000000000 +0200
+@@ -19,7 +19,7 @@
+ # of the test code):
+ 
+ # 2: Test when FNAME not specified.
+-my $d1 = new GD::Dashboard(FNAME=>'examples\m1.jpg');
++my $d1 = new GD::Dashboard(FNAME=>'examples/m1.jpg');
+ my $jpeg = $d1->jpeg;
+ 
+ if (!defined($jpeg))
