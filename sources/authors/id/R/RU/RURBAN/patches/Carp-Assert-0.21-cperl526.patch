@@ -1,0 +1,52 @@
+diff -bu Carp-Assert-0.21-0/lib/Carp/Assert.pm~ Carp-Assert-0.21-0/lib/Carp/Assert.pm
+--- Carp-Assert-0.21-0/lib/Carp/Assert.pm~	2014-06-25 23:17:39.000000000 +0200
++++ Carp-Assert-0.21-0/lib/Carp/Assert.pm	2017-04-25 14:36:44.000000000 +0200
+@@ -392,17 +392,17 @@
+     return undef;
+ }
+ 
+-# Sorry, I couldn't resist.
+-sub shouldn't ($$) {     # emacs cperl-mode madness #' sub {
+-    my $env_ndebug = exists $ENV{PERL_NDEBUG} ? $ENV{PERL_NDEBUG}
+-                                              : $ENV{'NDEBUG'};
+-    if( $env_ndebug ) {
+-        return undef;
+-    }
+-    else {
+-        shouldnt($_[0], $_[1]);
+-    }
+-}
++## Sorry, I couldn't resist.
++#sub shouldnt ($$) {     # emacs cperl-mode madness #' sub {
++#    my $env_ndebug = exists $ENV{PERL_NDEBUG} ? $ENV{PERL_NDEBUG}
++#                                              : $ENV{'NDEBUG'};
++#    if( $env_ndebug ) {
++#        return undef;
++#    }
++#    else {
++#        shouldnt($_[0], $_[1]);
++#    }
++#}
+ 
+ =back
+ 
+diff -bu Carp-Assert-0.21-0/t/10enabled.t~ Carp-Assert-0.21-0/t/10enabled.t
+--- Carp-Assert-0.21-0/t/10enabled.t~	2014-06-25 18:58:57.000000000 +0200
++++ Carp-Assert-0.21-0/t/10enabled.t	2017-04-25 14:37:18.000000000 +0200
+@@ -3,7 +3,7 @@
+ # Test with assert on.
+ 
+ use strict;
+-use Test::More tests => 8;
++use Test::More tests => 7;
+ 
+ # Make sure we're shielded against the user possibly having
+ # NDEBUG or PERL_NDEBUG set.  Localize the changes because changes
+@@ -48,5 +48,5 @@
+ like $@, '/^Assertion \(.*\) failed/i';
+ 
+ 
+-eval { shouldn't('up', 'up') };
+-like $@, '/^Assertion \(.*\) failed/i';
++#eval { shouldn't('up', 'up') };
++#like $@, '/^Assertion \(.*\) failed/i';
