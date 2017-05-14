@@ -20,14 +20,3 @@ diff -bu ./lib/Moose/Util/TypeConstraints.pm~ ./lib/Moose/Util/TypeConstraints.p
      my %p = map { %{$_} } @_;
  
      # subtype Str => where { ... };
-diff -bu ./t/cmop/add_method_debugmode.t~ ./t/cmop/add_method_debugmode.t
---- ./t/cmop/add_method_debugmode.t~	2017-05-03 23:06:27.000000000 +0200
-+++ ./t/cmop/add_method_debugmode.t	2017-05-14 15:31:32.000000000 +0200
-@@ -13,6 +13,7 @@
- # preserves the correct debugging information when it (re)adds methods
- # back into a class or role.
- 
-+plan skip_all => 'cperl' if $^V =~ /5.2[4567].\d+c/;
- BEGIN {
-      $^P = 831; # Enable debug mode
- }
