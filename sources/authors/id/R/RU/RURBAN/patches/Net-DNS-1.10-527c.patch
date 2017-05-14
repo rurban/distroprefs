@@ -1,0 +1,273 @@
+From f65acf2dffa6e7ae84477c349911587be4f0145e Mon Sep 17 00:00:00 2001
+From: Reini Urban <rurban@cpan.org>
+Date: Sun, 14 May 2017 17:04:28 +0200
+Subject: [PATCH] cperl: enforce strict hashpairs in map
+
+All @algbyname arrays are already uppercased, skip the uc map there.
+See https://github.com/perl11/cperl/issues/281
+
+Also add the svn tags
+---
+ .gitignore               |  8 ++++++++
+ lib/Net/DNS/RR.pm        | 29 ++++++++++++++++++++++++++++-
+ lib/Net/DNS/RR/CERT.pm   | 12 +-----------
+ lib/Net/DNS/RR/DNSKEY.pm | 12 +-----------
+ lib/Net/DNS/RR/DS.pm     | 25 ++-----------------------
+ lib/Net/DNS/RR/NSEC3.pm  | 11 ++++-------
+ lib/Net/DNS/RR/RRSIG.pm  | 12 +-----------
+ lib/Net/DNS/RR/SIG.pm    | 12 +-----------
+ lib/Net/DNS/RR/TSIG.pm   | 18 ++++++------------
+ 9 files changed, 52 insertions(+), 87 deletions(-)
+ create mode 100644 .gitignore
+
+diff --git lib/Net/DNS/RR.pm lib/Net/DNS/RR.pm
+index fb5e502..148d8e5 100644
+--- lib/Net/DNS/RR.pm
++++ lib/Net/DNS/RR.pm
+@@ -472,7 +472,9 @@ Resource record time to live in seconds.
+ # published API.  These are required for parsing BIND zone files but
+ # should not be used in other contexts.
+ my %unit = ( W => 604800, D => 86400, H => 3600, M => 60, S => 1 );
+-%unit = ( %unit, map /\D/ ? lc($_) : $_, %unit );
++while (my($k,$v) = each %unit) {
++	$unit{lc($k)} = $v;
++}
+ 
+ sub ttl {
+ 	my ( $self, $time ) = @_;
+@@ -742,6 +744,31 @@ sub _wrap {
+ 	return @line;
+ }
+ 
++sub _map_name {
++	my @args = @_;
++	my %r;
++	while (my($arg, $val) = splice @args, 0, 2) {
++		unless ( $arg =~ /^\d/ ) {
++			$arg =~ s/[^A-Za-z0-9]//g;      # synthetic key
++			$r{uc $arg} = $val;
++                }
++        }
++        %r
++}
++
++sub _map_allow_num {
++	my @args = @_;
++	my %r;
++	while (my($arg, $val) = splice @args, 0, 2) {
++		unless ( $arg =~ /^\d/ ) {
++			$arg =~ s/[^A-Za-z0-9]//g;      # synthetic key
++			$r{uc $arg} = $val;
++                } else {
++			$r{"$arg"} = $val;		# also accept number
++                }
++        }
++        %r
++}
+ 
+ ################################################################################
+ 
+diff --git lib/Net/DNS/RR/CERT.pm lib/Net/DNS/RR/CERT.pm
+index 0af5f25..18a38fd 100644
+--- lib/Net/DNS/RR/CERT.pm
++++ lib/Net/DNS/RR/CERT.pm
+@@ -67,17 +67,7 @@ my %certtype = (
+ 		);
+ 
+ 	my %algbyval = reverse @algbyname;
+-
+-	my $map = sub {
+-		my $arg = shift;
+-		unless ( $arg =~ /^\d/ ) {
+-			$arg =~ s/[^A-Za-z0-9]//g;		# synthetic key
+-			return uc $arg;
+-		}
+-		my @map = ( $arg, "$arg" => $arg );		# also accept number
+-	};
+-
+-	my %algbyname = map &$map($_), @algbyname;
++	my %algbyname = Net::DNS::RR::_map_name(@algbyname);
+ 
+ 	sub _algbyname {
+ 		my $arg = shift;
+diff --git lib/Net/DNS/RR/DNSKEY.pm lib/Net/DNS/RR/DNSKEY.pm
+index e85c0ee..b872ee4 100644
+--- lib/Net/DNS/RR/DNSKEY.pm
++++ lib/Net/DNS/RR/DNSKEY.pm
+@@ -53,17 +53,7 @@ use constant BASE64 => defined eval 'require MIME::Base64';
+ 		);
+ 
+ 	my %algbyval = reverse @algbyname;
+-
+-	my $map = sub {
+-		my $arg = shift;
+-		unless ( $arg =~ /^\d/ ) {
+-			$arg =~ s/[^A-Za-z0-9]//g;		# synthetic key
+-			return uc $arg;
+-		}
+-		my @map = ( $arg, "$arg" => $arg );		# also accept number
+-	};
+-
+-	my %algbyname = map &$map($_), @algbyname;
++	my %algbyname = Net::DNS::RR::_map_name(@algbyname);
+ 
+ 	sub _algbyname {
+ 		my $arg = shift;
+diff --git lib/Net/DNS/RR/DS.pm lib/Net/DNS/RR/DS.pm
+index 9c2d475..9ee7c59 100644
+--- lib/Net/DNS/RR/DS.pm
++++ lib/Net/DNS/RR/DS.pm
+@@ -64,17 +64,7 @@ my %digest = (
+ 		);
+ 
+ 	my %algbyval = reverse @algbyname;
+-
+-	my $map = sub {
+-		my $arg = shift;
+-		unless ( $arg =~ /^\d/ ) {
+-			$arg =~ s/[^A-Za-z0-9]//g;		# synthetic key
+-			return uc $arg;
+-		}
+-		my @map = ( $arg, "$arg" => $arg );		# also accept number
+-	};
+-
+-	my %algbyname = map &$map($_), @algbyname;
++	my %algbyname = @algbyname;				# already uppercase
+ 
+ 	sub _algbyname {
+ 		my $arg = shift;
+@@ -108,18 +98,7 @@ my %digest = (
+ 		);
+ 
+ 	my %digestbyval = reverse @digestbyname;
+-
+-	my $map = sub {
+-		my $arg = shift;
+-		unless ( $arg =~ /^\d/ ) {
+-			$arg =~ s/[^A-Za-z0-9]//g;		# synthetic key
+-			return uc $arg;
+-		}
+-		my @map = ( $arg, "$arg" => $arg );		# also accept number
+-	};
+-
+-	my %digestbyname = map &$map($_), @digestbyalias, @digestbyname;
+-
++	my %digestbyname = Net::DNS::RR::_map_name(@digestbyalias, @digestbyname);
+ 
+ 	sub _digestbyname {
+ 		my $arg = shift;
+diff --git lib/Net/DNS/RR/NSEC3.pm lib/Net/DNS/RR/NSEC3.pm
+index 7bc5cb4..d7d385b 100644
+--- lib/Net/DNS/RR/NSEC3.pm
++++ lib/Net/DNS/RR/NSEC3.pm
+@@ -37,14 +37,11 @@ my %digest = (
+ 		'SHA-1' => 1,					# RFC3658
+ 		);
+ 
+-	my @digestbyalias = ( 'SHA' => 1 );
+-
++	my @digestbyalias = ( 'SHA'  => 1,
++                              'SHA1' => 1 ); 			# internal key
+ 	my %digestbyval = reverse @digestbyname;
+-
+-	my @digestbynum = map { ( $_, 0 + $_ ) } keys %digestbyval;    # accept algorithm number
+-
+-	my %digestbyname = map { s /[^A-Za-z0-9]//g; $_ } @digestbyalias, @digestbyname, @digestbynum;
+-
++	my @digestbynum = map { ( "$_", 0 + $_ ) } keys %digestbyval;    # accept algorithm number
++	my %digestbyname = (@digestbyalias, @digestbyname, @digestbynum);
+ 
+ 	sub _digestbyname {
+ 		my $name = shift;
+diff --git lib/Net/DNS/RR/RRSIG.pm lib/Net/DNS/RR/RRSIG.pm
+index 128db40..e1eddbd 100644
+--- lib/Net/DNS/RR/RRSIG.pm
++++ lib/Net/DNS/RR/RRSIG.pm
+@@ -116,17 +116,7 @@ sub _defaults {				## specify RR attribute default values
+ 		);
+ 
+ 	my %algbyval = reverse @algbyname;
+-
+-	my $map = sub {
+-		my $arg = shift;
+-		unless ( $arg =~ /^\d/ ) {
+-			$arg =~ s/[^A-Za-z0-9]//g;		# synthetic key
+-			return uc $arg;
+-		}
+-		my @map = ( $arg, "$arg" => $arg );		# also accept number
+-	};
+-
+-	my %algbyname = map &$map($_), @algbyname;
++	my %algbyname = Net::DNS::RR::_map_name(@algbyname);
+ 
+ 	sub _algbyname {
+ 		my $arg = shift;
+diff --git lib/Net/DNS/RR/SIG.pm lib/Net/DNS/RR/SIG.pm
+index 9162da9..225956d 100644
+--- lib/Net/DNS/RR/SIG.pm
++++ lib/Net/DNS/RR/SIG.pm
+@@ -148,17 +148,7 @@ sub _defaults {				## specify RR attribute default values
+ 		);
+ 
+ 	my %algbyval = reverse @algbyname;
+-
+-	my $map = sub {
+-		my $arg = shift;
+-		unless ( $arg =~ /^\d/ ) {
+-			$arg =~ s/[^A-Za-z0-9]//g;		# synthetic key
+-			return uc $arg;
+-		}
+-		my @map = ( $arg, "$arg" => $arg );		# also accept number
+-	};
+-
+-	my %algbyname = map &$map($_), @algbyname;
++	my %algbyname = Net::DNS::RR::_map_name(@algbyname);
+ 
+ 	sub _algbyname {
+ 		my $arg = shift;
+diff --git lib/Net/DNS/RR/TSIG.pm lib/Net/DNS/RR/TSIG.pm
+index 836ae49..80490d0 100644
+--- lib/Net/DNS/RR/TSIG.pm
++++ lib/Net/DNS/RR/TSIG.pm
+@@ -50,16 +50,10 @@ use constant TSIG => typebyname qw(TSIG);
+ 
+ 
+ 	my %algbyval = reverse @algbyname;
+-
+-	my $map = sub {
+-		my $arg = shift;
+-		return $arg if $arg =~ /^\d/;
+-		$arg =~ s/[^A-Za-z0-9]//g;			# strip non-alphanumerics
+-		uc($arg);
+-	};
+-
+-	my @pairedval = sort ( 1 .. 254, 1 .. 254 );		# also accept number
+-	my %algbyname = map &$map($_), @algbyalias, @algbyname, @pairedval;
++	my %algbyname = Net::DNS::RR::_map_name(@algbyalias, @algbyname);
++        for (1..254) {
++		$algbyname{"$_"} = $_;				# also accept numbers
++	}
+ 
+ 	sub _algbyname {
+ 		my $key = uc shift;				# synthetic key
+@@ -535,7 +529,7 @@ sub vrfyerrstr {
+ 		my $private = shift;	# closure keeps private key private
+ 		$keyref->{key} = sub {
+ 			my $function = $keyref->{digest};
+-			return &$function( $private, @_ );
++			return &$function( $private, @_ ) if $function;
+ 		};
+ 		return undef;
+ 	}
+@@ -549,7 +543,7 @@ sub vrfyerrstr {
+ 		my $keyref = $keytable{$owner};
+ 		$keyref->{digest} = $self->sig_function unless $keyref->{digest};
+ 		my $function = $keyref->{key};
+-		&$function(@_);
++		&$function(@_) if $function;
+ 	}
+ }
+ 
+-- 
+2.8.4 (Apple Git-73)
+
