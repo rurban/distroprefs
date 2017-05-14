@@ -1,0 +1,8 @@
+---
+comment: "cperl patches: strict hashpairs + debugger"
+match:
+  perlconfig:
+    usecperl: "define"
+  distribution: "Moose-2\.200.*"
+patches:
+  - "RURBAN/patches/Moose-2.2005-5270c.patch"
