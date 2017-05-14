@@ -1,0 +1,33 @@
+diff -bu ./lib/Class/MOP/Class.pm~ ./lib/Class/MOP/Class.pm
+--- ./lib/Class/MOP/Class.pm~	2017-05-03 23:06:27.000000000 +0200
++++ ./lib/Class/MOP/Class.pm	2017-05-14 15:23:16.000000000 +0200
+@@ -933,6 +933,7 @@
+ 
+ sub get_all_attributes {
+     my $self = shift;
++    no strict 'hashpairs';
+     my %attrs = map { %{ Class::MOP::Class->initialize($_)->_attribute_map } }
+         reverse $self->linearized_isa;
+     return values %attrs;
+diff -bu ./lib/Moose/Util/TypeConstraints.pm~ ./lib/Moose/Util/TypeConstraints.pm
+--- ./lib/Moose/Util/TypeConstraints.pm~	2017-05-03 23:06:27.000000000 +0200
++++ ./lib/Moose/Util/TypeConstraints.pm	2017-05-14 15:27:42.000000000 +0200
+@@ -334,6 +334,7 @@
+     # uses an object which overloads stringification as a type name.
+     my $name = ref $_[0] && !blessed $_[0] ? undef : shift;
+ 
++    no strict 'hashpairs';
+     my %p = map { %{$_} } @_;
+ 
+     # subtype Str => where { ... };
+diff -bu ./t/cmop/add_method_debugmode.t~ ./t/cmop/add_method_debugmode.t
+--- ./t/cmop/add_method_debugmode.t~	2017-05-03 23:06:27.000000000 +0200
++++ ./t/cmop/add_method_debugmode.t	2017-05-14 15:31:32.000000000 +0200
+@@ -13,6 +13,7 @@
+ # preserves the correct debugging information when it (re)adds methods
+ # back into a class or role.
+ 
++plan skip_all => 'cperl' if $^V =~ /5.2[4567].\d+c/;
+ BEGIN {
+      $^P = 831; # Enable debug mode
+ }
