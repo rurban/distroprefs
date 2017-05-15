@@ -7,7 +7,7 @@ patches:
 match:
   distribution: "ETHER/Sub-Name-0\.21"
   perlconfig:
-    version: "^5\.2[56]"
+    version: "^5\.2[567]"
     usecperl: "define"
 patches:
   - "RURBAN/patches/Sub-Name-v5.26c.patch"
