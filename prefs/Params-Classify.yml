@@ -7,28 +7,8 @@ comment: |
 match:
   distribution: "ZEFRAM/Params-Classify-0\.013\.tar\.gz"
   perlconfig:
-    version: "^5\.2[23456]"
+    version: "^5\.2[23456789]"
 patches:
   - "RURBAN/patches/Params-Classify-5.22-cGVOPo_gv-cvref.patch"
   - "RURBAN/patches/Params-Classify-fortify_inc.patch"
-  - "RURBAN/patches/Params-Classify-5.25-op_parent.patch"
----
-comment: |
-
-  Fix for -Dfortify_inc or cperl
-  Fix for 5.25 or -DPERL_OP_PARENT [RT #114490]
-
-match:
-  distribution: "ZEFRAM/Params-Classify-0\.013\.tar\.gz"
-  perlconfig:
-    version: "^5\.2[456]"
-patches:
-  - "RURBAN/patches/Params-Classify-fortify_inc.patch"
----
-comment: Fix for 5.25 or -DPERL_OP_PARENT [RT #114490]
-match:
-  distribution: "ZEFRAM/Params-Classify-0\.013\.tar\.gz"
-  perlconfig:
-    version: "^5\.2[56]"
-patches:
   - "RURBAN/patches/Params-Classify-5.25-op_parent.patch"
