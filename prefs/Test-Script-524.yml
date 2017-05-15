@@ -1,9 +1,0 @@
----
-comment: "lexical incompat since 5.24"
-match:
-  perlconfig:
-    version: "^5\.2[456]"
-  distribution: "Test-Script-1\.15"
-patches:
-  - "RURBAN/patches/Test-Script-524.patch"
-  - "RURBAN/patches/Test-Script-cperl.patch"
