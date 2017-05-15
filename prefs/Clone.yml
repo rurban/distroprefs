@@ -4,6 +4,6 @@ match:
   distribution: "Clone-"
   perlconfig:
     usecperl: "define"
-    version: "^5\.2[56]"
+    version: "^5\.2[578]"
 patches:
   - "RURBAN/patches/Clone-0.38-cperl525.patch"
