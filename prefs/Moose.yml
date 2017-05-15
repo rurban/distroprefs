@@ -7,6 +7,7 @@ match:
   distribution: "Moose-2\.200.*"
 patches:
   - "RURBAN/patches/Moose-2.2005-dbg.patch"
+  - "RURBAN/patches/Moose-2.2005-5270c.patch"
 ---
 comment: "cperl patches: strict hashpairs"
 match:
