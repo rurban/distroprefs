@@ -1,0 +1,11 @@
+diff -bu ./lib/DBI/DBD/SqlEngine.pm~ ./lib/DBI/DBD/SqlEngine.pm
+--- ./lib/DBI/DBD/SqlEngine.pm~	2016-04-21 16:34:22.000000000 +0200
++++ ./lib/DBI/DBD/SqlEngine.pm	2017-05-15 09:31:11.000000000 +0200
+@@ -201,6 +201,7 @@
+         #   90 => [ all fields that are needed after other initialisation ],
+         #   }
+ 
++        no strict 'hashpairs';
+         my %order = map {
+             my $order = $_;
+             map { ( $_ => $order ) } @{ $dbh->{sql_init_order}{$order} };
