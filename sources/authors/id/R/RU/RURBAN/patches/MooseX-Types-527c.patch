@@ -1,0 +1,11 @@
+diff -bu ./lib/MooseX/Types/Combine.pm~ ./lib/MooseX/Types/Combine.pm
+--- ./lib/MooseX/Types/Combine.pm~	2017-02-07 19:59:35.000000000 +0100
++++ ./lib/MooseX/Types/Combine.pm	2017-05-15 11:15:42.000000000 +0200
+@@ -120,6 +120,7 @@
+         $class->_check_type_lib($_) for @libs;
+         @$store = @libs;
+ 
++        no strict 'hashpairs';
+         my %types = map {
+             my $lib = $_;
+             map +( $_ => $lib ), $lib->type_names
