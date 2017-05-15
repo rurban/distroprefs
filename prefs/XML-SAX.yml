@@ -9,3 +9,9 @@ match:
     usecperl: "define"
 patches:
   - "RURBAN/patches/XML-SAX-0.99-cperl5240.patch"
+---
+comment: sax regression
+match:
+  distribution: "XML-SAX-0\.99"
+patches:
+  - "RURBAN/patches/XML-SAX-0.99-nolarge.patch"
