@@ -1,0 +1,12 @@
+diff -bu ./Makefile.PL~ ./Makefile.PL
+--- ./Makefile.PL~	2016-03-30 21:53:07.000000000 +0200
++++ ./Makefile.PL	2017-05-15 09:54:59.000000000 +0200
+@@ -22,6 +22,8 @@
+                             && ($^O eq 'MSWin32' || $^O eq 'cygwin');
+ 
+ use ExtUtils::MakeMaker;
++use File::Copy; # unbundle Test::More
++move("t/lib/Test", "t/lib/Test~") if $] >= 5.010;
+ 
+ WriteMakefile1(
+     LICENSE => 'perl',
