@@ -1,0 +1,18 @@
+diff -bu ./t/toomany.t~ ./t/toomany.t
+--- ./t/toomany.t~	2017-05-12 09:48:05.000000000 +0200
++++ ./t/toomany.t	2017-05-15 11:39:54.000000000 +0200
+@@ -26,7 +26,11 @@
+     my ($name, $code, $desc) = @$case;
+     scalar eval $code;
+     my $exn = $@;
+-    like($exn, qr/^(?: \QUsage: Ref::Util::XS::$name(ref)\E
+-                     | \QToo many arguments for Ref::Util::XS::$name\E\b )/x,
+-         $desc);
++    my @all_names =
++        ($name, map "$_\::$name", qw<Ref::Util::XS>);
++    my $rx = join '|', (
++        (map "Too many arguments for( subroutine entry)? $_\\b", @all_names),
++        (map "Usage: $_\\(ref\\)", @all_names),
++    );
++    like($exn, qr/^(?:$rx)/, $desc);
+ }
