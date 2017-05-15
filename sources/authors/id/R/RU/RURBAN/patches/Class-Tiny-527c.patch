@@ -5,7 +5,7 @@ diff -bu ./lib/Class/Tiny.pm~ ./lib/Class/Tiny.pm
  # adapted from Object::Tiny and Object::Tiny::RW
  sub create_attributes {
      my ( $class, $pkg, @spec ) = @_;
-+    BEGIN { strict->unimport('hashpairs') if $] > 5.026 and $^V =~ /c$/; }
++    BEGIN { strict->unimport('hashpairs') if $] >= 5.027 and $^V =~ /c$/; }
      my %defaults = map { ref $_ eq 'HASH' ? %$_ : ( $_ => undef ) } @spec;
      my @attr = grep {
          defined and !ref and /^[^\W\d]\w*$/s
