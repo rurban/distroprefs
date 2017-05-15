@@ -1,0 +1,11 @@
+diff -bu ./lib/Class/Tiny.pm~ ./lib/Class/Tiny.pm
+--- ./lib/Class/Tiny.pm~	2017-05-15 10:11:53.000000000 +0200
++++ ./lib/Class/Tiny.pm	2017-05-15 10:11:27.000000000 +0200
+@@ -30,6 +30,7 @@
+ # adapted from Object::Tiny and Object::Tiny::RW
+ sub create_attributes {
+     my ( $class, $pkg, @spec ) = @_;
++    BEGIN { strict->unimport('hashpairs') if $] > 5.026 and $^V =~ /c$/; }
+     my %defaults = map { ref $_ eq 'HASH' ? %$_ : ( $_ => undef ) } @spec;
+     my @attr = grep {
+         defined and !ref and /^[^\W\d]\w*$/s
