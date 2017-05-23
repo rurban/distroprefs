@@ -1,0 +1,12 @@
+diff -Naur a/lib/Class/Std/Storable.pm b/lib/Class/Std/Storable.pm 
+--- a/lib/Class/Std/Storable.pm	2005-08-25 03:43:33.000000000 +0000
++++ b/lib/Class/Std/Storable.pm	2016-10-19 00:38:13.232656642 +0000
+@@ -41,7 +41,7 @@
+             next if $attr !~ m/\A ATTRS? \s* (?:[(] (.*) [)] )? \z/xms;
+             my $name;
+             #we have a backup if no name is given for the attribute.
+-            $positional_arg_of{$package} ||= "__Positional_0001";
++            $positional_arg_of{$package} ||= "Positional0001";
+             #but we would prefer to know the argument as the class does.
+             if (my $config = $1) {
+                 $name = Class::Std::_extract_init_arg($config)
