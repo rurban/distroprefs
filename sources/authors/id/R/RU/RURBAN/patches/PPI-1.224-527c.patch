@@ -1,0 +1,13 @@
+diff -bu ./lib/PPI/Dumper.pm~ ./lib/PPI/Dumper.pm
+--- ./lib/PPI/Dumper.pm~	2017-05-14 16:49:54.000000000 +0200
++++ ./lib/PPI/Dumper.pm	2017-05-27 08:03:29.000000000 +0200
+@@ -123,7 +123,8 @@
+ 		}, $class;
+ 
+ 	# Handle the options
+-	my %options = map { lc $_ } @_;
++	my @options = map { lc $_ } @_; # strict hashpairs
++	my %options = @options;
+ 	foreach ( keys %{$self->{display}} ) {
+ 		if ( exists $options{$_} ) {
+ 			if ( $_ eq 'indent' ) {
