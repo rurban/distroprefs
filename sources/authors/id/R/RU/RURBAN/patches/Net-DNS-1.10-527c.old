@@ -1,4 +1,4 @@
-From 8a8c5246bf04b95226a421546079c151299be975 Mon Sep 17 00:00:00 2001
+From f65acf2dffa6e7ae84477c349911587be4f0145e Mon Sep 17 00:00:00 2001
 From: Reini Urban <rurban@cpan.org>
 Date: Sun, 14 May 2017 17:04:28 +0200
 Subject: [PATCH] cperl: enforce strict hashpairs in map
@@ -21,7 +21,7 @@ Also add the svn tags
  create mode 100644 .gitignore
 
 diff --git lib/Net/DNS/RR.pm lib/Net/DNS/RR.pm
-index fb5e502..1913018 100644
+index fb5e502..148d8e5 100644
 --- lib/Net/DNS/RR.pm
 +++ lib/Net/DNS/RR.pm
 @@ -472,7 +472,9 @@ Resource record time to live in seconds.
@@ -29,8 +29,8 @@ index fb5e502..1913018 100644
  # should not be used in other contexts.
  my %unit = ( W => 604800, D => 86400, H => 3600, M => 60, S => 1 );
 -%unit = ( %unit, map /\D/ ? lc($_) : $_, %unit );
-+for my $k (keys %unit) {
-+	$unit{lc($k)} = $unit{$k};
++while (my($k,$v) = each %unit) {
++	$unit{lc($k)} = $v;
 +}
  
  sub ttl {

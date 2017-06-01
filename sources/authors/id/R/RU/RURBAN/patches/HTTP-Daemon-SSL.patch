@@ -1,0 +1,21 @@
+diff -bu ./t/testmodule.t~ ./t/testmodule.t
+--- ./t/testmodule.t~	2017-05-21 13:05:17.000000000 +0200
++++ ./t/testmodule.t	2017-05-21 13:06:56.000000000 +0200
+@@ -12,7 +12,7 @@
+ $SIG{PIPE}='IGNORE';
+ 
+ foreach ($^O) {
+-    if (/MacOS/ or /VOS/ or /vmesa/ or /riscos/ or /amigaos/) {
++    if (/(MacOS|VOS|vmesa|riscos|amigaos)/) {
+ 	print "1..0 # Skipped: fork not implemented on this platform\n";
+ 	exit;
+     }
+@@ -27,7 +27,7 @@
+ 
+     my $client = new IO::Socket::INET(PeerAddr => $SSL_SERVER_ADDR,
+ 				      PeerPort => $SSL_SERVER_PORT)
+-      or die;
++      or die; # check your firewall for the port
+ 
+     print $client "GET / HTTP/1.0\r\n\r\n";
+     (<$client> eq "HTTP/1.1 400 Bad Request\r\n") || print "not ";
