@@ -1,0 +1,31 @@
+diff -bu namespace-clean-0.27-3/t/07-debugger.t~ namespace-clean-0.27-3/t/07-debugger.t
+--- namespace-clean-0.27-3/t/07-debugger.t~	2016-04-10 05:21:21.000000000 +0200
++++ namespace-clean-0.27-3/t/07-debugger.t	2017-08-07 08:50:13.000000000 +0200
+@@ -9,7 +9,9 @@
+   ) {
+     plan skip_all => $missing_xs;
+   }
+-  else {
++  elsif ($^V =~ /c$/) {
++    plan skip_all => 'debugging broken with cperl';
++  } else {
+     plan tests => 4;
+   }
+ }
+diff -bu namespace-clean-0.27-3/t/07-pseudo-debugger.t~ namespace-clean-0.27-3/t/07-pseudo-debugger.t
+--- namespace-clean-0.27-3/t/07-pseudo-debugger.t~	2016-04-10 05:21:21.000000000 +0200
++++ namespace-clean-0.27-3/t/07-pseudo-debugger.t	2017-08-07 08:49:36.000000000 +0200
+@@ -1,7 +1,12 @@
+ use warnings;
+ use strict;
+ 
+-use Test::More tests => 4;
++use Test::More ;
++if ($^V =~ /c$/) {
++    plan skip_all => 'debugging broken with cperl';
++} else {
++    plan tests => 4;
++}
+ use lib 't/lib';
+ 
+ BEGIN {
