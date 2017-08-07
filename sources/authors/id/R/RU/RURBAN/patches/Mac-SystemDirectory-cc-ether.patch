@@ -1,0 +1,11 @@
+diff -bu ./Makefile.PL~ ./Makefile.PL
+--- ./Makefile.PL~	2017-05-11 18:21:42.000000000 +0300
++++ ./Makefile.PL	2017-08-04 10:11:50.000000000 +0300
+@@ -24,6 +24,7 @@
+   "LICENSE" => "perl",
+   "MIN_PERL_VERSION" => "5.006",
+   "NAME" => "Mac::SystemDirectory",
++  "CC" => "/usr/bin/cc",
+   "PREREQ_PM" => {
+     "Exporter" => 0,
+     "XSLoader" => 0,
