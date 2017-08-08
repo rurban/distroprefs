@@ -1,5 +1,5 @@
 ---
-comment: "cperl patches: strict hashpairs"
+comment: "cperl patches: strict hashpairs https://rt.cpan.org/Ticket/Display.html?id=122748"
 match:
   perlconfig:
     version: "^5\.2[78]"
