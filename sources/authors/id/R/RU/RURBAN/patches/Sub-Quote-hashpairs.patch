@@ -1,0 +1,16 @@
+diff -bu ./lib/Sub/Quote.pm~ ./lib/Sub/Quote.pm
+--- ./lib/Sub/Quote.pm~	2017-06-07 03:08:15.000000000 +0200
++++ ./lib/Sub/Quote.pm	2017-08-08 22:44:13.000000000 +0200
+@@ -244,10 +244,11 @@
+ }
+ 
+ sub CLONE {
+-  %QUOTED = map { defined $_ ? (
++  my @quoted = map { defined $_ ? (
+     $_->{unquoted} && ${$_->{unquoted}} ? (${ $_->{unquoted} } => $_) : (),
+     $_->{deferred} ? ($_->{deferred} => $_) : (),
+   ) : () } values %QUOTED;
++  %QUOTED = @quoted;
+   weaken($_) for values %QUOTED;
+ }
+ 
