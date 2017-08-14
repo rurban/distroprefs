@@ -16,3 +16,13 @@ match:
   distribution: "Moose-2\.200.*"
 patches:
   - "RURBAN/patches/Moose-2.2005-5270c.patch"
+  - "RURBAN/patches/Moose-2.2006-5271c.patch"
+---
+comment: "cperl patches: role exception"
+match:
+  perlconfig:
+    version: "^5\.2[78]"
+    usecperl: "define"
+  distribution: "Moose-2\.200[678]"
+patches:
+  - "RURBAN/patches/Moose-2.2006-5271c.patch"
