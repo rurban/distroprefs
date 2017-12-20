@@ -7,3 +7,12 @@ match:
     usecperl: "define"
 patches:
   - "RURBAN/patches/Variable-Magic-0.58-cperl.patch"
+---
+comment: "cperl 5.27.3 fixes for PADOP removal"
+match:
+  distribution: "Variable-Magic-0\.[56]"
+  perlconfig:
+    version: "^5\.(27\.[34]|28.)"
+    usecperl: "define"
+patches:
+  - "RURBAN/patches/Variable-Magic-0.62-padop.patch"

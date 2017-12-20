@@ -1,0 +1,23 @@
+diff -bu ./Magic.xs~ ./Magic.xs
+--- ./Magic.xs~	2016-12-07 02:05:25.000000000 +0100
++++ ./Magic.xs	2017-12-20 14:01:37.000000000 +0100
+@@ -376,7 +376,9 @@
+  }
+ 
+ #ifdef USE_ITHREADS
+- if (o->op_type == OP_GV || o->op_type == OP_GVSV || o->op_type == OP_RCATLINE)
++ if (o->op_type == OP_GV || o->op_type == OP_GVSV || o->op_type == OP_RCATLINE
++     || o->op_type == OP_TRANS || o->op_type == OP_TRANSR
++     || OP_CLASS(o) == OA_FILESTATOP)
+   return OPc_PADOP;
+ #endif
+ 
+@@ -395,8 +397,6 @@
+    return OPc_PMOP;
+   case OA_SVOP:
+    return OPc_SVOP;
+-  case OA_PADOP:
+-   return OPc_PADOP;
+   case OA_PVOP_OR_SVOP:
+    return (
+ #if XSH_HAS_PERL(5, 13, 7)
