@@ -1,0 +1,29 @@
+diff -bu ./lib/Eval/Closure.pm~ ./lib/Eval/Closure.pm
+--- ./lib/Eval/Closure.pm~	2016-05-29 06:43:10.000000000 +0200
++++ ./lib/Eval/Closure.pm	2017-12-20 14:09:33.000000000 +0100
+@@ -27,11 +27,13 @@
+     $args{source} = _canonicalize_source($args{source});
+     _validate_env($args{environment} ||= {});
+ 
+-    $args{source} = _line_directive(@args{qw(line description)})
++    my @args = @args{qw(line description)};
++    $args{source} = _line_directive(@args)
+                   . $args{source}
+         if defined $args{description} && !($^P & 0x10);
+ 
+-    my ($code, $e) = _clean_eval_closure(@args{qw(source environment alias)});
++    @args = @args{qw(source environment alias)};
++    my ($code, $e) = _clean_eval_closure(@args);
+ 
+     if (!$code) {
+         if ($args{terse_error}) {
+@@ -111,7 +113,8 @@
+     my ($compiler, $e) = _make_compiler($source, $alias, @capture_keys);
+     return (undef, $e) unless defined $compiler;
+ 
+-    my $code = $compiler->(@$captures{@capture_keys});
++    my @keys = @$captures{@capture_keys};
++    my $code = $compiler->(@keys);
+ 
+     if (!defined $code) {
+         return (
