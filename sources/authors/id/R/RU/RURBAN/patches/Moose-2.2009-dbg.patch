@@ -1,0 +1,14 @@
+diff -bu ./t/exceptions/without-debugging.t~ ./t/exceptions/without-debugging.t
+--- ./t/exceptions/without-debugging.t~	2017-11-29 04:09:01.000000000 +0100
++++ ./t/exceptions/without-debugging.t	2017-12-20 14:21:50.000000000 +0100
+@@ -7,7 +7,9 @@
+     $^P &= ~0x200;
+ }
+ 
+-use Test::More tests => 2;
++use Test::More;
++plan skip_all => "cperl" if $^V =~ /2[78]\..*c$/;
++plan tests => 2;
+ use Test::Moose;
+ use Moose::Exception;
+ 

@@ -26,3 +26,12 @@ match:
   distribution: "Moose-2\.200[678]"
 patches:
   - "RURBAN/patches/Moose-2.2006-5271c.patch"
+---
+comment: "cperl patches: debugger"
+match:
+  perlconfig:
+    version: "^5\.2[45678]"
+    usecperl: "define"
+  distribution: "Moose-2\.200.*"
+patches:
+  - "RURBAN/patches/Moose-2.2009-dbg.patch"

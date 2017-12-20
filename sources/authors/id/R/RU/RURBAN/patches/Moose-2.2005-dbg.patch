@@ -5,7 +5,7 @@ diff -bu ./t/cmop/add_method_debugmode.t~ ./t/cmop/add_method_debugmode.t
  # preserves the correct debugging information when it (re)adds methods
  # back into a class or role.
  
-+plan skip_all => 'cperl' if $^V =~ /5.2[4567].\d+c/;
++plan skip_all => 'cperl' if $^V =~ /5.2[45678].\d+c/;
  BEGIN {
       $^P = 831; # Enable debug mode
  }
