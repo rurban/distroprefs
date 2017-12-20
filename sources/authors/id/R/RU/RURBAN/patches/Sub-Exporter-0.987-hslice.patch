@@ -1,0 +1,13 @@
+diff -bu ./lib/Sub/Exporter.pm~ ./lib/Sub/Exporter.pm
+--- ./lib/Sub/Exporter.pm~	2013-10-18 17:10:07.000000000 +0200
++++ ./lib/Sub/Exporter.pm	2017-12-20 13:48:05.000000000 +0100
+@@ -259,7 +259,8 @@
+ 
+   _assert_collector_names_ok($config->{collectors});
+ 
+-  if (my @names = _key_intersection(@$config{qw(exports collectors)})) {
++  my @temp = @$config{qw(exports collectors)};
++  if (my @names = _key_intersection(@temp)) {
+     Carp::croak "names (@names) used in both collections and exports";
+   }
+ 

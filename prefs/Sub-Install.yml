@@ -7,3 +7,12 @@ match:
     usecperl: "define"
 patches:
   - "RURBAN/patches/Sub-Install-5.22.3c.patch"
+---
+comment: "autovivifying hash slices [cperl #347]"
+match:
+  distribution: "Sub-Install-0\.9"
+  perlconfig:
+    version: "^5\.(27\.3|28\.)"
+    usecperl: "define"
+patches:
+  - "RURBAN/patches/Sub-Install-0.928-hslice.patch"

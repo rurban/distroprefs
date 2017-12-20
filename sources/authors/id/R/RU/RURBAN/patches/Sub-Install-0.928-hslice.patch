@@ -1,0 +1,13 @@
+diff -bu ./lib/Sub/Install.pm~ ./lib/Sub/Install.pm
+--- ./lib/Sub/Install.pm~	2014-06-27 00:57:41.000000000 +0200
++++ ./lib/Sub/Install.pm	2017-12-20 13:49:34.000000000 +0100
+@@ -114,7 +114,8 @@
+     Carp::croak "couldn't determine name under which to install subroutine"
+       unless $arg->{as};
+ 
+-    $installer->(@$arg{qw(into as code) });
++    my @args = @$arg{qw(into as code) };
++    $installer->(@args);
+   }
+ }
+ 
