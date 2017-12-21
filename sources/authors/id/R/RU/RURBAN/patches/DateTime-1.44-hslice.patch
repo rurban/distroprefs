@@ -1,0 +1,19 @@
+diff -bu ./lib/DateTime.pm~ ./lib/DateTime.pm
+--- ./lib/DateTime.pm~	2017-08-21 05:35:46.000000000 +0200
++++ ./lib/DateTime.pm	2017-12-20 16:31:21.000000000 +0100
+@@ -201,11 +201,12 @@
+         ? $p{time_zone}
+         : DateTime::TimeZone->new( name => $p{time_zone} )
+     );
++    my @date = @p{qw( year month day )};
++    $self->{local_rd_days} = $class->_ymd2rd( @date );
+ 
+-    $self->{local_rd_days} = $class->_ymd2rd( @p{qw( year month day )} );
+-
++    my @time = @p{qw( hour minute second )};
+     $self->{local_rd_secs}
+-        = $class->_time_as_seconds( @p{qw( hour minute second )} );
++        = $class->_time_as_seconds( @time );
+ 
+     $self->{offset_modifier} = 0;
+ 
