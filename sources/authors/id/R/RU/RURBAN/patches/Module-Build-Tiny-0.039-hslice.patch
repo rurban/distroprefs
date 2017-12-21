@@ -1,0 +1,14 @@
+diff -bu ./lib/Module/Build/Tiny.pm~ ./lib/Module/Build/Tiny.pm
+--- ./lib/Module/Build/Tiny.pm~	2014-10-12 10:39:04.000000000 +0200
++++ ./lib/Module/Build/Tiny.pm	2017-12-20 16:17:18.000000000 +0100
+@@ -115,8 +115,9 @@
+ 	},
+ 	install => sub {
+ 		my %opt = @_;
++                my @opts = @opt{qw/verbose dry_run uninst/};
+ 		die "Must run `./Build build` first\n" if not -d 'blib';
+-		install($opt{install_paths}->install_map, @opt{qw/verbose dry_run uninst/});
++		install($opt{install_paths}->install_map, @opts);
+ 	},
+ 	clean => sub {
+ 		my %opt = @_;
