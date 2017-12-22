@@ -1,0 +1,13 @@
+diff -bu ./lib/Moo/Role.pm~ ./lib/Moo/Role.pm
+--- ./lib/Moo/Role.pm~	2017-12-01 02:45:50.000000000 +0100
++++ ./lib/Moo/Role.pm	2017-12-22 01:00:31.000000000 +0100
+@@ -332,7 +332,8 @@
+ 
+   my $apply_defaults = exists $APPLY_DEFAULTS{$class} ? $APPLY_DEFAULTS{$class}
+     : $APPLY_DEFAULTS{$class} = do {
+-    my %attrs = map { @{$INFO{$_}{attributes}||[]} } @roles;
++    my @attrs = map { @{$INFO{$_}{attributes}||[]} } @roles;
++    my %attrs = @attrs;
+ 
+     if ($INC{'Moo.pm'}
+         and keys %attrs
