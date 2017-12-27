@@ -1,0 +1,21 @@
+diff -ur Mojolicious-7.59.orig/t/mojo/roles.t Mojolicious-7.59/t/mojo/roles.t
+--- Mojolicious-7.59.orig/t/mojo/roles.t	2017-12-14 19:38:17.000000000 +0100
++++ Mojolicious-7.59/t/mojo/roles.t	2017-12-27 13:15:27.614469651 +0100
+@@ -20,7 +20,7 @@
+ }
+ 
+ package Mojo::RoleTest::Role::quiet;
+-use Mojo::Base -role;
++use Mojo::Base '-role';
+ 
+ requires 'name';
+ 
+@@ -42,7 +42,7 @@
+ }
+ 
+ package Mojo::RoleTest::Hello;
+-use Mojo::Base -role;
++use Mojo::Base '-role';
+ 
+ sub hello {'hello mojo!'}
+ 
