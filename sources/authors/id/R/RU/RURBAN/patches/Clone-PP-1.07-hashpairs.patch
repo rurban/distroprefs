@@ -1,0 +1,13 @@
+diff -ur Clone-PP-1.07.orig/lib/Clone/PP.pm Clone-PP-1.07/lib/Clone/PP.pm
+--- Clone-PP-1.07.orig/lib/Clone/PP.pm	2017-04-10 22:01:14.000000000 +0200
++++ Clone-PP-1.07/lib/Clone/PP.pm	2017-12-27 18:24:05.539423887 +0100
+@@ -57,7 +57,8 @@
+   if ($ref_type eq 'HASH') {
+     $CloneCache{ $source } = $copy = {};
+     if ( my $tied = tied( %$source ) ) { tie %$copy, ref $tied }
+-    %$copy = map { ! ref($_) ? $_ : clone($_, $depth) } %$source;
++    my @temp = map { ! ref($_) ? $_ : clone($_, $depth) } %$source;
++    %$copy = @temp;
+   } elsif ($ref_type eq 'ARRAY') {
+     $CloneCache{ $source } = $copy = [];
+     if ( my $tied = tied( @$source ) ) { tie @$copy, ref $tied }
