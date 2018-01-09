@@ -1,0 +1,72 @@
+diff --git LibXML.pm LibXML.pm
+index 95287f5..c46ec14 100644
+--- LibXML.pm
++++ LibXML.pm
+@@ -763,7 +763,8 @@ sub __write {
+ 
+ sub load_xml {
+   my $class_or_self = shift;
+-  my %args = map { ref($_) eq 'HASH' ? (%$_) : $_ } @_;
++  my @args = map { ref($_) eq 'HASH' ? (%$_) : $_ } @_;
++  my %args = @args;
+ 
+   my $URI = delete($args{URI});
+   $URI = "$URI"  if defined $URI; # stringify in case it is an URI object
+@@ -792,7 +793,8 @@ sub load_xml {
+ 
+ sub load_html {
+   my ($class_or_self) = shift;
+-  my %args = map { ref($_) eq 'HASH' ? (%$_) : $_ } @_;
++  my @args = map { ref($_) eq 'HASH' ? (%$_) : $_ } @_;
++  my %args = @args;
+   my $URI = delete($args{URI});
+   $URI = "$URI"  if defined $URI; # stringify in case it is an URI object
+   my $parser;
+diff --git Makefile.PL Makefile.PL
+index 0090659..b6bd4a2 100644
+--- Makefile.PL
++++ Makefile.PL
+@@ -188,9 +188,11 @@ unless ( $is_Win32 ) { # cannot get config in W32
+                      [2,7,1,0], # broken release, broken utf-16
+                      [2,7,6,1], # tested, ok
+                      [2,7,8,1], # tested, ok
++                     [2,9,2,0], # tested, ok
+                      [2,9,3,1], # schema regression
+                      [2,9,4,0], # schema regression
+                      [2,9,6,1],
++                     [2,9,7,1], # tested, ok
+                     );
+     my $xml2cfg = "xml2-config";
+     my $libprefix = $ENV{XMLPREFIX} || $config{XMLPREFIX};
+@@ -300,6 +302,7 @@ GDOME
+         }
+     }
+ }
++
+ # -------------------------------------------------------------------------- #
+ 
+ 
+diff --git lib/XML/LibXML/Reader.pm lib/XML/LibXML/Reader.pm
+index 5a5dd72..d1abd1e 100644
+--- lib/XML/LibXML/Reader.pm
++++ lib/XML/LibXML/Reader.pm
+@@ -116,7 +116,8 @@ our %_preserve_flag;
+   }
+   sub setParserProp {
+     my $self = shift;
+-    my %args = map { ref($_) eq 'HASH' ? (%$_) : $_ } @_;
++    my @args = map { ref($_) eq 'HASH' ? (%$_) : $_ } @_;
++    my %args = @args;
+     my ($key, $value);
+     while (($key,$value) = each %args) {
+       my $prop = $props{ $key };
+@@ -128,7 +129,8 @@ our %_preserve_flag;
+   my (%string_pool,%rng_pool,%xsd_pool); # used to preserve data passed to the reader
+   sub new {
+     my ($class) = shift;
+-    my %args = map { ref($_) eq 'HASH' ? (%$_) : $_ } @_;
++    my @args = map { ref($_) eq 'HASH' ? (%$_) : $_ } @_;
++    my %args = @args;
+     my $encoding = $args{encoding};
+     my $URI = $args{URI};
+     $URI="$URI" if defined $URI; # stringify in case it is an URI object
