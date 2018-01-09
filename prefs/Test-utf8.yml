@@ -3,7 +3,7 @@ comment: "isn't"
 match:
   distribution: "Test-utf8-1\.01"
   perlconfig:
-    version: "^5\.26"
+    version: "^5\.2[678]"
     usecperl: "define"
 patches:
   - "RURBAN/patches/Test-utf8-1.01-cperl526.patch"
