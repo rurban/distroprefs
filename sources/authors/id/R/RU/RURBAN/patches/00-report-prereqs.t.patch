@@ -1,0 +1,12 @@
+diff -bu ./t/00-report-prereqs.t~ ./t/00-report-prereqs.t
+--- ./t/00-report-prereqs.t~	2017-12-29 18:55:04.000000000 +0100
++++ ./t/00-report-prereqs.t	2018-01-09 13:15:06.000000000 +0100
+@@ -129,7 +129,7 @@
+                 push @reports, [$mod, $want, $have];
+ 
+                 if ( $DO_VERIFY_PREREQS && $HAS_CPAN_META && $type eq 'requires' ) {
+-                    if ( $have !~ /\A$lax_version_re\z/ ) {
++                    if ( !version->parse($have) ) {
+                         push @dep_errors, "$mod version '$have' cannot be parsed ($req_string)";
+                     }
+                     elsif ( ! $full_prereqs->requirements_for( $phase, $type )->accepts_module( $mod => $have ) ) {
