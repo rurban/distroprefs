@@ -1,0 +1,15 @@
+our $VERSION = version->declare('v2.5.0');
+version objects are invalid for DynaLoader
+
+diff -bu ./lib/Mouse/Util.pm~ ./lib/Mouse/Util.pm
+--- ./lib/Mouse/Util.pm~	2017-11-26 19:40:32.000000000 +0100
++++ ./lib/Mouse/Util.pm	2018-01-09 13:26:09.000000000 +0100
+@@ -64,7 +64,7 @@
+             local $^W = 0; # workaround 'redefine' warning to &install_subroutines
+             no warnings 'redefine';
+             require XSLoader;
+-            XSLoader::load('Mouse', $VERSION);
++            XSLoader::load('Mouse');
+             Mouse::Util->import({ into => 'Mouse::Meta::Method::Constructor::XS' }, ':meta');
+             Mouse::Util->import({ into => 'Mouse::Meta::Method::Destructor::XS'  }, ':meta');
+             Mouse::Util->import({ into => 'Mouse::Meta::Method::Accessor::XS'    }, ':meta');
