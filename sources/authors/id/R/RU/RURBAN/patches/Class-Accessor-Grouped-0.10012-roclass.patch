@@ -1,0 +1,17 @@
+diff -bu ./t/inherited.t~ ./t/inherited.t
+--- ./t/inherited.t~	2012-10-31 10:07:25.000000000 +0100
++++ ./t/inherited.t	2018-01-09 11:41:18.000000000 +0100
+@@ -87,7 +87,13 @@
+ 
+ # dirty hack, emulate Class::C3::Componentised
+ require ExtraInheritedGroups;
++my $was_readonly;
++if (Internals::SvREADONLY(@SuperInheritedGroups::ISA)) {
++    Internals::SvREADONLY(@SuperInheritedGroups::ISA, 0);
++    $was_readonly = 1;
++}
+ unshift @SuperInheritedGroups::ISA, qw/ExtraInheritedGroups/;
++Internals::SvREADONLY(@SuperInheritedGroups::ISA, 1) if $was_readonly;
+ 
+ # this comes from ExtraInheritedGroups
+ is(SuperInheritedGroups->basefield, 'your extra base!');
