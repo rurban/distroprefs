@@ -1,0 +1,12 @@
+diff -bu ./lib/Module/Signature.pm~ ./lib/Module/Signature.pm
+--- ./lib/Module/Signature.pm~	2016-09-05 08:38:11.000000000 +0200
++++ ./lib/Module/Signature.pm	2018-01-29 23:19:00.000000000 +0100
+@@ -230,7 +230,7 @@
+     # Cache it so we don't need to keep checking.
+     return $which_gpg if $which_gpg;
+ 
+-    for my $gpg_bin ('gpg', 'gpg2', 'gnupg', 'gnupg2') {
++    for my $gpg_bin ('gpg2', 'gpg', 'gnupg', 'gnupg2') {
+         my $version = `$gpg_bin --version 2>&1`;
+         if( $version && $version =~ /GnuPG/ ) {
+             $which_gpg = $gpg_bin;
