@@ -1,0 +1,48 @@
+diff -ur Mojolicious-7.59.orig/t/mojo/base.t Mojolicious-7.59/t/mojo/base.t
+--- Mojolicious-7.59.orig/t/mojo/base.t	2017-12-14 19:38:30.000000000 +0100
++++ Mojolicious-7.59/t/mojo/base.t	2017-12-27 13:11:24.552311051 +0100
+@@ -19,7 +19,7 @@
+ use Mojo::Base 'Mojo::BaseTest';
+ 
+ package Mojo::BaseTestTestTest;
+-use Mojo::Base "Mojo'BaseTestTest";
++use Mojo::Base "Mojo::BaseTestTest";
+ 
+ package main;
+ 
+diff -ur Mojolicious-7.59.orig/t/mojo/loader.t Mojolicious-7.59/t/mojo/loader.t
+--- Mojolicious-7.59.orig/t/mojo/loader.t	2017-12-14 19:38:23.000000000 +0100
++++ Mojolicious-7.59/t/mojo/loader.t	2017-12-27 13:12:12.121537670 +0100
+@@ -2,6 +2,8 @@
+ 
+ BEGIN { $ENV{MOJO_REACTOR} = 'Mojo::Reactor::Poll' }
+ 
++my $CPERL = "$^V" =~ /c$/;
++
+ use Test::More;
+ 
+ use FindBin;
+@@ -61,9 +63,11 @@
+ is_deeply \@modules,
+   [qw(Mojo::LoaderTest::A Mojo::LoaderTest::B Mojo::LoaderTest::C)],
+   'found the right modules';
+-is_deeply [find_modules "Mojo'LoaderTest"],
+-  [qw(Mojo'LoaderTest::A Mojo'LoaderTest::B Mojo'LoaderTest::C)],
+-  'found the right modules';
++unless ($CPERL) {
++  is_deeply [find_modules "Mojo'LoaderTest"],
++    [qw(Mojo'LoaderTest::A Mojo'LoaderTest::B Mojo'LoaderTest::C)],
++    'found the right modules';
++}
+ is_deeply [find_modules 'MyLoaderTest::DoesNotExist'], [], 'no modules found';
+ 
+ # Search packages
+@@ -73,7 +77,7 @@
+ is_deeply [find_packages 'MyLoaderTest::DoesNotExist'], [], 'no packages found';
+ 
+ # Load
+-ok !load_class("Mojo'LoaderTest::A"), 'loaded successfully';
++ok !load_class("Mojo::LoaderTest::A"), 'loaded successfully';
+ ok !!Mojo::LoaderTest::A->can('new'), 'loaded successfully';
+ load_class $_ for @modules;
+ ok !!Mojo::LoaderTest::B->can('new'), 'loaded successfully';
