@@ -1,0 +1,21 @@
+diff -bu ./lib/DBM/Deep.pm~ ./lib/DBM/Deep.pm
+--- ./lib/DBM/Deep.pm~	2017-07-28 02:53:49.000000000 +0200
++++ ./lib/DBM/Deep.pm	2018-04-19 22:46:20.000000000 +0200
+@@ -643,13 +643,13 @@
+  {
+   my($pack, $file, $line, $bitmask) = (caller $level++)[0..2,9];
+   redo if $pack =~ /^DBM::Deep(?:::|\z)/;
+-  if(  vec $bitmask, $warnings'Offsets{$_[0]}, 1,
+-    || vec $bitmask, $warnings'Offsets{all}, 1,
++  if(  vec $bitmask, $warnings::Offsets{$_[0]}, 1,
++    || vec $bitmask, $warnings::Offsets{all}, 1,
+     ) {
+      my $msg = $_[1] =~ /\n\z/ ? $_[1] : "$_[1] at $file line $line.\n";
+      die $msg
+-      if  vec $bitmask, $warnings'Offsets{$_[0]}+1, 1,
+-       || vec $bitmask, $warnings'Offsets{all}+1, 1;
++      if  vec $bitmask, $warnings::Offsets{$_[0]}+1, 1,
++       || vec $bitmask, $warnings::Offsets{all}+1, 1;
+      warn $msg;
+   }
+  }
