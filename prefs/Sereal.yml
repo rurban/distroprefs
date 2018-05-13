@@ -1,9 +1,9 @@
 ---
 comment: "protected Str:: namespace"
 match:
-  distribution: "Sereal-3\.014"
+  distribution: "Sereal-"
   perlconfig:
-    version: "^5\.2[45]"
+    version: "^5\.2[45678]"
     usecperl: "define"
 patches:
   - "RURBAN/patches/Sereal-3.014-cperl524.patch"
