@@ -1,5 +1,0 @@
----
-match:
-  distribution: "Devel-Cover-0.79"
-patches:
-  - "RURBAN/patches/Devel-Cover-0.79.patch"
