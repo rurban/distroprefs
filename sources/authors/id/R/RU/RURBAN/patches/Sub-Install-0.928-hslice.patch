@@ -27,3 +27,21 @@ diff -bu Sub-Install-0.928-1/t/install.t~ Sub-Install-0.928-1/t/install.t
      is(
        $stderr,
        $expected_warning,
+diff -bu Sub-Install-0.928-1/t/reinstall.t~ Sub-Install-0.928-1/t/reinstall.t
+--- Sub-Install-0.928-1/t/reinstall.t~	2014-06-27 00:57:41.000000000 +0200
++++ Sub-Install-0.928-1/t/reinstall.t	2018-09-08 14:23:38.007938489 +0200
+@@ -25,8 +25,13 @@
+     Sub::Install::reinstall_sub({ code => \&ok, as => 'tmp_ok' });
+ 
+     my $expected_warning = <<'END_WARNING';
+-Prototype mismatch: sub main::tmp_ok ($;$) vs ($$;$) at t/reinstall.t line 32
++Prototype mismatch: sub main::tmp_ok ($;$) vs ($$;$) at t/reinstall.t line 37
+ END_WARNING
++    if ($^V =~ /c$/) {
++      $expected_warning = <<'END_WARNING';
++Prototype mismatch: sub main::tmp_ok: none vs ($$;$) at t/reinstall.t line 37
++END_WARNING
++    }
+ 
+     my $stderr = Test::Output::stderr_from(
+       sub { Sub::Install::reinstall_sub({ code => \&is, as => 'tmp_ok' }) }
