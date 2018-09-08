@@ -1,6 +1,6 @@
-diff -bu ./lib/Sub/Install.pm~ ./lib/Sub/Install.pm
---- ./lib/Sub/Install.pm~	2014-06-27 00:57:41.000000000 +0200
-+++ ./lib/Sub/Install.pm	2017-12-20 13:49:34.000000000 +0100
+diff -bu Sub-Install-0.928-1/lib/Sub/Install.pm~ Sub-Install-0.928-1/lib/Sub/Install.pm
+--- Sub-Install-0.928-1/lib/Sub/Install.pm~	2014-06-27 00:57:41.000000000 +0200
++++ Sub-Install-0.928-1/lib/Sub/Install.pm	2018-09-08 14:15:20.336382414 +0200
 @@ -114,7 +114,8 @@
      Carp::croak "couldn't determine name under which to install subroutine"
        unless $arg->{as};
@@ -11,3 +11,19 @@ diff -bu ./lib/Sub/Install.pm~ ./lib/Sub/Install.pm
    }
  }
  
+diff -bu Sub-Install-0.928-1/t/install.t~ Sub-Install-0.928-1/t/install.t
+--- Sub-Install-0.928-1/t/install.t~	2014-06-27 00:57:41.000000000 +0200
++++ Sub-Install-0.928-1/t/install.t	2018-09-08 14:14:45.764694137 +0200
+@@ -33,6 +33,12 @@
+ 
+     $stderr =~ s!\.$!!gm;
+     $stderr =~ s!\\!/!g;
++    if ($^V =~ /c$/) {
++      $expected_warning = <<'END_WARNING';
++Subroutine main::tmp_ok redefined at t/install.t line 31
++Prototype mismatch: sub main::tmp_ok: none vs ($$;$) at t/install.t line 31
++END_WARNING
++    }
+     is(
+       $stderr,
+       $expected_warning,
