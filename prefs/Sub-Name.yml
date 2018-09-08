@@ -11,3 +11,11 @@ match:
     usecperl: "define"
 patches:
   - "RURBAN/patches/Sub-Name-v5.26c.patch"
+---
+match:
+  distribution: "ETHER/Sub-Name-0\.2"
+  perlconfig:
+    version: "^5\.28"
+    usecperl: "define"
+patches:
+  - "RURBAN/patches/Sub-Name-exotic_names.patch"

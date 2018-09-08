@@ -1,0 +1,11 @@
+diff -bu Sub-Name-0.21-2/t/exotic_names.t~ Sub-Name-0.21-2/t/exotic_names.t
+--- Sub-Name-0.21-2/t/exotic_names.t~	2016-10-02 07:00:17.000000000 +0200
++++ Sub-Name-0.21-2/t/exotic_names.t	2018-09-08 09:04:10.000000000 +0200
+@@ -3,6 +3,7 @@
+ 
+ use Test::More;
+ use B 'svref_2object';
++plan skip_all => "cperl" if $^V =~ /c$/;
+ 
+ # This is a mess. The stash can supposedly handle Unicode but the behavior
+ # is literally undefined before 5.16 (with crashes beyond the basic plane),
