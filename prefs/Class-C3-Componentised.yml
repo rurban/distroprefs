@@ -1,7 +1,7 @@
 ---
 comment: "protected @ISA [cpan #120529]"
 match:
-  distribution: "Class-C3-Componentised-1\.001000"
+  distribution: "Class-C3-Componentised-1\.001"
   perlconfig:
     version: "^5\.2[678]"
     usecperl: "define"
