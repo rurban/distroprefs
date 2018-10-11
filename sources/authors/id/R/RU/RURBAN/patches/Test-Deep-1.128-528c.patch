@@ -1,0 +1,79 @@
+diff -bu Test-Deep-1.128-2/lib/Test/Deep.pm~ Test-Deep-1.128-2/lib/Test/Deep.pm
+--- Test-Deep-1.128-2/lib/Test/Deep.pm~	2018-04-19 18:05:07.000000000 +0200
++++ Test-Deep-1.128-2/lib/Test/Deep.pm	2018-10-11 12:34:50.000000000 +0200
+@@ -52,7 +52,7 @@
+   HashKeys          => "",
+   HashKeysOnly      => "",
+   Ignore            => "",
+-  Isa               => "Isa",
++  Isa               => "ISA",
+   ListMethods       => "",
+   Methods           => "",
+   None              => "",
+@@ -97,7 +97,7 @@
+   $EXPORT_TAGS{preload} = [];
+   $EXPORT_TAGS{v0} = [
+     qw(
+-      Isa
++      ISA
+       blessed
+       obj_isa
+ 
+@@ -187,7 +187,7 @@
+ {
+   if (@_ == 1)
+   {
+-    goto &Isa;
++    goto &ISA;
+   }
+   else
+   {
+@@ -1226,9 +1226,9 @@
+ 
+ You can also use overloading with C<|> similarly to all().
+ 
+-=head3 Isa
++=head3 ISA
+ 
+-  cmp_deeply( $got, Isa($class) );
++  cmp_deeply( $got, ISA($class) );
+ 
+ =head3 isa
+ 
+@@ -1239,9 +1239,9 @@
+ This uses C<UNIVERSAL::isa()> to check that C<$got_v> is blessed into the
+ class C<$class>.
+ 
+-B<NOTE:> C<Isa()> does exactly as documented here, but C<isa()> is slightly
++B<NOTE:> C<ISA()> does exactly as documented here, but C<isa()> is slightly
+ different. If C<isa()> is called with 1 argument it falls through to
+-C<Isa()>. If C<isa()> called with 2 arguments, it falls through to
++C<ISA()>. If C<isa()> called with 2 arguments, it falls through to
+ C<UNIVERSAL::isa>. This is to prevent breakage when you import C<isa()> into
+ a package that is used as a class. Without this, anyone calling
+ C<Class-E<gt>isa($other_class)> would get the wrong answer. This is a hack
+@@ -1252,7 +1252,7 @@
+   cmp_deeply( $got, obj_isa($class) );
+ 
+ This test accepts only objects that are instances of C<$class> or a subclass.
+-Unlike the C<Isa> test, this test will never accept class names.
++Unlike the C<ISA> test, this test will never accept class names.
+ 
+ =head3 array_each
+ 
+@@ -1785,13 +1785,13 @@
+ 
+   all any array array_each arrayelementsonly arraylength arraylengthonly bag
+   blessed bool cmp_bag cmp_deeply cmp_methods cmp_set code eq_deeply hash
+-  hash_each hashkeys hashkeysonly ignore Isa isa listmethods methods noclass
++  hash_each hashkeys hashkeysonly ignore ISA isa listmethods methods noclass
+   none noneof num obj_isa re reftype regexpmatches regexponly regexpref
+   regexprefonly scalarrefonly scalref set shallow str subbagof subhashof
+   subsetof superbagof superhashof supersetof useclass
+ 
+ A slightly better set of exports is the C<v1> set.  It's all the same things,
+-with the exception of C<Isa> and C<blessed>.  If you want to import
++with the exception of C<ISA> and C<blessed>.  If you want to import
+ "everything", you probably want to C<< use Test::Deep ':V1'; >>.
+ 
+ There's another magic export group:  C<:preload>.  If that is specified, all of

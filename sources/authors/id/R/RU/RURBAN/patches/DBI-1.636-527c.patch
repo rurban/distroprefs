@@ -1,11 +1,27 @@
-diff -bu ./lib/DBI/DBD/SqlEngine.pm~ ./lib/DBI/DBD/SqlEngine.pm
---- ./lib/DBI/DBD/SqlEngine.pm~	2016-04-21 16:34:22.000000000 +0200
-+++ ./lib/DBI/DBD/SqlEngine.pm	2017-05-15 09:31:11.000000000 +0200
-@@ -201,6 +201,7 @@
+diff -bu DBI-1.641-5/lib/DBI/DBD/SqlEngine.pm~ DBI-1.641-5/lib/DBI/DBD/SqlEngine.pm
+--- DBI-1.641-5/lib/DBI/DBD/SqlEngine.pm~	2018-10-09 13:11:16.799539660 +0200
++++ DBI-1.641-5/lib/DBI/DBD/SqlEngine.pm	2018-10-09 11:47:44.727793244 +0200
+@@ -201,10 +201,11 @@
          #   90 => [ all fields that are needed after other initialisation ],
          #   }
  
-+        no strict 'hashpairs';
-         my %order = map {
+-        my %order = map {
++        my @order = map {
              my $order = $_;
              map { ( $_ => $order ) } @{ $dbh->{sql_init_order}{$order} };
+         } sort { $a <=> $b } keys %{ $dbh->{sql_init_order} || {} };
++        my %order = @order;
+         my @ordered_attr =
+           map  { $_->[0] }
+           sort { $a->[1] <=> $b->[1] }
+diff -bu DBI-1.641-5/t/49dbd_file.t~ DBI-1.641-5/t/49dbd_file.t
+--- DBI-1.641-5/t/49dbd_file.t~	2017-08-13 22:48:19.000000000 +0200
++++ DBI-1.641-5/t/49dbd_file.t	2018-10-09 11:42:09.814567520 +0200
+@@ -20,6 +20,7 @@
+ do "./t/lib.pl";
+ 
+ my $dir = test_dir ();
++note "test_dir=$dir";
+ 
+ my $rowidx = 0;
+ my @rows = ( [ "Hello World" ], [ "Hello DBI Developers" ], );

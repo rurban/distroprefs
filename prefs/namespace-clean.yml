@@ -11,7 +11,7 @@ comment: "debugging broken cperl with 0.27"
 match:
   perlconfig:
     usecperl: define
-    version: "^5\.2[6-8]"
+    version: "^5\.2[6-9]"
   distribution: "namespace-clean-0\.27"
 depends:
   requires:

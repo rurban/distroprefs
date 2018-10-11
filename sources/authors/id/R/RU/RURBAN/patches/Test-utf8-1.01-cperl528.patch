@@ -1,0 +1,80 @@
+diff -bu Test-utf8-1.01-8/lib/Test/utf8.pm~ Test-utf8-1.01-8/lib/Test/utf8.pm
+--- Test-utf8-1.01-8/lib/Test/utf8.pm~	2014-01-13 14:14:36.000000000 +0100
++++ Test-utf8-1.01-8/lib/Test/utf8.pm	2018-10-11 13:56:03.654257470 +0200
+@@ -314,8 +314,7 @@
+ The opposite of C<is_flagged_utf8>, passes if and only if the string
+ isn't flagged as utf8 by perl's internals.
+ 
+-Note: you can refer to this function as C<isn't_flagged_utf8> if you
+-really want to.
++Note: C<isn't_flagged_utf8> is invalid since v5.26.0c
+ 
+ =cut
+ 
+@@ -326,7 +325,7 @@
+   return _ok(!Encode::is_utf8($string), $name);
+ }
+ 
+-sub isn::t_flagged_utf8($;$)
++sub isn't_flagged_utf8($;$)
+ {
+   my $string = shift;
+   my $name   = shift || "not flagged as utf8";
+diff -bu Test-utf8-1.01-8/t/01basic.t~ Test-utf8-1.01-8/t/01basic.t
+--- Test-utf8-1.01-8/t/01basic.t~	2004-09-10 11:29:11.000000000 +0200
++++ Test-utf8-1.01-8/t/01basic.t	2018-10-11 13:53:26.191680504 +0200
+@@ -4,7 +4,7 @@
+ 
+ use strict;
+ 
+-use Test::More tests => 10;
++use Test::More tests => 9;
+ 
+ use_ok "Test::utf8";
+ ok(defined(&is_valid_string),        "is_valid_string imported");
+@@ -15,4 +15,4 @@
+ ok(defined(&is_within_latin1),       "is_within_latin1 imported");
+ ok(defined(&is_flagged_utf8),        "is_flagged_utf8 imported");
+ ok(defined(&isnt_flagged_utf8),      "isnt_flagged_utf8 imported");
+-ok(defined(&isn't_flagged_utf8),     "isn't_flagged_utf8 imported");
++#ok(defined(&isn't_flagged_utf8),     "isn't_flagged_utf8 imported");
+diff -bu Test-utf8-1.01-8/t/06flag.t~ Test-utf8-1.01-8/t/06flag.t
+--- Test-utf8-1.01-8/t/06flag.t~	2004-09-10 11:29:12.000000000 +0200
++++ Test-utf8-1.01-8/t/06flag.t	2018-10-11 13:54:45.406965197 +0200
+@@ -3,7 +3,7 @@
+ use strict;
+ use warnings;
+ 
+-use Test::More tests => 9;
++use Test::More tests => 6;
+ use Test::Builder::Tester;
+ use Test::utf8;
+ 
+@@ -37,15 +37,15 @@
+ 
+ ######################
+ 
+-test_out("ok 1 - not flagged as utf8");
+-isn't_flagged_utf8("fred");
+-test_test("isn't flagged pass");
+-
+-test_out("ok 1 - foo");
+-isn't_flagged_utf8("fred","foo");
+-test_test("isn't flagged pass with name");
+-
+-test_out("not ok 1 - not flagged as utf8");
+-test_fail(+1);
+-isn't_flagged_utf8("\x{400}");
+-test_test("isn't flagged fail");
++#test_out("ok 1 - not flagged as utf8");
++#isn't_flagged_utf8("fred");
++#test_test("isn't flagged pass");
++#
++#test_out("ok 1 - foo");
++#isn't_flagged_utf8("fred","foo");
++#test_test("isn't flagged pass with name");
++#
++#test_out("not ok 1 - not flagged as utf8");
++#test_fail(+1);
++#isn't_flagged_utf8("\x{400}");
++#test_test("isn't flagged fail");
