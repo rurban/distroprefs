@@ -1,0 +1,39 @@
+diff -bu Variable-Magic-0.62-0/t/11-multiple.t~ Variable-Magic-0.62-0/t/11-multiple.t
+--- Variable-Magic-0.62-0/t/11-multiple.t~	2014-10-20 23:23:19.000000000 +0200
++++ Variable-Magic-0.62-0/t/11-multiple.t	2019-03-31 10:57:04.000000000 +0200
+@@ -26,7 +26,7 @@
+ eval { $w[2] = wizard get => sub { ++$c[2] }, set => sub { --$c[2] } };
+ is($@, '', 'wizard 2 creation doesn\'t croak');
+ 
+-multi sub {
++&multi sub {
+  my ($i) = @_;
+  $w[$i]
+ }, sub {
+@@ -37,7 +37,7 @@
+ 
+ my $a = 0;
+ 
+-multi sub {
++&multi sub {
+  my ($i) = @_;
+  cast $a, $w[$i];
+ }, sub {
+@@ -89,7 +89,7 @@
+  eval { $w[2] = wizard fetch => sub { ++$c[2] }, store => sub { --$c[2] } };
+  is($@, '', 'wizard with uvar 2 doesn\'t croak');
+ 
+- multi sub {
++&multi sub {
+   my ($i) = @_;
+   $w[$i]
+  }, sub {
+@@ -100,7 +100,7 @@
+ 
+  my %h = (a => 1, b => 2);
+ 
+- multi sub {
++ &multi sub {
+   my ($i) = @_;
+   cast %h, $w[$i];
+  }, sub {

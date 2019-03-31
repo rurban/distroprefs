@@ -8,7 +8,7 @@ match:
 patches:
   - "RURBAN/patches/Variable-Magic-0.58-cperl.patch"
 ---
-comment: "cperl 5.27.3 fixes for PADOP removal"
+comment: "cperl 5.27.3 fixes: PADOP removal, multi keyword"
 match:
   distribution: "Variable-Magic-0\.[56]"
   perlconfig:
@@ -16,3 +16,4 @@ match:
     usecperl: "define"
 patches:
   - "RURBAN/patches/Variable-Magic-0.62-padop.patch"
+  - "RURBAN/patches/Variable-Magic-0.62-multi.patch"
