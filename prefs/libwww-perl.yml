@@ -1,0 +1,6 @@
+---
+comment: "nntp.perl.org changed"
+match:
+  distribution: "libwww-perl-6.38"
+patches:
+  - "RURBAN/patches/libwww-perl-nntp.patch"
