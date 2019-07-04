@@ -1,0 +1,18 @@
+diff -bu Data-Dump-1.23-1/t/dump.t~ Data-Dump-1.23-1/t/dump.t
+--- Data-Dump-1.23-1/t/dump.t~	2013-04-11 21:51:45.000000000 +0200
++++ Data-Dump-1.23-1/t/dump.t	2019-07-04 18:05:44.000000000 +0200
+@@ -1,7 +1,7 @@
+ #!perl -w
+ 
+ use strict;
+-use Test qw(plan ok);
++use Test qw(plan ok skip);
+ plan tests => 34;
+ 
+ use Data::Dump qw(dump);
+@@ -64,4 +64,5 @@
+ # stranger stuff
+ ok(dump({ a => \&Data::Dump::dump, aa => do {require Symbol; Symbol::gensym()}}),
+    "do {\n  require Symbol;\n  { a => sub { ... }, aa => Symbol::gensym() };\n}");
++BEGIN { strict->unimport('names') if $^V =~ /c$/ && $] >= 5.027; }
+ ok(dump(bless{}, "foo=bar"), 'bless({}, "foo=bar")');
